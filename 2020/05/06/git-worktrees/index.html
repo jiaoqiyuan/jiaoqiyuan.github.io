@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="Before There Were Trees在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (ye">
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Before There Were Trees 在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working o">
 <meta name="keywords" content="git">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git WorkTrees：你从未听说过的 Git 最佳特性">
 <meta property="og:url" content="http://yoursite.com/2020/05/06/git-worktrees/index.html">
 <meta property="og:site_name" content="My Love">
-<meta property="og:description" content="Before There Were Trees在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (ye">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Before There Were Trees 在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working o">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://git-scm.com/images/branching-illustration@2x.png">
-<meta property="og:updated_time" content="2020-05-06T09:01:09.721Z">
+<meta property="og:updated_time" content="2020-05-06T09:08:47.085Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git WorkTrees：你从未听说过的 Git 最佳特性">
-<meta name="twitter:description" content="Before There Were Trees在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (ye">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Before There Were Trees 在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working o">
 <meta name="twitter:image" content="https://git-scm.com/images/branching-illustration@2x.png">
 
 
@@ -414,7 +414,10 @@
       
 
       
-        <h3 id="Before-There-Were-Trees"><a href="#Before-There-Were-Trees" class="headerlink" title="Before There Were Trees"></a>Before There Were Trees</h3><h3 id="在有-worktree-之前"><a href="#在有-worktree-之前" class="headerlink" title="在有 worktree 之前"></a>在有 worktree 之前</h3><p>When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (yes, this was before Slack) about an error being thrown in production. I’d take a look at the stacktrace in Sentry, and find the offending section of code. From there I’d return to my terminal, stash my changes, open a new bugfix branch off master, and begin trying to reproduce the error locally.</p>
+        <p>信息来源：<a href="https://github.com/ruanyf/weekly/blob/master/docs/issue-105.md" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+<p>文章来源：<a href="https://levelup.gitconnected.com/git-worktrees-the-best-git-feature-youve-never-heard-of-9cd21df67baf" target="_blank" rel="noopener">Discussing Docker. Pros and Cons.</a></p>
+<hr>
+<h3 id="Before-There-Were-Trees-在有-worktree-之前"><a href="#Before-There-Were-Trees-在有-worktree-之前" class="headerlink" title="Before There Were Trees 在有 worktree 之前"></a>Before There Were Trees 在有 worktree 之前</h3><p>When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (yes, this was before Slack) about an error being thrown in production. I’d take a look at the stacktrace in Sentry, and find the offending section of code. From there I’d return to my terminal, stash my changes, open a new bugfix branch off master, and begin trying to reproduce the error locally.</p>
 <p>我最初使用 git 时，有一个习惯就是经常使用 <code>stash</code> (暂存) 代码。我正在开发一个特定功能，并且会看到有关在生产中引发错误的 Hipchat 警报（对，这是在 Slack 之前）。<strong><em>这里的 Hipchat 和 Slack 是两个聊天工具，就想象成我们熟悉的微信或者 QQ 也行。</em></strong> 我需要看一眼哨兵中的堆栈信息，找到有问题的那部分代码。在这之后我需要回到终端，暂存我的修改，在 master 分支上打开一个新的 bugfix 分支，然后尝试在本地尝试复现这个错误。</p>
 <p>Usually this process would happen without too much pain. If there were untracked files in my working tree, I’d just add them and stash everything. After I’d pushed a bugfix branch up to Github, I’d unstash my changes and unstage any of the original untracked files I had added. Occasionally I’d make a mistake and do something awful like accidentally trashing my untracked files, or uncommitted changes.</p>
 <p>通常情况下这个操作不会让人感觉太痛苦。如果 git 工作空间中有未跟踪的文件，我只需要 add 一下这些文件然后 stash 所有修改就可以了。在我推送了一个 bugfix 分支到 Github 后，使用 unstash 取消我之前暂存的修改，而且 unstage 我之前使用 add 添加的未跟踪的文件就可以。有时我会犯个错误，并且做一些糟糕的事情，例如不小心丢掉了我的未跟踪文件或未提交的更改。</p>
@@ -428,7 +431,7 @@
 <p>另一个问题是每个目录都有自己的 <code>.git</code> 目录，这表示所有配置都需要在各个目录下重复进行。我使用了大量的 git pre-commit 钩子，因此现在两个目录中都必须存在这些钩子。同样，有一些方法可以解决这个问题，例如使用符号链接，或者将某些配置集中在主文件夹的 <code>.gitconfig</code> 文件中，但是这样做并不理想。</p>
 <p>Finally, this process didn’t easily scale beyond the 2 concurrent repo case. When I found myself needing to halt my existing work, create a bugfix, and review a coworkers code all at the same time, I was faced with the prospect of cloning another copy of the repo. Cloning the repo wasn’t exactly quick, and again I was faced with the burden of copying and keeping in sync all the configuration I had for the existing two repositories.</p>
 <p>最后一个问题，在同时处理两个以上的项目时会比较困难。当我同时需要停止当前的工作，创建一个 bugfix 分支，review 同事的代码时，我就想还是再 clone 一个项目到本地吧。clone 一个项目也是需要花费时间的，然后我又要面对拷贝带来的问题以及配置另外两个项目中使用到的 git 配置。</p>
-<h3 id="Enter-Git-Worktrees"><a href="#Enter-Git-Worktrees" class="headerlink" title="Enter Git Worktrees"></a>Enter Git Worktrees</h3><h3 id="使用-Git-Worktrees"><a href="#使用-Git-Worktrees" class="headerlink" title="使用 Git Worktrees"></a>使用 Git Worktrees</h3><p>Git Worktrees are a feature that allow you to have a single repository with multiple checked out working branches at the same time. Now that may not sound that cool, but let me lay out an example.</p>
+<h3 id="Enter-Git-Worktrees-使用-Git-Worktrees"><a href="#Enter-Git-Worktrees-使用-Git-Worktrees" class="headerlink" title="Enter Git Worktrees 使用 Git Worktrees"></a>Enter Git Worktrees 使用 Git Worktrees</h3><p>Git Worktrees are a feature that allow you to have a single repository with multiple checked out working branches at the same time. Now that may not sound that cool, but let me lay out an example.</p>
 <p>Git Worktrees 这个特性让你在只拥有一个项目仓库的情况下可以 checkout 出多个工作分支。现在听起来可能并不是那么酷，那么让我举一个例子吧。</p>
 <p>I have a copy of the <code>ApertureScience</code> repository located at <code>/home/James/Aperture</code>. I’m going to begin working on a new feature, <code>cake</code>. Before I start this work, I’m first going to run <code>git worktree add cake</code>. This will create a new directory for me to do my work located at <code>/home/James/Aperture/cake</code>. I spend a few hours working on my <code>cake</code> feature.</p>
 <p>在 <code>/home/James/Aperture</code> 目录下我有一个 <code>ApertureScience</code> 仓库的副本，我打算在一个新的分支 <code>cake</code> 上展开工作，在开始工作前，我需要首先执行 <code>git worktree add cake</code>，为我接下来工作创建一个新的目录 <code>/home/James/Aperture/cake</code>，然后我就可以在接下来的几个小时里为 <code>cake</code> 特性编写代码了。</p>
@@ -440,7 +443,7 @@
 <p>实际上，您可以根据需要并行处理许多事情，并且可以随时暂停工作，稍后再回来继续之前的工作。</p>
 <p>Why aren’t more people talking about Git Worktrees?? They’re incredible!</p>
 <p>为什么没有更多的人谈论 Git Worktrees ？？ 他们太不可思议了！</p>
-<h3 id="Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too"><a href="#Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too" class="headerlink" title="Can You Really Have Your Cake and Bugfix Branches Too?"></a>Can You Really Have Your Cake and Bugfix Branches Too?</h3><h3 id="你真的有-cake-和-bugfix-分支吗？"><a href="#你真的有-cake-和-bugfix-分支吗？" class="headerlink" title="你真的有 cake 和 bugfix 分支吗？"></a>你真的有 cake 和 bugfix 分支吗？</h3><p>Of course, there are some downsides to be aware of when using git worktrees.</p>
+<h3 id="Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too-你真的有-cake-和-bugfix-分支吗？"><a href="#Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too-你真的有-cake-和-bugfix-分支吗？" class="headerlink" title="Can You Really Have Your Cake and Bugfix Branches Too? 你真的有 cake 和 bugfix 分支吗？"></a>Can You Really Have Your Cake and Bugfix Branches Too? 你真的有 cake 和 bugfix 分支吗？</h3><p>Of course, there are some downsides to be aware of when using git worktrees.</p>
 <p>当然，使用 git worktrees 时要注意一些缺点。</p>
 <p>If you’re not stashing your code, or being forced to commit it, you’re more likely to just leave code in a working state. Usually, this is fine, but it means that you may not have any refs in the reflog if something goes wrong, or you may be less likely to have a committed copy of your code somewhere if you suffer a disk failure.</p>
 <p>如果你没有暂存你的代码，或者被强制要求 commit，你可能只是将代码置于工作状态，通常情况下这是没问题的，但这也意味着在出现问题时你无法通过 reglog 来记录一个操作，或者如果你遇到磁盘故障，则不太可能在某处拥有已提交的代码副本。</p>
@@ -448,7 +451,7 @@
 <p>一次可以处理更多事情可能也会降低你的工作效率。你可能会分散注意力，并尝试并行执行太多操作。</p>
 <p>Finally, some tools may not fully support worktrees well. Worktrees rely on the fact that git allows .git to be a file that points to a directory, instead of an actual directory. Some tools incorrectly assume that .git must be directory and run into issues with worktrees.</p>
 <p>最后，一些工具还没有很好地支持 worktrees，Worktrees 依赖于 git 允许 <code>.git</code> 作为指向目录的文件，而不是一个真实的目录。一些工具错误地认为 <code>.git</code> 必须是目录，并且使用 worktrees 会遇到一些问题。</p>
-<h3 id="Recommended-Setup"><a href="#Recommended-Setup" class="headerlink" title="Recommended Setup"></a>Recommended Setup</h3><h3 id="推荐设置"><a href="#推荐设置" class="headerlink" title="推荐设置"></a>推荐设置</h3><p>I tend to try to keep things tidy, so I have my worktrees setup in a specific fashion to allow me to work easily. My worktrees folder looks like the following:</p>
+<h3 id="Recommended-Setup-推荐设置"><a href="#Recommended-Setup-推荐设置" class="headerlink" title="Recommended Setup 推荐设置"></a>Recommended Setup 推荐设置</h3><p>I tend to try to keep things tidy, so I have my worktrees setup in a specific fashion to allow me to work easily. My worktrees folder looks like the following:</p>
 <p>我趋向于保持一切整洁，所以我以特定的方式设置了工作树来帮助我轻松工作。我的 worktrees 目录大概像下面这个样子：</p>
 <p><code>/home/James/worktrees/.bare</code> — This is the actual git repository, a bare instance. This stores only the repo metadata and has no actual working tree. I keep this in a separate hidden directory so that I can create new worktrees from this folder, but don’t accidentally try to check out a branch in the <code>worktrees</code> directory, which is an operation that can only be done in a working tree.</p>
 <p><code>/home/James/worktrees/.bare</code> –这是实际的git仓库，一个裸实例。这里仅存储仓库元数据，而没有实际的工作树。我将其保存在一个单独的隐藏目录中，以便可以在这个文件夹中创建新的工作树，但不要意外地尝试检出 worktrees 目录中的分支，该操作只能在工作树中完成。</p>
@@ -663,7 +666,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Before-There-Were-Trees"><span class="nav-number">1.</span> <span class="nav-text">Before There Were Trees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在有-worktree-之前"><span class="nav-number">2.</span> <span class="nav-text">在有 worktree 之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Enter-Git-Worktrees"><span class="nav-number">3.</span> <span class="nav-text">Enter Git Worktrees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Git-Worktrees"><span class="nav-number">4.</span> <span class="nav-text">使用 Git Worktrees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too"><span class="nav-number">5.</span> <span class="nav-text">Can You Really Have Your Cake and Bugfix Branches Too?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#你真的有-cake-和-bugfix-分支吗？"><span class="nav-number">6.</span> <span class="nav-text">你真的有 cake 和 bugfix 分支吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recommended-Setup"><span class="nav-number">7.</span> <span class="nav-text">Recommended Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推荐设置"><span class="nav-number">8.</span> <span class="nav-text">推荐设置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Before-There-Were-Trees-在有-worktree-之前"><span class="nav-number">1.</span> <span class="nav-text">Before There Were Trees 在有 worktree 之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Enter-Git-Worktrees-使用-Git-Worktrees"><span class="nav-number">2.</span> <span class="nav-text">Enter Git Worktrees 使用 Git Worktrees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too-你真的有-cake-和-bugfix-分支吗？"><span class="nav-number">3.</span> <span class="nav-text">Can You Really Have Your Cake and Bugfix Branches Too? 你真的有 cake 和 bugfix 分支吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recommended-Setup-推荐设置"><span class="nav-number">4.</span> <span class="nav-text">Recommended Setup 推荐设置</span></a></li></ol></div>
             
 
           </div>
