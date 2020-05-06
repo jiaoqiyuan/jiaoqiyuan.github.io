@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：Why OO Sucks  When I was first introduced to the idea of OOP I was sceptical but didn’t know why—it just felt “wrong”. After its introduction OOP became very popular (I will explain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么面向对象编程糟透了">
+<meta property="og:url" content="http://yoursite.com/2019/05/19/why-oo-sucks/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：Why OO Sucks  When I was first introduced to the idea of OOP I was sceptical but didn’t know why—it just felt “wrong”. After its introduction OOP became very popular (I will explain">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://github.com/jiaoqiyuan/pics/raw/master/blog/why-oop-sucks/why-oo-sucks.png">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为什么面向对象编程糟透了">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：Why OO Sucks  When I was first introduced to the idea of OOP I was sceptical but didn’t know why—it just felt “wrong”. After its introduction OOP became very popular (I will explain">
+<meta name="twitter:image" content="https://github.com/jiaoqiyuan/pics/raw/master/blog/why-oop-sucks/why-oo-sucks.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/19/why-oo-sucks/">
+
+
+
+
+
+  <title>为什么面向对象编程糟透了 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/why-oo-sucks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">为什么面向对象编程糟透了</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T11:11:23+08:00">
+                2019-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/19/why-oo-sucks/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/05/19/why-oo-sucks/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://github.com/jiaoqiyuan/pics/raw/master/blog/why-oop-sucks/why-oo-sucks.png" rel="gallery_ck9v4416o003e7ytt4lomtgea" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://github.com/jiaoqiyuan/pics/raw/master/blog/why-oop-sucks/why-oo-sucks.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <p>信息来源：<a href="http://www.ruanyifeng.com/blog/2019/05/weekly-issue-56.html" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+<p>文章来源：<a href="http://www.cs.otago.ac.nz/staffpriv/ok/Joe-Hates-OO.htm" target="_blank" rel="noopener">Why OO Sucks</a></p>
+<hr>
+<p>When I was first introduced to the idea of OOP I was sceptical but didn’t know why—it just felt “wrong”. After its introduction OOP became very popular (I will explain why later) and criticising OOP was rather like “swearing in church”. OOness became something that every respectable language just had to have.</p>
+<p>我第一次接触面向对象编程时不知道为什么是持怀疑态度的，我就是感觉“不对劲”。在面向对象编程变得越来越流行（我稍后会介绍为什么）后，批评面向对象就好像“在教堂诅咒别人”。面向对象变成每种可敬的编程语言所必须要拥有的东西。</p>
+<a id="more"></a>
+<p>As Erlang became popular we were often asked “Is Erlang OO”—well, of course the true answer was “No of course not”—but we didn’t care to say this out loud—so we invented a serious of ingenious ways of answering the question that were designed to give the impression that Erlang was (sort of) OO (If you waved your hands a lot) but not really (if you listened to what we actually said, and read the small print carefully).</p>
+<p>曾今 Erlang 语言流行时我们问过“Erlang 是面向对象的吗” - 这个嘛，当然真实的答案是“不是，当然不是的” - 但我们并不在乎大声说出来 - 所以我们发明了一种巧妙的方式来回答这个问题，这些方法旨在给人留下这样的印象：Erlang 是（某种程度上）OO（如果你经常挥手），但不是真正的OO（如果你听了我们实际说的话，仔细阅读小字）。</p>
+<p>At this point I am reminded of the keynote speech of the then boss of IBM in France who addressed the audience at the 7th IEEE Logic programming conference in Paris. IBM Prolog had added a lot of OO extensions. When asked why he replied:</p>
+<p>在这一点上，我想起了当时 IBM 在法国的老板的主题演讲，他在巴黎举行的第七届IEEE Logic 编程大会上向观众致辞。IBM 在序言中增加了许多 OO 扩展。当被问到为什么这样做时他回答说：</p>
+<p><em>Our customers wanted OO Prolog so we made OO Prolog</em> </p>
+<p><em>我们的客户想要 OO Perlog，所以我们推出了 OO Perlog</em></p>
+<p>I remember thinking “How simple, no qualms of conscience, no soul-searching, no asking ‘Is this the right thing to do’ …”</p>
+<p>我记得我在想“太直白，太没良心，没有反省，没有提出‘做的是正确的事情吗’ …”</p>
+<h2 id="Why-OO-sucks-为什么面向对象编程糟透了"><a href="#Why-OO-sucks-为什么面向对象编程糟透了" class="headerlink" title="Why OO sucks 为什么面向对象编程糟透了"></a>Why OO sucks 为什么面向对象编程糟透了</h2><p>My principal objection to OOP goes back to the basic ideas involved, I will outline some of these ideas and my objections to them.</p>
+<p>我对 OOP 持反对意见的原因可以归结到 OOP 的基本思想，我会列出一些 OOP 的基本思想以及我对它的反对意见。</p>
+<h3 id="Objection-1-Data-structure-and-functions-should-not-be-bound-together"><a href="#Objection-1-Data-structure-and-functions-should-not-be-bound-together" class="headerlink" title="Objection 1.  Data structure and functions should not be bound together"></a>Objection 1.  Data structure and functions should not be bound together</h3><h3 id="异议1-数据结构和方法不应该绑定在一起"><a href="#异议1-数据结构和方法不应该绑定在一起" class="headerlink" title="异议1. 数据结构和方法不应该绑定在一起"></a>异议1. 数据结构和方法不应该绑定在一起</h3><p>Objects bind functions and data structures together in indivisible units. I think this is a fundamental error since functions and data structures belong in totally different worlds. Why is this?</p>
+<p>对象将方法和数据结构绑定在一个独立的单元中。我认为这是一个根本性的错误，因为函数和数据结构属于完全不同的世界。为什么是这样呢？</p>
+<ul>
+<li><p>Functions do things. They have inputs and outputs. The inputs and outputs are data structures, which get changed by the functions. In most languages functions are built from sequences of imperatives: “Do this and then that …”. To understand functions you have to understand the order in which things get done. (In lazy FPLs and logical languages this restriction is relaxed.)</p>
+</li>
+<li><p>方法用于执行具体操作。它们有输入和输出，输入和输出是属于数据结构，它们由方法来改变。在大多数编程语言中方法是根据命令序列组建的：“先做这个然后做那个…”。想要理解方法，你必须理解做事的先后顺序。（在惰性 FPL 和逻辑语言中，这种限制可以适当放松。）</p>
+</li>
+<li><p>Data structures just are. They don’t do anything. They are intrinsically declarative. “Understanding” a data structure is a lot easier than “understanding” a function.</p>
+</li>
+<li><p>数据结构就是这样。他们不做任何事，它们本质上是声明性的。“理解”数据结构比“理解”函数容易得多。</p>
+</li>
+</ul>
+<p>Functions are understood as black boxes that transform inputs to outputs. If I understand the input and the output then I have understood the function. <em>This does not mean to say that I could have written the function.</em></p>
+<p>方法可以被理解为将输入转换为输出的黑盒子。如果我理解输入和输出，那么我已经理解了这个方法。<em>这并不意味着我可以写出这个方法。</em></p>
+<p>Functions are usually “understood” by observing that they are the things in a computational system whose job is to transfer data structures of type T1 into data structure of type T2.</p>
+<p>通常通过观察它们是计算系统中的东西来“理解”函数，该计算系统的工作是将类型 T1 的数据结构传输到 T2 类型的数据结构中。</p>
+<p><strong>Since functions and data structures are completely different types of animal it is fundamentally incorrect to lock them up in the same cage.</strong></p>
+<p><strong>由于功能和数据结构是完全不同类型的动物，因此将它们锁定在同一个笼子中是根本不正确的。</strong></p>
+<h3 id="Objection-2-Everything-has-to-be-an-object"><a href="#Objection-2-Everything-has-to-be-an-object" class="headerlink" title="Objection 2.  Everything has to be an object."></a>Objection 2.  Everything has to be an object.</h3><h3 id="异议2-一切皆对象"><a href="#异议2-一切皆对象" class="headerlink" title="异议2. 一切皆对象"></a>异议2. 一切皆对象</h3><p>Consider “time”. In an OO language a “time” has to be an object. (In Smalltalk, even “3” is an object.) But in a non OO language a “time” is a instance of a data type. For example, in Erlang there are lots of different varieties of time, which can be clearly and unambiguously specified using type declarations, as follows:</p>
+<p>来看一下“时间”。在面向对象语言中，“时间”必须是对象。(即使很短的“3”这个字符也是一个对象。)但是在非面向对象语言中，“时间”仅仅是日期类型的一个实例。比如在 Erlang 中有各种各样类型的“时间”变量，可以使用类型声明准确无误地指定，如下所示：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-def<span class="keyword">type</span> day()     = 1..31.</span><br><span class="line">-def<span class="keyword">type</span> month()   = 1..12.</span><br><span class="line">-def<span class="keyword">type</span> year()    = int().</span><br><span class="line">-def<span class="keyword">type</span> hour()    = 1..24.</span><br><span class="line">-def<span class="keyword">type</span> minute()  = 1..60.</span><br><span class="line">-def<span class="keyword">type</span> second()  = 1..60.</span><br><span class="line">-def<span class="keyword">type</span> abstime() = &#123;abstime,year(),month(),day(),hour(),min(),sec()&#125;.</span><br><span class="line">-def<span class="keyword">type</span> hms()     = &#123;hms,hour(),min(),sec()&#125;.</span><br><span class="line">…</span><br></pre></td></tr></table></figure>
+<p>Note that these definitions do not belong to any particular object. they are ubiquitous and data structures representing times can be manipulated by any function in the system.</p>
+<p>注意，这些定义不属于任何特定对象，它们无处不在，表示时间的数据结构可以被系统中的任何函数调用。</p>
+<p>There are no associated methods.</p>
+<p>没有相关的方法。</p>
+<h3 id="Objection-3-In-an-OOPL-data-type-definitions-are-spread-out-all-over-the-place"><a href="#Objection-3-In-an-OOPL-data-type-definitions-are-spread-out-all-over-the-place" class="headerlink" title="Objection 3.  In an OOPL data type definitions are spread out all over the place."></a>Objection 3.  In an OOPL data type definitions are spread out all over the place.</h3><h3 id="异议3-在面向对象程序设计语言的数据类型中，定义遍布整个区域"><a href="#异议3-在面向对象程序设计语言的数据类型中，定义遍布整个区域" class="headerlink" title="异议3. 在面向对象程序设计语言的数据类型中，定义遍布整个区域"></a>异议3. 在面向对象程序设计语言的数据类型中，定义遍布整个区域</h3><p>In an OOPL data type definitions belong to objects. So I can’t find all the data type definition in one place. In Erlang or C I can define all my data types in a single include file or data dictionary. In an OOPL I can’t—the data type definitions are spread out all over the place.</p>
+<p>在面向对象程序设计语言中数据定义归属与对象，所以我无法在一个地方获取到所有数据类型的定义。在 Erlang 和 C 中我可以在一个头文件或数据字典中定义我的数据类型，但是在面向对象程序设计语言中没办法这样做 - 数据类型的定义遍布这个工作区域。</p>
+<p>Let me give an example of this. Suppose I want to define a ubiquitous data structure. A ubiquitous data type is a data type that occurs “all over the place” in a system.</p>
+<p>我来举个例子，假如我想定义一个无处不在的数据结构，也就是系统中任意地方都可以出现的。</p>
+<p>As Lisp programmers have know for a long time it is better to have a smallish number of ubiquitous data types and a large number of small functions that work on them, than to have a large number of data types and a small number of functions that work on them.</p>
+<p>正如Lisp程序员很早就已经知道的，最好是拥有少量无处不在的数据类型和大量适用于它们的小函数，而不是拥有大量的数据类型和少量的功能。</p>
+<p>A ubiquitous data structure is something like a linked list, or an array or a hash table or a more advanced object like a time or date or filename.</p>
+<p>无处不在的数据结构类似于链表，数组或散列表或更高级的对象，如时间或日期或文件名。</p>
+<p>In an OOPL I have to choose some base object in which I will define the ubiquitous data structure. All other objects that want to use this data structure must inherit this object. Suppose now I want to create some “time” object, where does this belong and in which object…</p>
+<p>在OOPL中，我必须选择一些基础对象，在其中我将定义无处不在的数据结构。要使用此数据结构的所有其他对象必须继承此对象。假设现在我想创建一些“时间”对象，它属于哪个对象…</p>
+<h3 id="Objection-4-Objects-have-private-state"><a href="#Objection-4-Objects-have-private-state" class="headerlink" title="Objection 4.  Objects have private state."></a>Objection 4.  Objects have private state.</h3><h3 id="异议4-对象有私有状态"><a href="#异议4-对象有私有状态" class="headerlink" title="异议4. 对象有私有状态"></a>异议4. 对象有私有状态</h3><p>State is the root of all evil. In particular functions with side effects should be avoided.</p>
+<p>状态是万恶之源。特别是应该避免具有副作用的方法。</p>
+<p>While state in programming languages is undesirable, in the real world state abounds. I am highly interested in the state of my bank account, and when I deposit or withdraw money from my bank I expect the state of my bank account to be correctly updated.</p>
+<p>虽然编程语言中的状态是不受欢迎的，但在现实世界中状态比比皆是。我对我的银行账户状态非常感兴趣，当我从银行存款或取款时，我希望我的银行账户状态能够正确更新。</p>
+<p>Given that state exists in the real world what facilities should programming language provide for dealing with state?</p>
+<p>鉴于现实世界中存在状态，编程语言应该为处理状态提供哪些便利？</p>
+<ul>
+<li><p>OOPLs say “hide the state from the programmer”. The state is hidden and visible only through access functions.</p>
+</li>
+<li><p>OOPL说“隐藏程序员的状态”。只有通过访问功能才能隐藏和显示状态。</p>
+</li>
+<li><p>Conventional programming languages (C, Pascal) say that the visibility of state variables is controlled by the scope rules of the language.</p>
+</li>
+<li><p>传统的编程语言（C，Pascal）表示状态变量的可见性由语言的范围规则控制。</p>
+</li>
+<li><p>Pure declarative languages say that there is no state. The global state of the system is carried into all functions and comes out from all functions. Mechanisms like monads (for FPLs) and DCGs (logic languages) are used to hide state from the programmer so they can program “as if state didn’t matter” but have full access to the state of the system should this be necessary.</p>
+</li>
+<li><p>纯粹的声明性语言说没有状态。系统的全局状态被传入所有方法并从所有方法中传出。像monad（用于FPL）和DCG（逻辑语言）这样的机制用于隐藏程序员的状态，因此他们可以编写“好像状态无关紧要”的程序，但如果有必要，可以完全访问系统状态。</p>
+</li>
+</ul>
+<p>The “hide the state from the programmer” option chosen by OOPLs is the worst possible choice. Instead of revealing the state and trying to find ways to minimise the nuisance of state, they hide it away.</p>
+<p>OOPL选择的“隐藏程序员状态”选项是最糟糕的选择。他们没有暴露状态并试图找到最小化干扰状态的方法，而是将其隐藏起来。</p>
+<h2 id="Why-was-OO-popular-为什么面向对象会流行？"><a href="#Why-was-OO-popular-为什么面向对象会流行？" class="headerlink" title="Why was OO popular? 为什么面向对象会流行？"></a>Why was OO popular? 为什么面向对象会流行？</h2><ul>
+<li><p>Reason 1. It was thought to be easy to learn.</p>
+</li>
+<li><p>原因1. 它被认为很容易学习。</p>
+</li>
+<li><p>Reason 2. It was thought to make code reuse easier.</p>
+</li>
+<li><p>原因2. 它被认为使代码重用更容易。</p>
+</li>
+<li><p>Reason 3. It was hyped.</p>
+</li>
+<li><p>原因3. 它被炒作了。</p>
+</li>
+<li><p>Reason 4. It created a new software industry.</p>
+</li>
+<li><p>原因4. 它创造了一个新的软件产业。</p>
+</li>
+</ul>
+<p>I see no evidence of 1 and 2. Reasons 3 and 4 seem to be the driving force behind the technology. If a language technology is so bad that it creates a new industry to solve problems of its own making then it must be a good idea for the guys who want to make money.</p>
+<p>我没有看到1和2的证据。原因3和4似乎是该技术背后的驱动力。如果语言技术如此糟糕以至于它创造了一个新的行业来解决自己制造的问题，那么对于那些想要赚钱的人来说一定是个好主意。</p>
+<p>This is is the real driving force behind OOPs.</p>
+<p>这是OOP背后真正的推动力。</p>
+<h2 id="See-The-Third-Manifesto-参见第三份宣言"><a href="#See-The-Third-Manifesto-参见第三份宣言" class="headerlink" title="See The Third Manifesto 参见第三份宣言"></a>See The Third Manifesto 参见第三份宣言</h2><p>[This section added in 2000 for COSC345 by R. A. O’Keefe.]</p>
+<p>The book “The Third Manifesto” by Date and Darwen is about how to design object data bases “right”. In the appendices, they treat SQL3 rather ungently, but no more ungently than the muddled giant deserves. They are even more critical of ODMG; if the industry cannot, after spending large amounts of time and money, produce a logically coherent object model for object data base systems, perhaps OO is not as simple or as usable as it seems.</p>
+<p>Date和Darwen的书“The Third Manifesto”是关于如何“正确”的设计对象数据库。在附录中，他们对SQL3的处理相当不明智，但并不比混乱的巨人应得的更加不切实际。他们对ODMG更加批评;如果行业在花费大量时间和金钱之后不能为对象数据库系统生成逻辑上一致的对象模型，那么OO可能不像看起来那么简单或可用。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/10/unreasonable-effectiveness-of-sql/" rel="next" title="为什么 SQL 如此成功？">
+                <i class="fa fa-chevron-left"></i> 为什么 SQL 如此成功？
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/19/note-of-scala-learning/" rel="prev" title="Scala 学习笔记">
+                Scala 学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-OO-sucks-为什么面向对象编程糟透了"><span class="nav-number">1.</span> <span class="nav-text">Why OO sucks 为什么面向对象编程糟透了</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Objection-1-Data-structure-and-functions-should-not-be-bound-together"><span class="nav-number">1.1.</span> <span class="nav-text">Objection 1.  Data structure and functions should not be bound together</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异议1-数据结构和方法不应该绑定在一起"><span class="nav-number">1.2.</span> <span class="nav-text">异议1. 数据结构和方法不应该绑定在一起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Objection-2-Everything-has-to-be-an-object"><span class="nav-number">1.3.</span> <span class="nav-text">Objection 2.  Everything has to be an object.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异议2-一切皆对象"><span class="nav-number">1.4.</span> <span class="nav-text">异议2. 一切皆对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Objection-3-In-an-OOPL-data-type-definitions-are-spread-out-all-over-the-place"><span class="nav-number">1.5.</span> <span class="nav-text">Objection 3.  In an OOPL data type definitions are spread out all over the place.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异议3-在面向对象程序设计语言的数据类型中，定义遍布整个区域"><span class="nav-number">1.6.</span> <span class="nav-text">异议3. 在面向对象程序设计语言的数据类型中，定义遍布整个区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Objection-4-Objects-have-private-state"><span class="nav-number">1.7.</span> <span class="nav-text">Objection 4.  Objects have private state.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异议4-对象有私有状态"><span class="nav-number">1.8.</span> <span class="nav-text">异议4. 对象有私有状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-was-OO-popular-为什么面向对象会流行？"><span class="nav-number">2.</span> <span class="nav-text">Why was OO popular? 为什么面向对象会流行？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#See-The-Third-Manifesto-参见第三份宣言"><span class="nav-number">3.</span> <span class="nav-text">See The Third Manifesto 参见第三份宣言</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

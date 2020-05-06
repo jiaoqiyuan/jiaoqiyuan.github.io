@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：How unreliable is UDP?  How unreliable is UDP?I realized something recently: I know virtually nothing about UDP. Oh, I know it’s connectionless, has no handshaking and thus doesn’t p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UDP协议到底可不可靠(译)">
+<meta property="og:url" content="http://yoursite.com/2018/12/07/UDP协议到底可不可靠-译/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：How unreliable is UDP?  How unreliable is UDP?I realized something recently: I know virtually nothing about UDP. Oh, I know it’s connectionless, has no handshaking and thus doesn’t p">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UDP协议到底可不可靠(译)">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：How unreliable is UDP?  How unreliable is UDP?I realized something recently: I know virtually nothing about UDP. Oh, I know it’s connectionless, has no handshaking and thus doesn’t p">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/07/UDP协议到底可不可靠-译/">
+
+
+
+
+
+  <title>UDP协议到底可不可靠(译) | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/07/UDP协议到底可不可靠-译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">UDP协议到底可不可靠(译)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-07T06:00:57+08:00">
+                2018-12-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/07/UDP协议到底可不可靠-译/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/12/07/UDP协议到底可不可靠-译/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>信息来源：<a href="http://www.ruanyifeng.com/blog/2018/12/weekly-issue-34.html" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+<p>文章来源：<a href="https://www.openmymind.net/How-Unreliable-Is-UDP/" target="_blank" rel="noopener">How unreliable is UDP?</a></p>
+<hr>
+<h2 id="How-unreliable-is-UDP"><a href="#How-unreliable-is-UDP" class="headerlink" title="How unreliable is UDP?"></a>How unreliable is UDP?</h2><p>I realized something recently: I know virtually nothing about UDP. Oh, I know it’s connectionless, has no handshaking and thus doesn’t provide any guarantees about delivery or ordering. But, in practice, what does that actually mean?</p>
+<p>我最近留意到：我实质上完全不了解UDP。(⊙o⊙)…，我知道它是无连接式通讯，没有握手因此不为使用者提供任何可靠数据交付。但是在实践中这究竟意味着什么？</p>
+<p>I setup 5 VPS to send each other a few UDP packets over a 7 hour period. I didn’t send much traffic (though that’s certainly worth trying). Each server, every 9-11 second, randomly picked a target and sent 5-10 packets ranging from 16 to 1016 bytes.</p>
+<p>我开启了5个VPS在7小时内互相发送了一些UDP数据包。我没有发送太多流量（尽管这确实很值得尝试）。每个服务端，每9到11秒随机选择一个目标发送5到10个大小在16到1016字节的数据包。</p>
+<p>2 servers were in the same data center in New Jersey. 1 each in LA, Amsterdam and Tokyo.</p>
+<p>两台服务器位于新泽西州的同一个数据中心，另外三个分别位于洛杉矶，阿姆斯特丹和东京。</p>
+<h2 id="Un-Reliability-（不）可靠"><a href="#Un-Reliability-（不）可靠" class="headerlink" title="[Un]Reliability （不）可靠"></a>[Un]Reliability （不）可靠</h2><p>The first thing I wanted to know was how unreliable UDP was. Are we talking about a delivery rate of 25%? 50%? 75%?</p>
+<p>首先我想知道UDP到底有多不可靠。是我们谈到的25%,50%，75%的交付率吗？</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">NJ1</th>
+<th style="text-align:center">NJ2</th>
+<th style="text-align:center">LA</th>
+<th style="text-align:center">NLD</th>
+<th style="text-align:center">JPN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">NJ1</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">2981/2981</td>
+<td style="text-align:center">2888/2889</td>
+<td style="text-align:center">2964/2964</td>
+<td style="text-align:center">3053/3054</td>
+</tr>
+<tr>
+<td style="text-align:center">NJ2</td>
+<td style="text-align:center">3016/3016</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">3100/3101</td>
+<td style="text-align:center">2374/2375</td>
+<td style="text-align:center">3054/3054</td>
+</tr>
+<tr>
+<td style="text-align:center">LA</td>
+<td style="text-align:center">2901/2941</td>
+<td style="text-align:center">2932/2975</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">2938/2942</td>
+<td style="text-align:center">2712/2712</td>
+</tr>
+<tr>
+<td style="text-align:center">NLD</td>
+<td style="text-align:center">3038/3038</td>
+<td style="text-align:center">2771/2772</td>
+<td style="text-align:center">2724/2724</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">2791/2791</td>
+</tr>
+<tr>
+<td style="text-align:center">JPN</td>
+<td style="text-align:center">2551/2552</td>
+<td style="text-align:center">2886/2886</td>
+<td style="text-align:center">2836/2838</td>
+<td style="text-align:center">2887/2887</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<p>These numbers were better than what I had expected. I was specifically thinking NLD <-> JPN would see above normal loss, but there was none. Data being sent out of LA, specifically to the two servers in NJ, seems to have struggled some. Was there a pattern?</-></p>
+<p>这些数字信息比我预想的要好。我还特意认为阿姆斯特丹到东京的数据包的丢失率回避正常情况下的要大，但结果完全不是这样的。从洛杉矶发出的数据包，尤其是发往新泽西州的两台服务器的数据包似乎碰到了些阻碍。有什么模式造成了这种情况的发生吗？</p>
+<p>First, I thought maybe the size of the packet would be an issue. Admittedly, I kept them small (16 byte header, 0-1000 byte payload):</p>
+<p>首先，或许数据包的大小对结果造成了这种影响，不可否认，我已经保持数据包很小了（16字节的头，0-1000字节的有效载荷）：</p>
+<p>package loss per size(bytes):<br>| 0-115 | 116-215 | 216-315 | 316-515 | 516-715 | 716-915 |<br>|:–:|:–:|:—:|:–:|:—:|:—:|<br>| 13 | 11 | 12 | 13 | 23 | 23 |</p>
+<p>Nothing obvious there. Did the packet loss happen around the same time? Unfortunately, I didn’t keep timestamps (why?!), but I did keep a counter per pair. If you look at the 43 packets that failed to make it from LA to NJ2, 29 were lost during 2 ~1 minute periods. The NJ1 packet loss also largely happened during 2 short periods.</p>
+<p>看起来数据包的大小对丢包率没产生什么太大的影响。数据包丢失的情况都发生在同一时间吗？不幸的是，我没有保留时间戳（天啊，为什么？！），但是我在每个时期都保留了计数器。如果你看一下洛杉矶到NJ2失败的43个网络报，其中有29个是在2到1分钟内丢失的。NJ1的数据包丢失也主要发生在连个很短的周期内。</p>
+<h2 id="Ordering-排序"><a href="#Ordering-排序" class="headerlink" title="Ordering 排序"></a>Ordering 排序</h2><p>The other thing I was interested int was ordering.</p>
+<p>我关心的另一件事是UDP的传输顺序。</p>
+<p>The first way I looked at this was to measure the inversion of the array. Essentially, that’s the number of pairs that are out of order. If you have an array with the values 10, 8, 3, 7, 4, you end up having to do 8 swaps ((10, 8), (10, 3), (10, 7), (10, 4), (8, 3), (8, 7), (8, 4), (7, 4)).</p>
+<p>我第一眼看到这个是先度量数组的逆序度，实际上就是数组不按顺序排列的程度。如果你有一个数值为10,8,3,7,4的数组，你最后需要做8个数据交换才能给数组排序((10, 8), (10, 3), (10, 7), (10, 4), (8, 3), (8, 7), (8, 4), (7, 4)).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">NJ1</th>
+<th style="text-align:center">NJ2</th>
+<th style="text-align:center">LA</th>
+<th style="text-align:center">NLD</th>
+<th style="text-align:center">JPN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">NJ1</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2994</td>
+<td style="text-align:center">2581</td>
+<td style="text-align:center">4658</td>
+</tr>
+<tr>
+<td style="text-align:center">NJ2</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">3147</td>
+<td style="text-align:center">2459</td>
+<td style="text-align:center">4645</td>
+</tr>
+<tr>
+<td style="text-align:center">LA</td>
+<td style="text-align:center">3980</td>
+<td style="text-align:center">3861</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">3237</td>
+<td style="text-align:center">4010</td>
+</tr>
+<tr>
+<td style="text-align:center">NLD</td>
+<td style="text-align:center">3125</td>
+<td style="text-align:center">1826</td>
+<td style="text-align:center">3133</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">4189</td>
+</tr>
+<tr>
+<td style="text-align:center">JPN</td>
+<td style="text-align:center">3920</td>
+<td style="text-align:center">4417</td>
+<td style="text-align:center">4147</td>
+<td style="text-align:center">4425</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<p>Don’t know about you, but I’m not sure I find that useful. It sure seems high. Of course, one of the reasons to use UDP is when you’re able to discard some packets. If you send 10 000 packets, and they’re all ordered, except that the last one is somehow first, you can just discard it rather than doing 9999 swaps.</p>
+<p>不了解你，但是我不确定这个方法是有用的。这看起来肯定很高，显然，使用UDP的其中一个原因就是你可以丢失一些数据包时。如果你发送了10000个数据包，而且他们是有序的，除了这种情况：最后一个数据包在最前面的位置，你大可以直接丢弃它而不是进行9999次数据交换来排序。</p>
+<p>What if we discard any packet that come after a later packet we’ve already processed (later meaning the counter is great)? For example, if we get 1, 5, 4, 3, 6, 7, we’d discard 4 and 3 since we’ve already seen 5. How many “good” packets would that leave?</p>
+<p>如果我们处理完一个数据包后丢弃了后面发来的数据包会怎么样（后来的意味着计数器会很大）？如果我们收到了1, 5, 4, 3, 6, 7，我们看到5后4和3的数据包，那么还剩下多少“好”的数据包呢？</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">NJ1</th>
+<th style="text-align:center">NJ2</th>
+<th style="text-align:center">LA</th>
+<th style="text-align:center">NLD</th>
+<th style="text-align:center">JPN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">NJ1</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">2981</td>
+<td style="text-align:center">1514</td>
+<td style="text-align:center">1658</td>
+<td style="text-align:center">1123</td>
+</tr>
+<tr>
+<td style="text-align:center">NJ2</td>
+<td style="text-align:center">3016</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">1627</td>
+<td style="text-align:center">1483</td>
+<td style="text-align:center">1161</td>
+</tr>
+<tr>
+<td style="text-align:center">LA</td>
+<td style="text-align:center">3980</td>
+<td style="text-align:center">3861</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">3237</td>
+<td style="text-align:center">4010</td>
+</tr>
+<tr>
+<td style="text-align:center">NLD</td>
+<td style="text-align:center">3125</td>
+<td style="text-align:center">1826</td>
+<td style="text-align:center">3133</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">4189</td>
+</tr>
+<tr>
+<td style="text-align:center">JPN</td>
+<td style="text-align:center">3920</td>
+<td style="text-align:center">4417</td>
+<td style="text-align:center">4147</td>
+<td style="text-align:center">4425</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<p>换算成百分比后：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">NJ1</th>
+<th style="text-align:center">NJ2</th>
+<th style="text-align:center">LA</th>
+<th style="text-align:center">NLD</th>
+<th style="text-align:center">JPN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">NJ1</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">52.40</td>
+<td style="text-align:center">55.94</td>
+<td style="text-align:center">36.77</td>
+</tr>
+<tr>
+<td style="text-align:center">NJ2</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">52.47</td>
+<td style="text-align:center">54.22</td>
+<td style="text-align:center">38.02</td>
+</tr>
+<tr>
+<td style="text-align:center">LA</td>
+<td style="text-align:center">41.72</td>
+<td style="text-align:center">42.32</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">50.48</td>
+<td style="text-align:center">39.34</td>
+</tr>
+<tr>
+<td style="text-align:center">NLD</td>
+<td style="text-align:center">46.32</td>
+<td style="text-align:center">59.34</td>
+<td style="text-align:center">44.79</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">39.27</td>
+</tr>
+<tr>
+<td style="text-align:center">JPN</td>
+<td style="text-align:center">38.40</td>
+<td style="text-align:center">37.53</td>
+<td style="text-align:center">40.20</td>
+<td style="text-align:center">37.65</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<p>As a slight tweak, what if we group 5 packets together, sort them, then re-apply the above discarding code:</p>
+<p>稍微调整一下，如果我们把5个数据包分成一个组，对他们进行排序，然后重复上面的丢包过程。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">NJ1</th>
+<th style="text-align:center">NJ2</th>
+<th style="text-align:center">LA</th>
+<th style="text-align:center">NLD</th>
+<th style="text-align:center">JPN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">NJ1</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">2981</td>
+<td style="text-align:center">2061</td>
+<td style="text-align:center">2235</td>
+<td style="text-align:center">1807</td>
+</tr>
+<tr>
+<td style="text-align:center">NJ2</td>
+<td style="text-align:center">3016</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">2214</td>
+<td style="text-align:center">2041</td>
+<td style="text-align:center">1889</td>
+</tr>
+<tr>
+<td style="text-align:center">LA</td>
+<td style="text-align:center">1868</td>
+<td style="text-align:center">1873</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">2066</td>
+<td style="text-align:center">1720</td>
+</tr>
+<tr>
+<td style="text-align:center">NLD</td>
+<td style="text-align:center">2200</td>
+<td style="text-align:center">2273</td>
+<td style="text-align:center">1920</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">1712</td>
+</tr>
+<tr>
+<td style="text-align:center">JPN</td>
+<td style="text-align:center">1541</td>
+<td style="text-align:center">1804</td>
+<td style="text-align:center">1735</td>
+<td style="text-align:center">1732</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<p>换算成百分比后：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">NJ1</th>
+<th style="text-align:center">NJ2</th>
+<th style="text-align:center">LA</th>
+<th style="text-align:center">NLD</th>
+<th style="text-align:center">JPN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">NJ 1</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">71.34</td>
+<td style="text-align:center">75.40</td>
+<td style="text-align:center">59.17</td>
+</tr>
+<tr>
+<td style="text-align:center">NJ 2</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">71.40</td>
+<td style="text-align:center">74.63</td>
+<td style="text-align:center">61.85</td>
+</tr>
+<tr>
+<td style="text-align:center">LA</td>
+<td style="text-align:center">63.52</td>
+<td style="text-align:center">62.96</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">70.22</td>
+<td style="text-align:center">63.42</td>
+</tr>
+<tr>
+<td style="text-align:center">NLD</td>
+<td style="text-align:center">72.42</td>
+<td style="text-align:center">82.00</td>
+<td style="text-align:center">70.48</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">61.34</td>
+</tr>
+<tr>
+<td style="text-align:center">JPN</td>
+<td style="text-align:center">60.38</td>
+<td style="text-align:center">62.51</td>
+<td style="text-align:center">61.13</td>
+<td style="text-align:center">59.99</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Conclusion-结论"><a href="#Conclusion-结论" class="headerlink" title="Conclusion 结论"></a>Conclusion 结论</h2><p>It’s hard to draw any conclusions without running this for longer and with more data. Still, it seems that UDP reliability is pretty good. Distance usually involves more hops and each hop increases the risk or something going bad, but if things are normally ok, then distance doesn’t seem to be an issue.</p>
+<p>在没有更长运行时间和发送更多数据之前很难下结论，目前来看，UDP的可靠性是非常不错的，距离通常意味着更多跳跃，更多跳增加了数据传输出错的风险，但是如果通常情况下数据发送是好的，那么距离似乎就不是个问题了。</p>
+<p>What is an issue is ordering. Here, distance does appear to play a bigger factor. By grouping the packets we see a substantial and expected improvement. In a lot of cases, ordering might not matter. Unless you’re streaming, it’s possible that simply keeping a timestamp and re-ordering on the receiving side would work.</p>
+<p>问题是排序，这时，距离似乎产生了比较大的影响。通过把数据分组我们看到了可预期的很大改进。在许多情况下，排序或许没那么重要。除非你是流处理，简单地保留个时间戳并且在接收端重新排序似乎是个解决办法。</p>
+<p>I’d like to test more things. More data for a longer period of time and more locations. I’d also like to compare the performance to TCP. But, overall, I feel that the better-than-I-expected reliability makes UDP something I should keep in my toolbox.</p>
+<p>我很乐意测试更多情况。更多的数据，更长的时间间隔和更多的位置。我也会跟TCP的性能做一下比较。但是，总体来说，UDP传输的可靠性比我预想得要高，我会把它放到我的工具箱中。</p>
+<p>2018.12.07 北京 -8°</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/07/如何学习数据结构与算法/" rel="next" title="如何学习数据结构与算法">
+                <i class="fa fa-chevron-left"></i> 如何学习数据结构与算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/13/时间复杂度分析-上/" rel="prev" title="时间复杂度分析-上">
+                时间复杂度分析-上 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#How-unreliable-is-UDP"><span class="nav-number">1.</span> <span class="nav-text">How unreliable is UDP?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Un-Reliability-（不）可靠"><span class="nav-number">2.</span> <span class="nav-text">[Un]Reliability （不）可靠</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ordering-排序"><span class="nav-number">3.</span> <span class="nav-text">Ordering 排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion-结论"><span class="nav-number">4.</span> <span class="nav-text">Conclusion 结论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

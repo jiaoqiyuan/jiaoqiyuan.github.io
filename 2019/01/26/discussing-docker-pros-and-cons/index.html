@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="docker,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Discussing Docker. Pros and Cons. 讨论一下Docker的优缺点Docker allows us to easily create reproducible environments for our application. We automate the se">
+<meta name="keywords" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker技术的优缺点">
+<meta property="og:url" content="http://yoursite.com/2019/01/26/discussing-docker-pros-and-cons/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Discussing Docker. Pros and Cons. 讨论一下Docker的优缺点Docker allows us to easily create reproducible environments for our application. We automate the se">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/0*KBn45TeUMJZSbz9n.png">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker技术的优缺点">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Discussing Docker. Pros and Cons. 讨论一下Docker的优缺点Docker allows us to easily create reproducible environments for our application. We automate the se">
+<meta name="twitter:image" content="https://cdn-images-1.medium.com/max/1600/0*KBn45TeUMJZSbz9n.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/26/discussing-docker-pros-and-cons/">
+
+
+
+
+
+  <title>Docker技术的优缺点 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/26/discussing-docker-pros-and-cons/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker技术的优缺点</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-26T18:06:16+08:00">
+                2019-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/26/discussing-docker-pros-and-cons/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/26/discussing-docker-pros-and-cons/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://cdn-images-1.medium.com/max/1600/0*KBn45TeUMJZSbz9n.png" rel="gallery_ck9v4416j002z7yttlhvapyvf" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://cdn-images-1.medium.com/max/1600/0*KBn45TeUMJZSbz9n.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <p>信息来源：<a href="http://www.ruanyifeng.com/blog/2019/01/weekly-issue-41.html" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+<p>文章来源：<a href="https://blog.philipphauer.de/discussing-docker-pros-and-cons/" target="_blank" rel="noopener">Discussing Docker. Pros and Cons.</a></p>
+<hr>
+<h2 id="Discussing-Docker-Pros-and-Cons-讨论一下Docker的优缺点"><a href="#Discussing-Docker-Pros-and-Cons-讨论一下Docker的优缺点" class="headerlink" title="Discussing Docker. Pros and Cons. 讨论一下Docker的优缺点"></a>Discussing Docker. Pros and Cons. 讨论一下Docker的优缺点</h2><p>Docker allows us to easily create reproducible environments for our application. We automate the setup of the environment and eliminate manual error-prone tasks. This way we reduce the risks and the reliability of the deployment process. But there are also challenges and domains, where the usage of Docker can be difficult. This post discusses several advantages of Docker and points out some drawbacks.</p>
+<p>Docker使我们能够轻易地为应用搭建可重复使用的环境，我们让环境搭建变得自动化并且消除了手动执行任务带来的错误，这样我们就降低了任务部署的风险并提高了可靠性。但是还是会有一些领域使用docker起来比较麻烦，这篇文章将会讨论一下Docker的有点并指出Docker的一些缺点。</p>
+<h2 id="Advantages-优势"><a href="#Advantages-优势" class="headerlink" title="Advantages 优势"></a>Advantages 优势</h2><h3 id="Advantages-for-the-Development-Team-对于开发团队的好处"><a href="#Advantages-for-the-Development-Team-对于开发团队的好处" class="headerlink" title="Advantages for the Development Team 对于开发团队的好处"></a>Advantages for the Development Team 对于开发团队的好处</h3><ul>
+<li><p>Full control over the execution environment of the application. This includes the necessary infrastructure like the JRE, the application server, VM arguments and other environment variables the application needs to run. The infrastructure can be changed easily and independently by the development team, because they don’t have to wait for the operations team to change the environment.</p>
+</li>
+<li><p>可以对应用运行环境的完全掌控。这包括必要的基础程序如JRE、应用服务、VM参数以及程序运行时需要的其他环境变量。基础程序可以轻易地更改并且独立于开发团队，因为开发人员不需要运营团队来帮他们变更环境。</p>
+</li>
+</ul>
+<p><img src="https://blog.philipphauer.de/blog/2015/1025-discussing-docker-pros-and-cons/Docker-Image-everything-our-applications-needs.png" alt="docker image"></p>
+<ul>
+<li><p>Reduced Risk. The tests run against the same image that will finally run on the production server. This increases the reliability of the tests. Moreover, releases become less scary, because we just run the same image on the production server as we did for the tests or the other stages of the build pipeline (e.g. pre-production-system, acceptance tests, capacity tests etc.).</p>
+</li>
+<li><p>降低了风险。测试时的镜像环境就是最终产品运行的服务端环境，这就增加了测试的可靠性。此外，版本发布也不再那么让人提心吊胆了，因为我们我们在服务端运行产品的镜像环境跟我们进行测试或者构建产品的其他阶段使用的环境是一样的（例如，预生产系统，验收测试，容量测试等）。</p>
+</li>
+</ul>
+<p><img src="https://blog.philipphauer.de/blog/2015/1025-discussing-docker-pros-and-cons/Docker-use-same-image-stages-delivery-pipeline.png" alt="image registry"></p>
+<p>Once the Docker image is built, we use the image in all stages of the (continuous) delivery pipeline. This increases the reliability of our delivery.</p>
+<p>一旦Docker镜像构建成功，我们就会在交付的各个阶段都是用这个镜像，这就提高了交付的可靠性。</p>
+<h3 id="Advantages-for-the-Operations-Team-对运维团队好处"><a href="#Advantages-for-the-Operations-Team-对运维团队好处" class="headerlink" title="Advantages for the Operations Team 对运维团队好处"></a>Advantages for the Operations Team 对运维团队好处</h3><ul>
+<li><p>Less effort for maintaining environments for the application. The creation of an environment is automated. Hence, less manual actions are necessary. This reduces the risks and increases the reliability.</p>
+</li>
+<li><p>减少维护应用运行环境的工作量。环境是自动创建的，因此更少的人为操作是有必要的。这能减小风险并提高可靠性。</p>
+</li>
+<li><p>Manually maintaining a consistent environment on multiple servers is error-prone and can be a nightmare. With Docker it’s easy to create several instances of an environment, because we just have to execute the image on the servers. This way it is easy to add further nodes to a cluster and to scale horizontally.</p>
+</li>
+<li><p>在多态服务器上手工搭建相同环境是很容易出错而且让人崩溃的。使用Docker的话就可以很轻松地创建一个环境的多个实例，因为我们最终只需要在服务端运行这个实例镜像。这种方式也可以很轻松将未来的多个节点添加到集群中进行水平扩展。</p>
+</li>
+<li><p>Easy updating of an existing application and environment. Using traditional approaches for setting up an environment (like install scripts) run into trouble when there is already an existing environment. Considering the update path in the script can be a very complex task (e.g. checking the existence of files and clean up unused files). With Docker we don’t have to take an existing environment into account (except for the database). We just stop the running container and start the new updated one. This simplifies the setup because we always start with an empty environment.</p>
+</li>
+<li><p>轻松更新现有的应用和环境。当已经存在一个环境时使用老旧的方式设置环境（比如安装脚本）会陷入麻烦。考虑到脚本中的更新路径可能是一项非常复杂的工作（比如检查文件是否存在以及清理无用文件）。使用Docker的话我们不必考虑现有环境（数据库除外），我们只需要停止当前容器，然后开启一个新的即可，这就简化了设置因为我们总是从一个干净的环境开始配置的。</p>
+</li>
+</ul>
+<h3 id="Infrastructure-as-Code-代码设施即代码"><a href="#Infrastructure-as-Code-代码设施即代码" class="headerlink" title="Infrastructure as Code 代码设施即代码"></a>Infrastructure as Code 代码设施即代码</h3><p>When using Docker (and other tools like <a href="https://www.chef.io/chef/" target="_blank" rel="noopener">Chef</a> or <a href="https://puppetlabs.com/" target="_blank" rel="noopener">Puppet</a>) to set up our environment, we benefit from the “Infrastructure-as-Code” approach. The infrastructure is not created manually any longer but is a result of an automated process. We describe our infrastructure explicitly. In case of Docker, the Dockerfile is our documentation describing our environment. This leads to the following benefits:</p>
+<p>在使用Docker（和其他工具如 <a href="https://www.chef.io/chef/" target="_blank" rel="noopener">Chef</a> 或 <a href="https://puppetlabs.com/" target="_blank" rel="noopener">Puppet</a>）来配置环境时，我们可以从”Infrastructure-as-Code”这个宗旨中受益。基础设施不再是手动创建的了，而是由自动化程序创建，我们明确地描述基础设施，在Docker看来，Dockerfile就是描述环境的文档，这会带来以下好处：</p>
+<ul>
+<li><p>We can put our Dockerfile under version control and track changes made to the environment. This way, we always know what application release belongs to which version of the environment.</p>
+</li>
+<li><p>我们可以把Dockerfile放到版本管理中，来追踪环境的变化。这种方式下，我们可以知道应用具体版本归输入具体什么环境。</p>
+</li>
+<li><p>We get a reliable documentation of our infrastructure. We always know what our applications need to run and what is currently installed in the environment.</p>
+</li>
+<li><p>我们获得了可靠的基础设施文档。通常我们会知道应用程序运行需要些什么，通过文档可以知道现在环境中已经安装了什么。</p>
+</li>
+<li><p>Moreover, the documentation is always up to date, because we need to change it in order to change the environment.</p>
+</li>
+<li><p>此外，文档也是最新的，因为我们需要通过更改Dockerfile来改变环境。</p>
+</li>
+<li><p>Therefore, setting up a new environment is easy, because we know what we need to install.</p>
+</li>
+<li><p>因此，配置一个环境是相当容易的，因为我们明确知道自己要安装什么。</p>
+</li>
+</ul>
+<h2 id="Comparing-to-other-Automation-Tools-与其他自动化工具的比较"><a href="#Comparing-to-other-Automation-Tools-与其他自动化工具的比较" class="headerlink" title="Comparing to other Automation Tools 与其他自动化工具的比较"></a>Comparing to other Automation Tools 与其他自动化工具的比较</h2><p>With tools like Chef or Puppet you can also achieve a lot of the advantages of Docker (like reproducible environments, infrastructure documentation and easy setup of a new node). However, when we use virtualization approaches (like Docker) we gain the following advantages:</p>
+<p>使用像Chef或者Puppet的工具，你同样也可以得到Docker所带来的多数优势（比如可重复的环境，基础设施文档以及轻松设置一个节点）。但是当我们使用虚拟化方法时（例如Docker）会有如下好处：</p>
+<ul>
+<li><p>When we want to implement <a href="https://blog.philipphauer.de/tutorial-continuous-delivery-with-docker-jenkins/" target="_blank" rel="noopener">Continuous Delivery</a>, we need to set up multiple instances of our environment for each stage of the delivery pipeline (commit stage, acceptance test, capacity tests, pre-production and production). Using physical machines for this purpose is not practicable.</p>
+</li>
+<li><p>当我们想要持续交付时，我们需要为交付的各个阶段创建大量的环境实例（提交阶段，验收阶段，容量测试，预生产和生产环境），使用物理机器来达到这个目的时不划算的。</p>
+</li>
+<li><p>The installation of the application and the necessary environment becomes easy, because we always start with an empty VM (in fact Docker doesn’t start a real VM, see below). The old VM can be removed completely and the new one is set up.</p>
+</li>
+<li><p>安装应用和必要的基础设施变得相当简单，因为我们总是从一个空的VM开始配置的（实际上Docker并非启动了一个实际的VM，往下看）。老的VM可以完全删除掉，新的VM配置以下就能使用。</p>
+</li>
+</ul>
+<h3 id="Lightweight-Virtualization-轻量级的虚拟化"><a href="#Lightweight-Virtualization-轻量级的虚拟化" class="headerlink" title="Lightweight Virtualization 轻量级的虚拟化"></a>Lightweight Virtualization 轻量级的虚拟化</h3><p>For this reasons, Chef or Puppet are often used in conjunction with virtualization: a virtual machine is started and Chef or Puppet is used to set up the environment within the VM. When using Docker instead of a real VM we have the following benefits:</p>
+<p>处于这个原因，Chef和Puppet经常跟虚拟化结合在一起使用：启动一个虚拟机然后Chef和Puppet在这个虚拟机内配置环境。使用Docker时没有使用一个真实的虚拟机带来的好处如下：</p>
+<ul>
+<li><p>Lightweight virtualization. Starting a Docker container is much faster than starting a VM, because no guest operating system has to be booted. This reduces the overhead. The several containers share the kernel of the host operating system, but have their own file system, users, network and processes. From the perspective of the host operating system we just start another process, when we run a Docker container. This significantly speeds up the startup of a container while still providing a good isolation of the containers.</p>
+</li>
+<li><p>轻量虚拟化。启动一个Docker容器远比启动一个虚拟机快得多，因为不需要启动一个操作系统。这减少了开销。几个容器共享主机操作系统的内核，但是有自己的文件系统、用户、网络和进程。从主机操作系统角度来看，当我们运行Docker容器时，我们就是在运行另一个进程。这显著加速了容器的启动，同时仍然为各个容器提供了良好的隔离。</p>
+</li>
+</ul>
+<h2 id="Disadvantages-and-Challenges-缺点和挑战"><a href="#Disadvantages-and-Challenges-缺点和挑战" class="headerlink" title="Disadvantages and Challenges 缺点和挑战"></a>Disadvantages and Challenges 缺点和挑战</h2><p>After praising Docker (too much?), let’s consider the drawbacks and challenges when using Docker:</p>
+<p>赞扬了Docker之后（太多了吗），我们看一下Docker的不足和挑战：</p>
+<ul>
+<li><p>Increased complexity due to an additional layer. This affects not only the deployment but also the development and build.</p>
+</li>
+<li><p>由于附加层增加了复杂性。这不仅影响部署而且影响开发和构建。</p>
+</li>
+<li><p>In addition, managing a huge amount of containers is challenging – especially when it comes to clustering containers. Tools like <a href="http://kubernetes.io/" target="_blank" rel="noopener">Google Kubernetes</a> and <a href="http://mesos.apache.org/" target="_blank" rel="noopener">Apache Mesos</a> can help here.</p>
+</li>
+<li><p>此外，管理大量的容器非常具有挑战性 - 特别是在集群容器方面。像<a href="http://kubernetes.io/" target="_blank" rel="noopener">Google Kubernetes</a>和<a href="http://mesos.apache.org/" target="_blank" rel="noopener">Apache Mesos</a>可以此时帮助我们进行管理。</p>
+</li>
+<li><p>The containers share the same kernel and are therefore less isolated than real VMs. A bug in the kernel affects every container.</p>
+</li>
+<li><p>容器之间共享相同的内核，因此跟真正的VM相比独立性差点。内核的要给Bug会影响到所有的容器。</p>
+</li>
+<li><p>Docker bases on Linux Containers (LXC), which is a Linux technology. Therefore, we can’t run Docker on other systems and our container is always a Linux system. But <a href="http://boot2docker.io/" target="_blank" rel="noopener">Boot2Docker</a> enables the usage of Docker on Windows and Mac OS X by using VirtualBox. The Docker client runs on the host OS and communicates with the Docker daemon inside the VirtualBox. Unfortunately, this is less comfortable and makes daily use clumsy and more complicated than running Docker natively.</p>
+</li>
+<li><p>Dcoker基于Linux Containers（LXC），这是一种linux技术。因此我们无法在其他操作系统上运行docker而且我们的容器都是Linux系统。但是<a href="http://boot2docker.io/" target="_blank" rel="noopener">Boot2Docker</a>可以通过VirtualBox在Windows和Mac OS X上使用Docker。Docker客户端在主机操作系统上运行，并于VirtualBox内的Docker守护进程通信。不幸的是，这使用起来不太舒服，使得日常开发变得笨拙，比本地运行Docker更加复杂。</p>
+</li>
+<li><p>Introducing Docker can be a demanding and time-consuming task. We have to evaluate if it is worth the effort and the increased complexity. In a past project of mine, the management rejected Docker with the argument, that 3 nodes (production, pre-production and experimental) are not enough to justify the effort… However, when you have a cluster of nodes (when scaling horizontally) or use Continuous Delivery you need an approach to reproduce environments and Docker is brilliant in this. Moreover, <a href="https://blog.philipphauer.de/tutorial-continuous-delivery-with-docker-jenkins/#Continuous_Delivery" target="_blank" rel="noopener">Continuous Delivery reduces the time-to-market</a> (new features can be brought to production faster because the deployment and environment setup is automated), which can be used to convince the management.</p>
+</li>
+<li><p>引入Docker可能是一项艰巨而好事的任务。我们必须评估是否值得付出努力，增加复杂性。在过去的一个项目中，管理层拒绝了Docker的论点，即3个节点（生产、预生产和实验）不足以证明这一努力的合理性…但是当你拥有一组节点（水平扩展时）或使用持续交付模式时，你需要一种方法来重现环境，而Docker在这方面非常出色。此外，<a href="https://blog.philipphauer.de/tutorial-continuous-delivery-with-docker-jenkins/#Continuous_Delivery" target="_blank" rel="noopener">持续交付可缩短产品上市时间</a>（新功能可以更快地投入生产，因为部署和环境设置是自动化的），可用于说服管理层。</p>
+</li>
+<li><p>I also made the experience that there are also reservations about Docker in strictly regulated domains (like the banking sector):</p>
+</li>
+<li><p>我还获得了在严格监管的域名（如银行业）中对Docker也有所保留的经验：</p>
+<ul>
+<li><p>To run a container you need root rights. This can be a problem for some companies, in which the colleagues that are supposed to run and update the application on the production server must not have root rights.</p>
+</li>
+<li><p>要运行容器你需要root权限，对于某些公司而言，这可能是一个问题，在这些公司中，在生产服务器上运行和更新应用程序的同事不能拥有root权限。</p>
+</li>
+<li><p>It is unclear if the usage of Docker agrees with certain security standards which have to be fulfilled (like <a href="https://www.pcisecuritystandards.org/" target="_blank" rel="noopener">PCI</a>).</p>
+</li>
+<li><p>目前还不清楚Docker的使用是否符合必须满足的某些安全标准（如PCI）</p>
+</li>
+<li><p>In some companies, there is the questionable rule, that only software from official/trusted sources can be installed on the machines. For instance, Docker is not included in Red Hat Enterprise Linux 6 and therefore needs to be installed from docker.com, which is an “untrusted source”.</p>
+</li>
+<li><p>在一些公司中，存在一个值得怀疑的规则，即只有来自官方/可信来源的软件才能安装在机器上。例如，Docker不包含在Red Hat Enterprise Linux 6中，因此需要从docker.com安装，这是一个“不受信任的来源”。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Related-Posts-相关文章"><a href="#Related-Posts-相关文章" class="headerlink" title="Related Posts 相关文章"></a>Related Posts 相关文章</h2><p><a href="https://blog.philipphauer.de/building-dropwizard-microservice-docker-maven/" target="_blank" rel="noopener">Building a Docker image with Maven</a></p>
+<p><a href="https://blog.philipphauer.de/building-dropwizard-microservice-docker-maven/" target="_blank" rel="noopener">使用Maven构建Docker镜像</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/26/MapReduceSourcedoce-ReduceTask/" rel="next" title="MapReduce源码分析3-ReduceTask">
+                <i class="fa fa-chevron-left"></i> MapReduce源码分析3-ReduceTask
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/30/sqoop-useage-and-installation/" rel="prev" title="Sqoop的安装配置及原理">
+                Sqoop的安装配置及原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Discussing-Docker-Pros-and-Cons-讨论一下Docker的优缺点"><span class="nav-number">1.</span> <span class="nav-text">Discussing Docker. Pros and Cons. 讨论一下Docker的优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Advantages-优势"><span class="nav-number">2.</span> <span class="nav-text">Advantages 优势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Advantages-for-the-Development-Team-对于开发团队的好处"><span class="nav-number">2.1.</span> <span class="nav-text">Advantages for the Development Team 对于开发团队的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Advantages-for-the-Operations-Team-对运维团队好处"><span class="nav-number">2.2.</span> <span class="nav-text">Advantages for the Operations Team 对运维团队好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Infrastructure-as-Code-代码设施即代码"><span class="nav-number">2.3.</span> <span class="nav-text">Infrastructure as Code 代码设施即代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Comparing-to-other-Automation-Tools-与其他自动化工具的比较"><span class="nav-number">3.</span> <span class="nav-text">Comparing to other Automation Tools 与其他自动化工具的比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lightweight-Virtualization-轻量级的虚拟化"><span class="nav-number">3.1.</span> <span class="nav-text">Lightweight Virtualization 轻量级的虚拟化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Disadvantages-and-Challenges-缺点和挑战"><span class="nav-number">4.</span> <span class="nav-text">Disadvantages and Challenges 缺点和挑战</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Related-Posts-相关文章"><span class="nav-number">5.</span> <span class="nav-text">Related Posts 相关文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

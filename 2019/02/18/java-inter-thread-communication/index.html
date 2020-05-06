@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="翻译,java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="信息来源：阮一峰每周分享   文章来源：How To Implement Inter-thread Communication In Java   Though normally each child thread just need to complete its own task, sometimes we may want multiple threads to work together">
+<meta name="keywords" content="翻译,java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java语言如何实现线程间通信">
+<meta property="og:url" content="http://yoursite.com/2019/02/18/java-inter-thread-communication/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="信息来源：阮一峰每周分享   文章来源：How To Implement Inter-thread Communication In Java   Though normally each child thread just need to complete its own task, sometimes we may want multiple threads to work together">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java语言如何实现线程间通信">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享   文章来源：How To Implement Inter-thread Communication In Java   Though normally each child thread just need to complete its own task, sometimes we may want multiple threads to work together">
+<meta name="twitter:image" content="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/18/java-inter-thread-communication/">
+
+
+
+
+
+  <title>Java语言如何实现线程间通信 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/18/java-inter-thread-communication/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java语言如何实现线程间通信</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-18T14:12:06+08:00">
+                2019-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/18/java-inter-thread-communication/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/02/18/java-inter-thread-communication/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  21
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png" rel="gallery_ck9v4418i004u7yttdszd5arh" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <blockquote>
+<p>信息来源：<a href="http://www.ruanyifeng.com/blog/2019/02/weekly-issue-43.html" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+</blockquote>
+<blockquote>
+<p>文章来源：<a href="https://www.tutorialdocs.com/article/java-inter-thread-communication.html" target="_blank" rel="noopener">How To Implement Inter-thread Communication In Java</a></p>
+</blockquote>
+<hr>
+<p>Though normally each child thread just need to complete its own task, sometimes we may want multiple threads to work together to fulfil a task, which involves the inter-thread communication.</p>
+<p>尽管通常情况下子线程只需要完成自己的本职工作就可以了，但是有时我们可能希望多个线程一起工作来完成一个任务，这里面就牵扯到了线程间通信。</p>
+<p>The methods and classes covered in this article are: <code>thread.join()</code>, <code>object.wait()</code>, <code>object.notify()</code>, <code>CountdownLatch</code>, <code>CyclicBarrier</code>, <code>FutureTask</code>, <code>Callable</code>, etc.</p>
+<p>这篇文章中涉及到的方法和类有：<code>thread.join()</code>, <code>object.wait()</code>, <code>object.notify()</code>, <code>CountdownLatch</code>, <code>CyclicBarrier</code>, <code>FutureTask</code>, <code>Callable</code>,等</p>
+<p><a href="https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java" target="_blank" rel="noopener">Here</a> is the code covered in this article</p>
+<p>这是本片文章<a href="https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java" target="_blank" rel="noopener">代码连接</a>。</p>
+<p>I’ll use several examples to explain how to implement inter-thread communication in Java.</p>
+<p>我将使用一些例子来解释Java中的线程间通信是怎么实现的。</p>
+<blockquote>
+<ul>
+<li>How to make two threads execute in sequence?</li>
+<li>How to make two threads intersect orderly in a specified manner?</li>
+<li>There are four threads: A, B, C, and D (D won’t be executed until A, B and C all have finished executing, and A, B, and C are to be executed synchronously.).</li>
+<li>Three athletes prepare themselves apart, and then they start to run at the same time after each of them is ready.</li>
+<li>After the child thread completes a task, it returns the result to the main thread.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>怎样让两个线程按顺序执行？</li>
+<li>怎样让两个线程以指定的方式有序交替执行？</li>
+<li>有四个线程：A, B, C, D（D线程在A，B，C线程之前完之前不会执行，并且A、B、C线程会被同步执行）。</li>
+<li>三名运动员分开站立，然后在所有人都准备好后同时开始跑。</li>
+<li>子线程完成一个任务后，返回执行结果给主线程。</li>
+</ul>
+</blockquote>
+<h2 id="How-To-Make-Two-Threads-Execute-In-Sequence-怎样让两个线程顺序执行？"><a href="#How-To-Make-Two-Threads-Execute-In-Sequence-怎样让两个线程顺序执行？" class="headerlink" title="How To Make Two Threads Execute In Sequence? 怎样让两个线程顺序执行？"></a>How To Make Two Threads Execute In Sequence? 怎样让两个线程顺序执行？</h2><p>Suppose there are two threads: thread A and thread B. Both of the two threads can print three numbers (1-3) in sequence. Let’s take a look at the code:</p>
+<p>假设有两个线程：thread A 和 therad B 。两个线程都可以顺序打印三个1-3的数据。我们看一下代码是什么样的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">demo1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Thread A = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            printNumber(<span class="string">"A"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    Thread B = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            printNumber(<span class="string">"B"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    A.start();</span><br><span class="line">    B.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The implementation for <code>printNumber(String)</code> is as follows, which is used to print the three numbers of 1, 2 and 3 in sequence:</p>
+<p><code>printNumber(String)</code>的实现如下所示，该函数用于顺序打印1,2,3这个三个数字：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printNumber</span><span class="params">(String threadName)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i++ &lt; <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">100</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(threadName + <span class="string">"print:"</span> + i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>And the result we get is:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">B print: <span class="number">1</span></span><br><span class="line">A print: <span class="number">1</span></span><br><span class="line">B print: <span class="number">2</span></span><br><span class="line">A print: <span class="number">2</span></span><br><span class="line">B print: <span class="number">3</span></span><br><span class="line">A print: <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>You can see that A and B print numbers at the same time.</p>
+<p>你可以看到 A 和 B 会同时打印数字。</p>
+<p>So, what if we want B to start printing after A has printed over? We can use the <code>thread.join()</code> method, and the code is as follows:</p>
+<p>那么，如果我们想要 B 在 A 打印结束后再开始打印的话呢？我们可以使用<code>thread.join()</code>这个方法，代码实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">demo2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Thread A = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            printNumber(<span class="string">"A"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    Thread B = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"B starts waiting for A"</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                A.join();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            printNumber(<span class="string">"B"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    B.start();</span><br><span class="line">    A.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Now the result obtained is:</p>
+<p>现在得到的结果是：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">B starts waiting <span class="built_in">for</span> A</span><br><span class="line">A <span class="built_in">print</span>: <span class="number">1</span></span><br><span class="line">A <span class="built_in">print</span>: <span class="number">2</span></span><br><span class="line">A <span class="built_in">print</span>: <span class="number">3</span></span><br><span class="line"> </span><br><span class="line">B <span class="built_in">print</span>: <span class="number">1</span></span><br><span class="line">B <span class="built_in">print</span>: <span class="number">2</span></span><br><span class="line">B <span class="built_in">print</span>: <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>So we can see that the <code>A.join()</code> method will make B wait until A finishes printing.</p>
+<p>由此我们知道 <code>A.join()</code> 方法会使 B 等待，直到 A 打印完毕。</p>
+<h2 id="How-To-Make-Two-Threads-Intersect-Orderly-In-a-Specified-Manner-怎样让两个线程以指定的方式有序交替执行？"><a href="#How-To-Make-Two-Threads-Intersect-Orderly-In-a-Specified-Manner-怎样让两个线程以指定的方式有序交替执行？" class="headerlink" title="How To Make Two Threads Intersect Orderly In a Specified Manner? 怎样让两个线程以指定的方式有序交替执行？"></a>How To Make Two Threads Intersect Orderly In a Specified Manner? 怎样让两个线程以指定的方式有序交替执行？</h2><p>So what if now we want B to start printing 1, 2, 3 just after A has printed 1, and then A continues printing 2, 3? Obviously, we need more fine-grained locks to take the control of the order of execution.</p>
+<p>那么要是我们想要 B 在 A 刚完成打印1的时候开始打印1,2,3，然后 A 再继续打印2,3的话该怎么办呢？显然，我们需要更细粒度的锁来控制执行的顺序。</p>
+<p>Here, we can take the advantage of the <code>object.wait()</code> and <code>object.notify()</code> methods. The code is as below:</p>
+<p>这里，我们可以利用 <code>object.wait()</code> 和 <code>object.notify()</code> 这两个方法。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * A 1, B 1, B 2, B 3, A 2, A 3</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">demo3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Object lock = <span class="keyword">new</span> Object();</span><br><span class="line">    Thread A = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                System.out.println(<span class="string">"A 1"</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    lock.wait();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">"A 2"</span>);</span><br><span class="line">                System.out.println(<span class="string">"A 3"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    Thread B = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                System.out.println(<span class="string">"B 1"</span>);</span><br><span class="line">                System.out.println(<span class="string">"B 2"</span>);</span><br><span class="line">                System.out.println(<span class="string">"B 3"</span>);</span><br><span class="line">                lock.notify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    A.start();</span><br><span class="line">    B.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The results are as follows:</p>
+<p>结果如下：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">A <span class="number">1</span></span><br><span class="line">A waiting…</span><br><span class="line"> </span><br><span class="line">B <span class="number">1</span></span><br><span class="line">B <span class="number">2</span></span><br><span class="line">B <span class="number">3</span></span><br><span class="line">A <span class="number">2</span></span><br><span class="line">A <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>That’s what we want.</p>
+<p>这正是我们想要的</p>
+<blockquote>
+<p><strong>What happens? 发生了什么？</strong></p>
+</blockquote>
+<blockquote>
+<ol>
+<li>First we create an object lock shared by A and B: <code>lock = new Object()</code>;</li>
+<li>When A gets the lock, it prints 1 first, and then it calls the <code>lock.wait()</code> method which will make it go into the wait state, and hands over control of the lock then;</li>
+<li>B won’t be executed until A calls the <code>lock.wait()</code> method to release control and B gets the lock;</li>
+<li>B prints 1, 2, 3 after getting the lock, and then calls the <code>lock.notify()</code> method to wake up A which is waiting;</li>
+<li>A continues printing the remaining 2, 3 after it wakes up.</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol>
+<li>首先我们创建了一个被 A 和 B 共享的对象锁（object lock）：<code>lock = new Object()</code>；</li>
+<li>当 A 获得锁时，会先打印出1，然后会调用到 <code>lock.wait()</code> 方法，该方法使 A 线程进入等待状态，然后交出锁的控制权；</li>
+<li>B 在 A 调用到 <code>lock.wait()</code> 方法交出锁的控制权之前不会执行，在 A 交出锁的控制权之后 B 会获得这个锁；</li>
+<li>B 获取到锁后打印1,2,3，然后调用到 <code>lock.notify()</code> 方法来唤醒处于等待状态的 A；</li>
+<li>A 被唤醒后继续打印剩余的2,3两个数字。</li>
+</ol>
+</blockquote>
+<p>I add the log to the above code to make it easier to understand.</p>
+<p>我给上面的代码增加了日志信息以帮助容易理解一些。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">demo3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Object lock = <span class="keyword">new</span> Object();</span><br><span class="line">    Thread A = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"INFO: A is waiting for the lock"</span>);</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                System.out.println(<span class="string">"INFO: A got the lock"</span>);</span><br><span class="line">                System.out.println(<span class="string">"A 1"</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">"INFO: A is ready to enter the wait state, giving up control of the lock"</span>);</span><br><span class="line">                    lock.wait();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">"INFO: B wakes up A, and A regains the lock"</span>);</span><br><span class="line">                System.out.println(<span class="string">"A 2"</span>);</span><br><span class="line">                System.out.println(<span class="string">"A 3"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    Thread B = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"INFO: B is waiting for the lock"</span>);</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                System.out.println(<span class="string">"INFO: B got the lock"</span>);</span><br><span class="line">                System.out.println(<span class="string">"B 1"</span>);</span><br><span class="line">                System.out.println(<span class="string">"B 2"</span>);</span><br><span class="line">                System.out.println(<span class="string">"B 3"</span>);</span><br><span class="line">                System.out.println(<span class="string">"INFO: B ends printing, and calling the notify method"</span>);</span><br><span class="line">                lock.notify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    A.start();</span><br><span class="line">    B.start();</span><br></pre></td></tr></table></figure>
+<p>The result is as follows:</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">INFO: A <span class="keyword">is</span> waiting <span class="keyword">for</span> the lock</span><br><span class="line">INFO: A got the lock</span><br><span class="line">A <span class="number">1</span></span><br><span class="line">INFO: A <span class="keyword">is</span> ready <span class="keyword">to</span> enter the wait state, giving up control <span class="keyword">of</span> the lock</span><br><span class="line">INFO: B <span class="keyword">is</span> waiting <span class="keyword">for</span> the lock</span><br><span class="line">INFO: B got the lock</span><br><span class="line">B <span class="number">1</span></span><br><span class="line">B <span class="number">2</span></span><br><span class="line">B <span class="number">3</span></span><br><span class="line">INFO: B ends printing, <span class="keyword">and</span> calling the <span class="keyword">notify</span> <span class="function"><span class="keyword">method</span></span></span><br><span class="line"><span class="function"><span class="title">INFO</span>:</span> B wakes up A, <span class="keyword">and</span> A regains the lock</span><br><span class="line">A <span class="number">2</span></span><br><span class="line">A <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h2 id="D-Is-Executed-After-A-B-and-C-All-Have-Finished-Executing-Synchronously-D在A-B-C-都同步执行完后运行"><a href="#D-Is-Executed-After-A-B-and-C-All-Have-Finished-Executing-Synchronously-D在A-B-C-都同步执行完后运行" class="headerlink" title="D Is Executed After A, B and C All Have Finished Executing Synchronously D在A B C 都同步执行完后运行"></a>D Is Executed After A, B and C All Have Finished Executing Synchronously D在A B C 都同步执行完后运行</h2><p>The method <code>thread.join()</code> introduced earlier allows one thread to continue executing after waiting for another thread to finish running. But if we join A, B, and C orderly into the D thread, it will make A, B, and C execute in turn, while we want them three to run synchronously.</p>
+<p>前面介绍的 <code>thread.join()</code> 方法允许一个线程在等待另一个线程执行完之后再继续执行。但是如果我们依次将 A B C join 到线程 D，这就会试 A B C 三个线程轮流执行，但是我们想要的是让他们同步执行。</p>
+<p>The goal we want to achieve is: The three threads A, B, and C can start to run at the same time, and each will notify D after finishing running independently; D won’t start to run until A, B, and C all finish running. So we use <code>CountdownLatch</code> to implement this type of communication. Its basic usage is:</p>
+<p>我们想要达到的目的是： A B C 这三个线程可以同时开始执行，而且每个线程执行完后都会唤醒 D； D 只有在 A B C 都执行完毕后才会开始执行。因此我们可以使用 <code>CountdownLatch</code> 来实现这种类型的通信，它的基本用法是：</p>
+<ol>
+<li><p>Create a counter, and set an initial value, <code>CountdownLatch countDownLatch = new CountDownLatch(3)</code>;</p>
+<p> 创建一个计数器，赋上初值，<code>CountdownLatch countDownLatch = new CountDownLatch(3)</code>;</p>
+</li>
+<li><p>Call the <code>countDownLatch.await()</code> method in the waiting thread and go into the wait state until the count value becomes 0;</p>
+<p> 在等待线程中调用 <code>countDownLatch.await()</code> 方法，在值变为0后进入等待状态；</p>
+</li>
+<li><p>Call the <code>countDownLatch.countDown()</code> method in other threads, and the method will reduce the count value by one;</p>
+<p> 在其他线程中调用 <code>countDownLatch.countDown()</code> 方法，这个方法会将 <code>countDownLatch</code> 的值减一。</p>
+</li>
+<li><p>When the <code>countDown()</code> method in other threads turns the count value to 0, the <code>countDownLatch.await()</code> method in the waiting thread will exit immediately and continue to execute the following code.</p>
+<p> 当其他线程中的 <code>countDown()</code> 方法将 <code>countDownLatch</code> 的值最终减为了0，等待线程中的 <code>countDownLatch.await()</code> 方法就会立即退出，然后该线程继续执行接下来的代码。</p>
+</li>
+</ol>
+<p>The implementation code is as follows:</p>
+<p>代码实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runDAfterABC</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> worker = <span class="number">3</span>;</span><br><span class="line">    CountDownLatch countDownLatch = <span class="keyword">new</span> CountDownLatch(worker);</span><br><span class="line">    <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"D is waiting for other three threads"</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                countDownLatch.await();</span><br><span class="line">                System.out.println(<span class="string">"All done, D starts working"</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).start();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> threadName=<span class="string">'A'</span>; threadName &lt;= <span class="string">'C'</span>; threadName++) &#123;</span><br><span class="line">        <span class="keyword">final</span> String tN = String.valueOf(threadName);</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(tN + <span class="string">"is working"</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">100</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(tN + <span class="string">"finished"</span>);</span><br><span class="line">                countDownLatch.countDown();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The result is as follows:</p>
+<p>结果如下：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">D <span class="keyword">is</span> waiting <span class="keyword">for</span> other three threads</span><br><span class="line">A <span class="keyword">is</span> working</span><br><span class="line">B <span class="keyword">is</span> working</span><br><span class="line">C <span class="keyword">is</span> working</span><br><span class="line"> </span><br><span class="line">A finished</span><br><span class="line">C finished</span><br><span class="line">B finished</span><br><span class="line"><span class="keyword">All</span> done, D starts working</span><br></pre></td></tr></table></figure>
+<p>In fact, <code>CountDownLatch</code> itself is a countdown counter, and we set the initial count value to 3. When D runs, it first call the <code>countDownLatch.await()</code> method to check whether the counter value is 0, and it will stay in wait state if the value is not 0. A, B, and C each will use the <code>countDownLatch.countDown()</code> method to decrement the countdown counter by 1 after they finish running separately. And when all of them three finish running, the counter will be reduced to 0; then, the <code>await()</code> method of D will be triggered to end A, B, and C, and D will start to go on executing.</p>
+<p>事实上， <code>CountDownLatch</code> 它自身是一个倒数计数器，而且我们将它的初始值设置为了3。当线程 D 开始执行时，会首先调用到 <code>countDownLatch.await()</code> 方法去检查计数器的值是否为0，如果计数器值不是0当前线程就进入等待状态。 A B C 中的每个线程分别在执行完后使用 <code>countDownLatch.countDown()</code> 方法来将倒数计数器的值减1。当它们三个都执行完毕时，计数器的值就被减为0；然后线程 D 的 <code>await()</code> 方法将被触发来结束 A B C，D会继续执行下面的代码。</p>
+<p>Therefore, <code>CountDownLatch</code> is suitable for the situation where one thread needs to wait for multiple threads.</p>
+<p>因此， <code>CountDownLatch</code> 非常适合一个线程需要等待多个线程的场景。</p>
+<h2 id="3-Runners-Preparing-To-Run-三个跑步者准备起跑"><a href="#3-Runners-Preparing-To-Run-三个跑步者准备起跑" class="headerlink" title="3 Runners Preparing To Run 三个跑步者准备起跑"></a>3 Runners Preparing To Run 三个跑步者准备起跑</h2><p>Three runners prepare themselves apart, and then they start to run at the same time after each of them is ready.</p>
+<p>三个跑步者分开站立，都准备好后同时开始起跑。</p>
+<p>This time, each of the three threads A, B, and C need to prepare separately, and then they start to run simultaneously after all of them three are ready. How should we achieve that?</p>
+<p>这次， A B C 这三个线程每一个都需要独立准备，然后它们都准备好后同时开始执行。我们该如何实现这个目标呢？</p>
+<p>The <code>CountDownLatch</code> above can be used to count down, but when the count is completed, only one of the threads’ <code>await()</code> method will get a response, so multiple threads cannot be triggered at the same time.</p>
+<p>上面提到的 <code>CountDownLatch</code> 可用于倒计时，但是当计数器结束时，只有一个线程的 <code>await()</code> 方法会得到响应，所以这种情况下多线程不能同时被触发执行。</p>
+<p>In order to achieve the effect of threads’ waiting for each other, we can use the <code>CyclicBarrier</code> data structure, and its basic usage is:</p>
+<p>为了达到线程相互等待的结果，我们可以使用 <code>CyclicBarrier</code> 这个数据结构，它的基本用法是：</p>
+<ol>
+<li><p>First create a public object <code>CyclicBarrier</code>, and set the number of threads waiting at the same time, <code>CyclicBarrier cyclicBarrier = new CyclicBarrier(3)</code>;</p>
+<p> 首先创建一个公有对象 <code>CyclicBarrier</code>， 同时设置等待线程的数量： <code>CyclicBarrier cyclicBarrier = new CyclicBarrier(3)</code>；</p>
+</li>
+<li><p>These threads start to prepare simultaneously. After they are ready, they need to wait for others to finish preparing, so call the <code>cyclicBarrier.await()</code> method to wait for others;</p>
+<p> 这些线程同时开始准备，每个线程准备好后，它们需要等待其他人完成准备，通过调用 <code>cyclicBarrier.await()</code> 方法来等待其他线程；</p>
+</li>
+<li><p>When the specified threads that need to wait at the same time all call the <code>cyclicBarrier.await()</code> method, which means that these threads are ready, then these threads will start to continue executing simultaneously.</p>
+<p> 当需要等待的指定线程都调用了 <code>cyclicBarrier.await()</code> 方法时，意味着这些线程都应完成了准备工作，然后这些线程就可以同时开始执行了。</p>
+</li>
+</ol>
+<p>The implementation code is as follows. Imagine that there are three runners who need to start to run simultaneously, so they need to wait for others until all of them are ready.</p>
+<p>代码实现如下。想象一下有三个运动员需要同时起步，因此它们需要等待其他人都准备好后再起步。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runABCWhenAllReady</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> runner = <span class="number">3</span>;</span><br><span class="line">    CyclicBarrier cyclicBarrier = <span class="keyword">new</span> CyclicBarrier(runner);</span><br><span class="line">    <span class="keyword">final</span> Random random = <span class="keyword">new</span> Random();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> runnerName=<span class="string">'A'</span>; runnerName &lt;= <span class="string">'C'</span>; runnerName++) &#123;</span><br><span class="line">        <span class="keyword">final</span> String rN = String.valueOf(runnerName);</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">long</span> prepareTime = random.nextInt(<span class="number">10000</span>) + <span class="number">100</span>;</span><br><span class="line">                System.out.println(rN + <span class="string">"is preparing for time:"</span> + prepareTime);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(prepareTime);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(rN + <span class="string">"is prepared, waiting for others"</span>);</span><br><span class="line">                    cyclicBarrier.await(); <span class="comment">// The current runner is ready, waiting for others to be ready</span></span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (BrokenBarrierException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(rN + <span class="string">"starts running"</span>); <span class="comment">// All the runners are ready to start running together</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The result is as follows:</p>
+<p>运行结果如下：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">A <span class="keyword">is</span> preparing <span class="keyword">for</span> <span class="built_in">time</span>: <span class="number">4131</span></span><br><span class="line">B <span class="keyword">is</span> preparing <span class="keyword">for</span> <span class="built_in">time</span>: <span class="number">6349</span></span><br><span class="line">C <span class="keyword">is</span> preparing <span class="keyword">for</span> <span class="built_in">time</span>: <span class="number">8206</span></span><br><span class="line"> </span><br><span class="line">A <span class="keyword">is</span> prepared, waiting <span class="keyword">for</span> others</span><br><span class="line"> </span><br><span class="line">B <span class="keyword">is</span> prepared, waiting <span class="keyword">for</span> others</span><br><span class="line"> </span><br><span class="line">C <span class="keyword">is</span> prepared, waiting <span class="keyword">for</span> others</span><br><span class="line"> </span><br><span class="line">C starts <span class="built_in">running</span></span><br><span class="line">A starts <span class="built_in">running</span></span><br><span class="line">B starts <span class="built_in">running</span></span><br></pre></td></tr></table></figure>
+<h2 id="Child-Thread-Returns-The-Result-To-The-Main-Thread-子进程返回结果给主进程"><a href="#Child-Thread-Returns-The-Result-To-The-Main-Thread-子进程返回结果给主进程" class="headerlink" title="Child Thread Returns The Result To The Main Thread 子进程返回结果给主进程"></a>Child Thread Returns The Result To The Main Thread 子进程返回结果给主进程</h2><p>In actual development, often we need to create child threads to do some time-consuming tasks, and then pass the execution results back to the main thread. So how to implement this in Java?</p>
+<p>在实际开发中，我们经常需要创建子线程来完成一些耗时的操作，然后将执行结果传递会主线程。那么在Java中怎么实现呢？</p>
+<p>So generally, when creating the thread, we’ll pass the Runnable object to Thread for execution. The definition for Runnable is as follows:</p>
+<p>一般情况下，在创建线程时，我们会将 Runnable 对象传递给 Thread 来执行。 Runnable 的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>You can see that <code>run()</code> method does not return any results after execution. Then what if you want to return the results? Here you can use another similar interface class <code>Callable</code>:</p>
+<p>可以看到 <code>run()</code> 方法在执行完毕后没有返回任何结果。那么要是你想返回执行结果的话该怎么做呢？你可以使用另一个叫做 <code>Callable</code> 的类似接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callable</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Computes a result, or throws an exception if unable to do so.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> computed result</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception if unable to compute a result</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">V <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>It can be seen that the biggest difference for <code>Callable</code> is that it returns the generics.</p>
+<p>可以看到 <code>Callable</code> 最大的不同之处是它能够返回泛型。</p>
+<p>So the next question is, how to pass the results of the child thread back? Java has a class, <code>FutureTask</code>, which can work with <code>Callable</code>, but note that the <code>get</code> method which is used to get the result will block the main thread.</p>
+<p>所以下一个问题是，怎样将子线程的结果传递回来？Java 有一个可以和 <code>Callable</code> 一起使用的类叫 <code>FutureTask</code>，但是注意用于获取结果的 <code>get</code> 方法会阻塞主线程。</p>
+<p>For example, we want the child thread to calculate the sum from 1 to 100 and return the result to the main thread.</p>
+<p>举个栗子，我们想要子线程计算1到100的和然后将结果返回给主线程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doTaskWithResultInWorker</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Callable&lt;Integer&gt; callable = <span class="keyword">new</span> Callable&lt;Integer&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Integer <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"Task starts"</span>);</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">            <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;=<span class="number">100</span>; i++) &#123;</span><br><span class="line">                result += i;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">"Task finished and return result"</span>);</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    FutureTask&lt;Integer&gt; futureTask = <span class="keyword">new</span> FutureTask&lt;&gt;(callable);</span><br><span class="line">    <span class="keyword">new</span> Thread(futureTask).start();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"Before futureTask.get()"</span>);</span><br><span class="line">        System.out.println(<span class="string">"Result:"</span> + futureTask.get());</span><br><span class="line">        System.out.println(<span class="string">"After futureTask.get()"</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The result is as follows:</p>
+<p>运行结果如下：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Before futureTask.<span class="built_in">get</span>()</span><br><span class="line"> </span><br><span class="line"><span class="built_in">Task</span> starts</span><br><span class="line"><span class="built_in">Task</span> finished <span class="keyword">and</span> <span class="built_in">return</span> result</span><br><span class="line"> </span><br><span class="line">Result: <span class="number">5050</span></span><br><span class="line">After futureTask.<span class="built_in">get</span>()</span><br></pre></td></tr></table></figure>
+<p>It can be seen that it blocks the main thread when the main thread calls the <code>futureTask.get()</code> method; then the <code>Callable</code> starts to execute internally and returns the result of the operation; and then the <code>futureTask.get()</code> gets the result and the main thread resumes running.</p>
+<p>可以看到主线程调用 <code>futureTask.get()</code> 时被阻塞了；然后 <code>Callable</code> 开始在内部执行并返回操作结果；然后 <code>futureTask.get()</code> 获得返回的结果，主线程继续执行。</p>
+<p>Here we can learn that the <code>FutureTask</code> and <code>Callable</code> can get the result of the child thread directly in the main thread, but they will block the main thread. Of course, if you don’t want to block the main thread, you can consider using <code>ExecutorService</code> to put the <code>FutureTask</code> into the thread pool to manage execution.</p>
+<p>这里我们可以了解到 <code>FutureTask</code> 和 <code>Callable</code> 可以直接在主线程中获得子线程的结果，但是它们会阻塞主线程。当然，如果你不想要阻塞主线程，你可以使用 <code>ExecutorService</code> 来将 <code>FutureTask</code> 放入线程池来管理执行。</p>
+<h2 id="Summary-总结"><a href="#Summary-总结" class="headerlink" title="Summary 总结"></a>Summary 总结</h2><p>Multithreading is a common feature for modern languages, and inter-thread communication, thread synchronization, and thread safety are very important topics.</p>
+<p>多线程是当今编程语言的常见功能，线程间通信、线程间同步以及线程安全也是很重要的主题。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/翻译/" rel="tag"># 翻译</a>
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/30/sqoop-useage-and-installation/" rel="next" title="Sqoop的安装配置及原理">
+                <i class="fa fa-chevron-left"></i> Sqoop的安装配置及原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/12/常用数据结构算法及其示例/" rel="prev" title="常用数据结构算法及其示例-基础数据结构">
+                常用数据结构算法及其示例-基础数据结构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#How-To-Make-Two-Threads-Execute-In-Sequence-怎样让两个线程顺序执行？"><span class="nav-number">1.</span> <span class="nav-text">How To Make Two Threads Execute In Sequence? 怎样让两个线程顺序执行？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-To-Make-Two-Threads-Intersect-Orderly-In-a-Specified-Manner-怎样让两个线程以指定的方式有序交替执行？"><span class="nav-number">2.</span> <span class="nav-text">How To Make Two Threads Intersect Orderly In a Specified Manner? 怎样让两个线程以指定的方式有序交替执行？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-Is-Executed-After-A-B-and-C-All-Have-Finished-Executing-Synchronously-D在A-B-C-都同步执行完后运行"><span class="nav-number">3.</span> <span class="nav-text">D Is Executed After A, B and C All Have Finished Executing Synchronously D在A B C 都同步执行完后运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Runners-Preparing-To-Run-三个跑步者准备起跑"><span class="nav-number">4.</span> <span class="nav-text">3 Runners Preparing To Run 三个跑步者准备起跑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Child-Thread-Returns-The-Result-To-The-Main-Thread-子进程返回结果给主进程"><span class="nav-number">5.</span> <span class="nav-text">Child Thread Returns The Result To The Main Thread 子进程返回结果给主进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary-总结"><span class="nav-number">6.</span> <span class="nav-text">Summary 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

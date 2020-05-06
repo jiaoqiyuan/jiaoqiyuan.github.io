@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="大数据,MapReduce,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="之前介绍了 MapReduce 的原理和 MapReduce 任务的提交与切片相关的源码，知道了MapReduce的原理，这里分析一下具体执行Map任务的MapTask的源码，看一下Map任务的具体源码实现。   这是 MapReduce 源码分析系列的第二篇文章，有关 MapReduce 相关的所有内容可以到这里查看。   在MapReduce 任务的提交与切片这篇文章中，从源码角度看了一遍">
+<meta name="keywords" content="大数据,MapReduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MapReduce源码分析2-MapTask">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/MapReduceSourceCode-MapTask/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="之前介绍了 MapReduce 的原理和 MapReduce 任务的提交与切片相关的源码，知道了MapReduce的原理，这里分析一下具体执行Map任务的MapTask的源码，看一下Map任务的具体源码实现。   这是 MapReduce 源码分析系列的第二篇文章，有关 MapReduce 相关的所有内容可以到这里查看。   在MapReduce 任务的提交与切片这篇文章中，从源码角度看了一遍">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MapReduce源码分析2-MapTask">
+<meta name="twitter:description" content="之前介绍了 MapReduce 的原理和 MapReduce 任务的提交与切片相关的源码，知道了MapReduce的原理，这里分析一下具体执行Map任务的MapTask的源码，看一下Map任务的具体源码实现。   这是 MapReduce 源码分析系列的第二篇文章，有关 MapReduce 相关的所有内容可以到这里查看。   在MapReduce 任务的提交与切片这篇文章中，从源码角度看了一遍">
+<meta name="twitter:image" content="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/20/MapReduceSourceCode-MapTask/">
+
+
+
+
+
+  <title>MapReduce源码分析2-MapTask | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/20/MapReduceSourceCode-MapTask/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MapReduce源码分析2-MapTask</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-20T11:02:13+08:00">
+                2019-01-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/20/MapReduceSourceCode-MapTask/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/20/MapReduceSourceCode-MapTask/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  20
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ck9v4418u00597ytt4pai5k73" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <blockquote>
+<p>之前介绍了 <a href="https://jiaoqiyuan.cn/2018/12/24/MapReduce%E7%9A%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">MapReduce 的原理</a>和 <a href="https://jiaoqiyuan.cn/2019/01/19/MapReduceSourceCode-JobAndSplite/" target="_blank" rel="noopener">MapReduce 任务的提交与切片</a>相关的源码，知道了MapReduce的原理，这里分析一下具体执行Map任务的MapTask的源码，看一下Map任务的具体源码实现。</p>
+</blockquote>
+<blockquote>
+<p>这是 MapReduce 源码分析系列的第二篇文章，有关 MapReduce 相关的所有内容可以到<a href="https://jiaoqiyuan.cn/tags/MapReduce/" target="_blank" rel="noopener">这里</a>查看。</p>
+</blockquote>
+<hr>
+<p>在<a href="https://jiaoqiyuan.cn/2019/01/19/MapReduceSourceCode-JobAndSplite/" target="_blank" rel="noopener">MapReduce 任务的提交与切片</a>这篇文章中，从源码角度看了一遍 MapReduce 任务从创建到提交，然后分片的整个流程，了解了分片机制的具体实现。有关资源调度的内容非常复杂，这里先不展开，回头有时间再好好研究一下，下面介绍一下节点 Container 中执行 Map 任务的 MapTask 的源码实现。</p>
+<a id="more"></a>
+<h2 id="MapTask-介绍"><a href="#MapTask-介绍" class="headerlink" title="MapTask 介绍"></a>MapTask 介绍</h2><p>MapTask 是具体执行 MapReduce 作业的地方，它会将输入的数据输出成Key-Value的形式存放到集群或者本地磁盘，然后由 ReduceTask 读取、聚合、输出到目标文件。</p>
+<p>在 MapTask 中 <code>map</code> 函数可以由用户重写，进而实现自己想要的业务功能；另外在 Map 阶段还会进行数据混洗排序(shuffle)；由于 Map 阶段输出结果是要保存到磁盘的，而磁盘进行IO读写是非常耗费资源的事情，大数据下进行频繁磁盘读写更加会降低效率，所以在 Map 阶段框架内会做一些优化问题，比如使用环形缓冲区降低数据溢写到磁盘的频率，合并时的合并顺序的优化等等。</p>
+<h2 id="Mapper-类的使用"><a href="#Mapper-类的使用" class="headerlink" title="Mapper 类的使用"></a>Mapper 类的使用</h2><p>先看一下怎么使用框架提供的 Mapper 类的，当用户需要自定义(大部分情况下都是需要的) Map 阶段数据处理所作的事情时，就需要创建一个自定义类继承自 <code>org.apache.hadoop.mapreduce.Mapper</code>，并自定义一个 <code>map</code> 函数，如下所示，完整代码<a href="https://github.com/jiaoqiyuan/163-bigdate-note/blob/master/%E6%97%A5%E5%BF%97%E8%A7%A3%E6%9E%90%E5%8F%8A%E8%AE%A1%E7%AE%97%EF%BC%9AMR/%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAMR%E7%A8%8B%E5%BA%8F/etl/src/main/com/bigdata/etl/job/ParseLogJob.java" target="_blank" rel="noopener">点击这里</a>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LogMapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">NullWritable</span>, <span class="title">Text</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//parseLog是我自定义个一个函数用于处理日志内容</span></span><br><span class="line">            Text parsedLog = parseLog(value.toString());</span><br><span class="line">            context.write(<span class="keyword">null</span>, parsedLog);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ParseException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>设置好自定义 Map 类后，在创建 Job 时将 Map 类配置进去即可，类似于这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException, InterruptedException </span>&#123;</span><br><span class="line">    <span class="comment">//创建job</span></span><br><span class="line">    Configuration config = <span class="keyword">new</span> Configuration();</span><br><span class="line">    Job job = Job.getInstance(config);</span><br><span class="line">    <span class="comment">//通过job设置一些参数</span></span><br><span class="line">    ...</span><br><span class="line">    job.setMapperClass(LogMapper.class);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Mapper类做了什么"><a href="#Mapper类做了什么" class="headerlink" title="Mapper类做了什么"></a>Mapper类做了什么</h2><p>Mapper 中就是在一个循环中调用 <code>map</code> 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Expert users can override this method for more complete control over the</span></span><br><span class="line"><span class="comment">  * execution of the Mapper.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> context</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">  setup(context);</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (context.nextKeyValue()) &#123;</span><br><span class="line">      map(context.getCurrentKey(), context.getCurrentValue(), context);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    cleanup(context);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有一个 <code>setup</code> 和 <code>cleanup</code> 方法，这两个方法都是只在创建Mapper对象的时候执行一次，适合做一些初始化和清理资源的工作。</p>
+<p>这里的run方法是由框架调用的，在调用到map函数时，由框架利用反射机制进行Mapper的实例化然后调用的run。</p>
+<p>我们在之前的YARN原理中说给，节点最终的执行任务都是由YARN在节点的container中先启动一个YarnChild，然后又YarnChild开启MapTask或ReduceTask的。这是Yarn的执行流程：</p>
+<p><img src="https://dev.tencent.com/u/jiaoqiyuan/p/hexo-blog-code/git/raw/master/source/img/YARN%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B.png" alt="Yarn执行流程"></p>
+<p>程序具体执行时会启动一个叫 YarnChild 的类，在里面调用run防止执行具体的Task任务，相关具体代码如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// Create a final reference to the task for the doAs block</span></span><br><span class="line">  <span class="keyword">final</span> Task taskFinal = task;</span><br><span class="line">  childUGI.doAs(<span class="keyword">new</span> PrivilegedExceptionAction&lt;Object&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">      <span class="comment">// use job-specified working directory</span></span><br><span class="line">      setEncryptedSpillKeyIfRequired(taskFinal);</span><br><span class="line">      FileSystem.get(job).setWorkingDirectory(job.getWorkingDirectory());</span><br><span class="line">      <span class="comment">//最终执行MapTask或ReduceTask的具体的地方</span></span><br><span class="line">      taskFinal.run(job, umbilical); <span class="comment">// run the task</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="MapTask-是什么"><a href="#MapTask-是什么" class="headerlink" title="MapTask 是什么"></a>MapTask 是什么</h2><p>MapTask 是具体执行map任务的代码实现。在 MapTask 中，<code>run</code> 函数的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(<span class="keyword">final</span> JobConf job, <span class="keyword">final</span> TaskUmbilicalProtocol umbilical)</span></span></span><br><span class="line"><span class="function">  <span class="keyword">throws</span> IOException, ClassNotFoundException, InterruptedException </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.umbilical = umbilical;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isMapTask()) &#123;</span><br><span class="line">    <span class="comment">// If there are no reducers then there won't be any sort. Hence the map </span></span><br><span class="line">    <span class="comment">// phase will govern the entire attempt's progress.</span></span><br><span class="line">    <span class="keyword">if</span> (conf.getNumReduceTasks() == <span class="number">0</span>) &#123;</span><br><span class="line">      mapPhase = getProgress().addPhase(<span class="string">"map"</span>, <span class="number">1.0f</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// If there are reducers then the entire attempt's progress will be </span></span><br><span class="line">      <span class="comment">// split between the map phase (67%) and the sort phase (33%).</span></span><br><span class="line">      mapPhase = getProgress().addPhase(<span class="string">"map"</span>, <span class="number">0.667f</span>);</span><br><span class="line">      sortPhase  = getProgress().addPhase(<span class="string">"sort"</span>, <span class="number">0.333f</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  TaskReporter reporter = startReporter(umbilical);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">boolean</span> useNewApi = job.getUseNewMapper();</span><br><span class="line">  initialize(job, getJobID(), reporter, useNewApi);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// check if it is a cleanupJobTask</span></span><br><span class="line">  <span class="keyword">if</span> (jobCleanup) &#123;</span><br><span class="line">    runJobCleanupTask(umbilical, reporter);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (jobSetup) &#123;</span><br><span class="line">    runJobSetupTask(umbilical, reporter);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (taskCleanup) &#123;</span><br><span class="line">    runTaskCleanupTask(umbilical, reporter);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (useNewApi) &#123;</span><br><span class="line">    runNewMapper(job, splitMetaInfo, umbilical, reporter);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    runOldMapper(job, splitMetaInfo, umbilical, reporter);</span><br><span class="line">  &#125;</span><br><span class="line">  done(umbilical, reporter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用 <code>getNumReduceTasks</code> 获取 reduce 的数量，如果有reduce就增加排序，如果没有就不排序。<strong>Reduce 的数量可以自己设置，在job中通过<code>setNumReduceTasks</code> 可以手动设置reduce的数量。</strong></p>
+<p>接下来是一些框架调度的内容，先跳过，来到 <code>runNewMapper</code> 使用新的API启动Map，这是重点，解析来分析一下 <code>runNewMapper</code> 这个方法。</p>
+<h2 id="MapTask任务的具体执行者-runNewMapper"><a href="#MapTask任务的具体执行者-runNewMapper" class="headerlink" title="MapTask任务的具体执行者 - runNewMapper"></a>MapTask任务的具体执行者 - runNewMapper</h2><p><code>runNewMapper</code> 的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">private</span> &lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">runNewMapper</span><span class="params">(<span class="keyword">final</span> JobConf job,</span></span></span><br><span class="line"><span class="function"><span class="params">                  <span class="keyword">final</span> TaskSplitIndex splitIndex,</span></span></span><br><span class="line"><span class="function"><span class="params">                  <span class="keyword">final</span> TaskUmbilicalProtocol umbilical,</span></span></span><br><span class="line"><span class="function"><span class="params">                  TaskReporter reporter</span></span></span><br><span class="line"><span class="function"><span class="params">                  )</span> <span class="keyword">throws</span> IOException, ClassNotFoundException,</span></span><br><span class="line"><span class="function">                            InterruptedException </span>&#123;</span><br><span class="line">  <span class="comment">// make a task context so we can get the classes</span></span><br><span class="line">  org.apache.hadoop.mapreduce.TaskAttemptContext taskContext =</span><br><span class="line">    <span class="keyword">new</span> org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl(job, </span><br><span class="line">                                                                getTaskID(),</span><br><span class="line">                                                                reporter);</span><br><span class="line">  <span class="comment">// make a mapper</span></span><br><span class="line">  org.apache.hadoop.mapreduce.Mapper&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt; mapper =</span><br><span class="line">    (org.apache.hadoop.mapreduce.Mapper&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;)</span><br><span class="line">      ReflectionUtils.newInstance(taskContext.getMapperClass(), job);</span><br><span class="line">  <span class="comment">// make the input format</span></span><br><span class="line">  org.apache.hadoop.mapreduce.InputFormat&lt;INKEY,INVALUE&gt; inputFormat =</span><br><span class="line">    (org.apache.hadoop.mapreduce.InputFormat&lt;INKEY,INVALUE&gt;)</span><br><span class="line">      ReflectionUtils.newInstance(taskContext.getInputFormatClass(), job);</span><br><span class="line">  <span class="comment">// rebuild the input split</span></span><br><span class="line">  org.apache.hadoop.mapreduce.InputSplit split = <span class="keyword">null</span>;</span><br><span class="line">  split = getSplitDetails(<span class="keyword">new</span> Path(splitIndex.getSplitLocation()),</span><br><span class="line">      splitIndex.getStartOffset());</span><br><span class="line">  LOG.info(<span class="string">"Processing split: "</span> + split);</span><br><span class="line"></span><br><span class="line">  org.apache.hadoop.mapreduce.RecordReader&lt;INKEY,INVALUE&gt; input =</span><br><span class="line">    <span class="keyword">new</span> NewTrackingRecordReader&lt;INKEY,INVALUE&gt;</span><br><span class="line">      (split, inputFormat, reporter, taskContext);</span><br><span class="line">  </span><br><span class="line">  job.setBoolean(JobContext.SKIP_RECORDS, isSkipping());</span><br><span class="line">  org.apache.hadoop.mapreduce.RecordWriter output = <span class="keyword">null</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// get an output object</span></span><br><span class="line">  <span class="keyword">if</span> (job.getNumReduceTasks() == <span class="number">0</span>) &#123;</span><br><span class="line">    output = </span><br><span class="line">      <span class="keyword">new</span> NewDirectOutputCollector(taskContext, job, umbilical, reporter);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    output = <span class="keyword">new</span> NewOutputCollector(taskContext, job, umbilical, reporter);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  org.apache.hadoop.mapreduce.MapContext&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt; </span><br><span class="line">  mapContext = </span><br><span class="line">    <span class="keyword">new</span> MapContextImpl&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt;(job, getTaskID(), </span><br><span class="line">        input, output, </span><br><span class="line">        committer, </span><br><span class="line">        reporter, split);</span><br><span class="line"></span><br><span class="line">  org.apache.hadoop.mapreduce.Mapper&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;.Context </span><br><span class="line">      mapperContext = </span><br><span class="line">        <span class="keyword">new</span> WrappedMapper&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt;().getMapContext(</span><br><span class="line">            mapContext);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    input.initialize(split, mapperContext);</span><br><span class="line">    mapper.run(mapperContext);</span><br><span class="line">    mapPhase.complete();</span><br><span class="line">    setPhase(TaskStatus.Phase.SORT);</span><br><span class="line">    statusUpdate(umbilical);</span><br><span class="line">    input.close();</span><br><span class="line">    input = <span class="keyword">null</span>;</span><br><span class="line">    output.close(mapperContext);</span><br><span class="line">    output = <span class="keyword">null</span>;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    closeQuietly(input);</span><br><span class="line">    closeQuietly(output, mapperContext);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="读取Map输入的类-NewTrackingRecordReader"><a href="#读取Map输入的类-NewTrackingRecordReader" class="headerlink" title="读取Map输入的类 - NewTrackingRecordReader"></a>读取Map输入的类 - NewTrackingRecordReader</h3><p>在 <code>runNewMapper</code> 方法中，有这样一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// make the input format</span></span><br><span class="line">org.apache.hadoop.mapreduce.InputFormat&lt;INKEY,INVALUE&gt; inputFormat =</span><br><span class="line">  (org.apache.hadoop.mapreduce.InputFormat&lt;INKEY,INVALUE&gt;)</span><br><span class="line">    ReflectionUtils.newInstance(taskContext.getInputFormatClass(), job);</span><br><span class="line">...</span><br><span class="line">org.apache.hadoop.mapreduce.RecordReader&lt;INKEY,INVALUE&gt; input =</span><br><span class="line">  <span class="keyword">new</span> NewTrackingRecordReader&lt;INKEY,INVALUE&gt;</span><br><span class="line">    (split, inputFormat, reporter, taskContext);</span><br></pre></td></tr></table></figure>
+<p>这段代码的作用是创建Map输入读取类，用于后续帮助Map从分片中读取数据，打开 NewTrackingRecordReader 继续跟踪进去：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NewTrackingRecordReader(org.apache.hadoop.mapreduce.InputSplit split,</span><br><span class="line">        org.apache.hadoop.mapreduce.InputFormat&lt;K, V&gt; inputFormat,</span><br><span class="line">        TaskReporter reporter,</span><br><span class="line">        org.apache.hadoop.mapreduce.TaskAttemptContext taskContext)</span><br><span class="line">        <span class="keyword">throws</span> InterruptedException, IOException &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">this</span>.real = inputFormat.createRecordReader(split, taskContext);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>NewTrackingRecordReader</code> 的构造函数创建了一个 <code>private final org.apache.hadoop.mapreduce.RecordReader&lt;K,V&gt;</code> 的 RecordReader 类，默认情况下 Map 的 inputFormat 是 TextInputFormat 类型，我们跟踪进 TextInputFormat 中看一下它的 <code>createRecordReader</code> 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> RecordReader&lt;LongWritable, Text&gt; </span><br><span class="line">  createRecordReader(InputSplit split,</span><br><span class="line">                      TaskAttemptContext context) &#123;</span><br><span class="line">  String delimiter = context.getConfiguration().get(</span><br><span class="line">      <span class="string">"textinputformat.record.delimiter"</span>);</span><br><span class="line">  <span class="keyword">byte</span>[] recordDelimiterBytes = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">null</span> != delimiter)</span><br><span class="line">    recordDelimiterBytes = delimiter.getBytes(Charsets.UTF_8);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> LineRecordReader(recordDelimiterBytes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到它返回的是一个 LineRecordReader 类型的 RecordReader，这里 LineRecordReader 是一个线性读取文件的工具类，也就是说我们在使用这个类读取Map的输入数据时是一行一行线性读取的，LineRecordReader 里面包含一些我们常用的方法，比如 <code>getCurrentKey</code>、<code>getCurrentValue</code>、<code>nextKeyValue</code>等方法。</p>
+<h3 id="分区及合并的实现-NewOutputCollector"><a href="#分区及合并的实现-NewOutputCollector" class="headerlink" title="分区及合并的实现 - NewOutputCollector"></a>分区及合并的实现 - NewOutputCollector</h3><p>在 <code>runNewMapper</code> 方法中，有这样一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// get an output object</span></span><br><span class="line"><span class="keyword">if</span> (job.getNumReduceTasks() == <span class="number">0</span>) &#123;</span><br><span class="line">  output = </span><br><span class="line">    <span class="keyword">new</span> NewDirectOutputCollector(taskContext, job, umbilical, reporter);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  output = <span class="keyword">new</span> NewOutputCollector(taskContext, job, umbilical, reporter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果没有Reduce Task，直接输出到磁盘目录，如果没有，就创建一个 <code>NewOutputCollector</code> 对象，在里面进行分区和排序后输出到磁盘。</p>
+<p>NewOutputCollector 中实现了具体的分区操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">NewOutputCollector(org.apache.hadoop.mapreduce.JobContext jobContext,</span><br><span class="line">                    JobConf job,</span><br><span class="line">                    TaskUmbilicalProtocol umbilical,</span><br><span class="line">                    TaskReporter reporter</span><br><span class="line">                    ) <span class="keyword">throws</span> IOException, ClassNotFoundException &#123;</span><br><span class="line">  collector = createSortingCollector(job, reporter);</span><br><span class="line">  partitions = jobContext.getNumReduceTasks();</span><br><span class="line">  <span class="keyword">if</span> (partitions &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    partitioner = (org.apache.hadoop.mapreduce.Partitioner&lt;K,V&gt;)</span><br><span class="line">      ReflectionUtils.newInstance(jobContext.getPartitionerClass(), job);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    partitioner = <span class="keyword">new</span> org.apache.hadoop.mapreduce.Partitioner&lt;K,V&gt;() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPartition</span><span class="params">(K key, V value, <span class="keyword">int</span> numPartitions)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> partitions - <span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Partitioner 类就是在这里被实例化的，如果分区数量大于1，就通过反射创建一个Partitioner 实例，如果分区数量小于等于1，就直接返回分区数量为-1，最终就是只创建一个分区。</p>
+<h3 id="map中的write的具体实现"><a href="#map中的write的具体实现" class="headerlink" title="map中的write的具体实现"></a>map中的write的具体实现</h3><p>我们知道自定义的map函数最终要调用 <code>context.write</code> 将结果写出，这里的 context 就是在 MapTask 中我们创建的 NewOutputCollector 对象中实现的：</p>
+<p>先创建一个mapContext，再利用mapContext创建一个mapperContext。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">org.apache.hadoop.mapreduce.MapContext&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt; </span><br><span class="line">mapContext = </span><br><span class="line">  <span class="keyword">new</span> MapContextImpl&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt;(job, getTaskID(), </span><br><span class="line">      input, output, </span><br><span class="line">      committer, </span><br><span class="line">      reporter, split);</span><br><span class="line"></span><br><span class="line">org.apache.hadoop.mapreduce.Mapper&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;.Context </span><br><span class="line">    mapperContext = </span><br><span class="line">      <span class="keyword">new</span> WrappedMapper&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt;().getMapContext(</span><br><span class="line">          mapContext);</span><br></pre></td></tr></table></figure>
+<p>接下来调用 <code>mapper.run(mapperContext)</code> ，最终执行的就是mapperContext中的write方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  input.initialize(split, mapperContext);</span><br><span class="line">  mapper.run(mapperContext);</span><br><span class="line">  mapPhase.complete();</span><br><span class="line">  setPhase(TaskStatus.Phase.SORT);</span><br><span class="line">  statusUpdate(umbilical);</span><br><span class="line">  input.close();</span><br><span class="line">  input = <span class="keyword">null</span>;</span><br><span class="line">  output.close(mapperContext);</span><br><span class="line">  output = <span class="keyword">null</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">  closeQuietly(input);</span><br><span class="line">  closeQuietly(output, mapperContext);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们看一下 NewOutputCollector 是怎么实现write方法的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(K key, V value)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">  collector.collect(key, value,</span><br><span class="line">                    partitioner.getPartition(key, value, partitions));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再深入，进入 collector 的实现类 MapOutputBuffer，这个类也在MapTask中，是个内部类，它的 <code>collect</code> 实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (bufferRemaining &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="comment">// start spill if the thread is not running and the soft limit has been</span></span><br><span class="line">  <span class="comment">// reached</span></span><br><span class="line">  spillLock.lock();</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (!spillInProgress) &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> kvbidx = <span class="number">4</span> * kvindex;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> kvbend = <span class="number">4</span> * kvend;</span><br><span class="line">        <span class="comment">// serialized, unspilled bytes always lie between kvindex and</span></span><br><span class="line">        <span class="comment">// bufindex, crossing the equator. Note that any void space</span></span><br><span class="line">        <span class="comment">// created by a reset must be included in "used" bytes</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> bUsed = distanceTo(kvbidx, bufindex);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">boolean</span> bufsoftlimit = bUsed &gt;= softLimit;</span><br><span class="line">        <span class="keyword">if</span> ((kvbend + METASIZE) % kvbuffer.length !=</span><br><span class="line">            equator - (equator % METASIZE)) &#123;</span><br><span class="line">          <span class="comment">// spill finished, reclaim space</span></span><br><span class="line">          resetSpill();</span><br><span class="line">          bufferRemaining = Math.min(</span><br><span class="line">              distanceTo(bufindex, kvbidx) - <span class="number">2</span> * METASIZE,</span><br><span class="line">              softLimit - bUsed) - METASIZE;</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (bufsoftlimit &amp;&amp; kvindex != kvend) &#123;</span><br><span class="line">          <span class="comment">// spill records, if any collected; check latter, as it may</span></span><br><span class="line">          <span class="comment">// be possible for metadata alignment to hit spill pcnt</span></span><br><span class="line">          startSpill();</span><br><span class="line">          <span class="keyword">final</span> <span class="keyword">int</span> avgRec = (<span class="keyword">int</span>)</span><br><span class="line">            (mapOutputByteCounter.getCounter() /</span><br><span class="line">            mapOutputRecordCounter.getCounter());</span><br><span class="line">          <span class="comment">// leave at least half the split buffer for serialization data</span></span><br><span class="line">          <span class="comment">// ensure that kvindex &gt;= bufindex</span></span><br><span class="line">          <span class="keyword">final</span> <span class="keyword">int</span> distkvi = distanceTo(bufindex, kvbidx);</span><br><span class="line">          <span class="keyword">final</span> <span class="keyword">int</span> newPos = (bufindex +</span><br><span class="line">            Math.max(<span class="number">2</span> * METASIZE - <span class="number">1</span>,</span><br><span class="line">                    Math.min(distkvi / <span class="number">2</span>,</span><br><span class="line">                              distkvi / (METASIZE + avgRec) * METASIZE)))</span><br><span class="line">            % kvbuffer.length;</span><br><span class="line">          setEquator(newPos);</span><br><span class="line">          bufmark = bufindex = newPos;</span><br><span class="line">          <span class="keyword">final</span> <span class="keyword">int</span> serBound = <span class="number">4</span> * kvend;</span><br><span class="line">          <span class="comment">// bytes remaining before the lock must be held and limits</span></span><br><span class="line">          <span class="comment">// checked is the minimum of three arcs: the metadata space, the</span></span><br><span class="line">          <span class="comment">// serialization space, and the soft limit</span></span><br><span class="line">          bufferRemaining = Math.min(</span><br><span class="line">              <span class="comment">// metadata max</span></span><br><span class="line">              distanceTo(bufend, newPos),</span><br><span class="line">              Math.min(</span><br><span class="line">                <span class="comment">// serialization max</span></span><br><span class="line">                distanceTo(newPos, serBound),</span><br><span class="line">                <span class="comment">// soft limit</span></span><br><span class="line">                softLimit)) - <span class="number">2</span> * METASIZE;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (<span class="keyword">false</span>);</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    spillLock.unlock();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这里有一个 <code>spillLock</code> 锁， 这个锁跟 MapTask 中的另一个进行排序、合并、写入磁盘操作的内部类共享：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="class"><span class="keyword">class</span> <span class="title">SpillThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    spillLock.lock();</span><br><span class="line">    spillThreadRunning = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        spillDone.signal();</span><br><span class="line">        <span class="keyword">while</span> (!spillInProgress) &#123;</span><br><span class="line">          spillReady.await();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          spillLock.unlock();</span><br><span class="line">          sortAndSpill();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">          sortSpillException = t;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">          spillLock.lock();</span><br><span class="line">          <span class="keyword">if</span> (bufend &lt; bufstart) &#123;</span><br><span class="line">            bufvoid = kvbuffer.length;</span><br><span class="line">          &#125;</span><br><span class="line">          kvstart = kvend;</span><br><span class="line">          bufstart = bufend;</span><br><span class="line">          spillInProgress = <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">      Thread.currentThread().interrupt();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      spillLock.unlock();</span><br><span class="line">      spillThreadRunning = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>sortAndSpill</code> 方法就是进行排序和溢写的方法，具体实现接着往下看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sortAndSpill</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ClassNotFoundException,</span></span><br><span class="line"><span class="function">                                    InterruptedException </span>&#123;</span><br><span class="line">  <span class="comment">//approximate the length of the output file to be the length of the</span></span><br><span class="line">  <span class="comment">//buffer + header lengths for the partitions</span></span><br><span class="line">  <span class="keyword">final</span> <span class="keyword">long</span> size = distanceTo(bufstart, bufend, bufvoid) +</span><br><span class="line">              partitions * APPROX_HEADER_LENGTH;</span><br><span class="line">  FSDataOutputStream out = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// create spill file</span></span><br><span class="line">    <span class="keyword">final</span> SpillRecord spillRec = <span class="keyword">new</span> SpillRecord(partitions);</span><br><span class="line">    <span class="keyword">final</span> Path filename =</span><br><span class="line">        mapOutputFile.getSpillFileForWrite(numSpills, size);</span><br><span class="line">    out = rfs.create(filename);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> mstart = kvend / NMETA;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> mend = <span class="number">1</span> + <span class="comment">// kvend is a valid record</span></span><br><span class="line">      (kvstart &gt;= kvend</span><br><span class="line">      ? kvstart</span><br><span class="line">      : kvmeta.capacity() + kvstart) / NMETA;</span><br><span class="line">    <span class="comment">//在溢写数据前先排序</span></span><br><span class="line">    sorter.sort(MapOutputBuffer.<span class="keyword">this</span>, mstart, mend, reporter);</span><br><span class="line">    <span class="keyword">int</span> spindex = mstart;</span><br><span class="line">    <span class="keyword">final</span> IndexRecord rec = <span class="keyword">new</span> IndexRecord();</span><br><span class="line">    <span class="keyword">final</span> InMemValBytes value = <span class="keyword">new</span> InMemValBytes();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; partitions; ++i) &#123;</span><br><span class="line">      IFile.Writer&lt;K, V&gt; writer = <span class="keyword">null</span>;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">long</span> segmentStart = out.getPos();</span><br><span class="line">        FSDataOutputStream partitionOut = CryptoUtils.wrapIfNecessary(job, out);</span><br><span class="line">        writer = <span class="keyword">new</span> Writer&lt;K, V&gt;(job, partitionOut, keyClass, valClass, codec,</span><br><span class="line">                                  spilledRecordsCounter);</span><br><span class="line">        <span class="comment">//如果设置不进行合并操作</span></span><br><span class="line">        <span class="keyword">if</span> (combinerRunner == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="comment">// spill directly</span></span><br><span class="line">          DataInputBuffer key = <span class="keyword">new</span> DataInputBuffer();</span><br><span class="line">          <span class="keyword">while</span> (spindex &lt; mend &amp;&amp;</span><br><span class="line">              kvmeta.get(offsetFor(spindex % maxRec) + PARTITION) == i) &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> kvoff = offsetFor(spindex % maxRec);</span><br><span class="line">            <span class="keyword">int</span> keystart = kvmeta.get(kvoff + KEYSTART);</span><br><span class="line">            <span class="keyword">int</span> valstart = kvmeta.get(kvoff + VALSTART);</span><br><span class="line">            key.reset(kvbuffer, keystart, valstart - keystart);</span><br><span class="line">            getVBytesForOffset(kvoff, value);</span><br><span class="line">            <span class="comment">//写入磁盘</span></span><br><span class="line">            writer.append(key, value);</span><br><span class="line">            ++spindex;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;  <span class="comment">//设置进行合并操作</span></span><br><span class="line">          <span class="keyword">int</span> spstart = spindex;</span><br><span class="line">          <span class="keyword">while</span> (spindex &lt; mend &amp;&amp;</span><br><span class="line">              kvmeta.get(offsetFor(spindex % maxRec)</span><br><span class="line">                        + PARTITION) == i) &#123;</span><br><span class="line">            ++spindex;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// Note: we would like to avoid the combiner if we've fewer</span></span><br><span class="line">          <span class="comment">// than some threshold of records for a partition</span></span><br><span class="line">          <span class="keyword">if</span> (spstart != spindex) &#123;</span><br><span class="line">            combineCollector.setWriter(writer);</span><br><span class="line">            RawKeyValueIterator kvIter =</span><br><span class="line">              <span class="keyword">new</span> MRResultIterator(spstart, spindex);</span><br><span class="line">            <span class="comment">// 执行合并操作</span></span><br><span class="line">            combinerRunner.combine(kvIter, combineCollector);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// close the writer</span></span><br><span class="line">        writer.close();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// record offsets</span></span><br><span class="line">        rec.startOffset = segmentStart;</span><br><span class="line">        rec.rawLength = writer.getRawLength() + CryptoUtils.cryptoPadding(job);</span><br><span class="line">        rec.partLength = writer.getCompressedLength() + CryptoUtils.cryptoPadding(job);</span><br><span class="line">        spillRec.putIndex(rec, i);</span><br><span class="line"></span><br><span class="line">        writer = <span class="keyword">null</span>;</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != writer) writer.close();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (totalIndexCacheMemory &gt;= indexCacheMemoryLimit) &#123;</span><br><span class="line">      <span class="comment">// create spill index file</span></span><br><span class="line">      Path indexFilename =</span><br><span class="line">          mapOutputFile.getSpillIndexFileForWrite(numSpills, partitions</span><br><span class="line">              * MAP_OUTPUT_INDEX_RECORD_LENGTH);</span><br><span class="line">      spillRec.writeToFile(indexFilename, job);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      indexCacheList.add(spillRec);</span><br><span class="line">      totalIndexCacheMemory +=</span><br><span class="line">        spillRec.size() * MAP_OUTPUT_INDEX_RECORD_LENGTH;</span><br><span class="line">    &#125;</span><br><span class="line">    LOG.info(<span class="string">"Finished spill "</span> + numSpills);</span><br><span class="line">    ++numSpills;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (out != <span class="keyword">null</span>) out.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="初始化及运行"><a href="#初始化及运行" class="headerlink" title="初始化及运行"></a>初始化及运行</h2><p>上面配置好Map的输入读取工具类以及分区和溢写方法后，在 <code>MapTask</code> 中，接下来就是初始化和运行的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  input.initialize(split, mapperContext);</span><br><span class="line">  mapper.run(mapperContext);</span><br><span class="line">  mapPhase.complete();</span><br><span class="line">  setPhase(TaskStatus.Phase.SORT);</span><br><span class="line">  statusUpdate(umbilical);</span><br><span class="line">  input.close();</span><br><span class="line">  input = <span class="keyword">null</span>;</span><br><span class="line">  output.close(mapperContext);</span><br><span class="line">  output = <span class="keyword">null</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">  closeQuietly(input);</span><br><span class="line">  closeQuietly(output, mapperContext);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道 input 的类型是 NewTrackingRecordReader ，而 NewTrackingRecordReader 最终是创建了一个 LineRecordReader ，所以这里的 <code>initialize</code> 最终调用的是 LineRecordReader 中的 <code>initialize</code> 方法，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(InputSplit genericSplit,</span></span></span><br><span class="line"><span class="function"><span class="params">                        TaskAttemptContext context)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  FileSplit split = (FileSplit) genericSplit;</span><br><span class="line">  Configuration job = context.getConfiguration();</span><br><span class="line">  <span class="keyword">this</span>.maxLineLength = job.getInt(MAX_LINE_LENGTH, Integer.MAX_VALUE);</span><br><span class="line">  <span class="comment">//从切片中获得文件位置、起始偏移量start、结束偏移量end。</span></span><br><span class="line">  start = split.getStart();</span><br><span class="line">  end = start + split.getLength();</span><br><span class="line">  <span class="keyword">final</span> Path file = split.getPath();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// open the file and seek to the start of the split</span></span><br><span class="line">  <span class="comment">//通过文件位置信息获取到分布式文件的 FileSystem ，然后打开文件。</span></span><br><span class="line">  <span class="keyword">final</span> FileSystem fs = file.getFileSystem(job);</span><br><span class="line">  fileIn = fs.open(file);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//判断是否是压缩文件</span></span><br><span class="line">  CompressionCodec codec = <span class="keyword">new</span> CompressionCodecFactory(job).getCodec(file);</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">null</span>!=codec) &#123;</span><br><span class="line">    isCompressedInput = <span class="keyword">true</span>;	</span><br><span class="line">    decompressor = CodecPool.getDecompressor(codec);</span><br><span class="line">    <span class="keyword">if</span> (codec <span class="keyword">instanceof</span> SplittableCompressionCodec) &#123;</span><br><span class="line">      <span class="keyword">final</span> SplitCompressionInputStream cIn =</span><br><span class="line">        ((SplittableCompressionCodec)codec).createInputStream(</span><br><span class="line">          fileIn, decompressor, start, end,</span><br><span class="line">          SplittableCompressionCodec.READ_MODE.BYBLOCK);</span><br><span class="line">      in = <span class="keyword">new</span> CompressedSplitLineReader(cIn, job,</span><br><span class="line">          <span class="keyword">this</span>.recordDelimiterBytes);</span><br><span class="line">      start = cIn.getAdjustedStart();</span><br><span class="line">      end = cIn.getAdjustedEnd();</span><br><span class="line">      filePosition = cIn;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      in = <span class="keyword">new</span> SplitLineReader(codec.createInputStream(fileIn,</span><br><span class="line">          decompressor), job, <span class="keyword">this</span>.recordDelimiterBytes);</span><br><span class="line">      filePosition = fileIn;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    fileIn.seek(start);</span><br><span class="line">    in = <span class="keyword">new</span> UncompressedSplitLineReader(</span><br><span class="line">        fileIn, job, <span class="keyword">this</span>.recordDelimiterBytes, split.getLength());</span><br><span class="line">    filePosition = fileIn;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// If this is not the first split, we always throw away first record</span></span><br><span class="line">  <span class="comment">// because we always (except the last split) read one extra line in</span></span><br><span class="line">  <span class="comment">// next() method.</span></span><br><span class="line">  <span class="comment">//判断是否为第一个切片，如果不是第一个切片就更新文件起始偏移量的值start</span></span><br><span class="line">  <span class="keyword">if</span> (start != <span class="number">0</span>) &#123;</span><br><span class="line">    start += in.readLine(<span class="keyword">new</span> Text(), <span class="number">0</span>, maxBytesToConsume(start));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>.pos = start;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里初始化所作的工作就是：</p>
+<ul>
+<li><p>从切片中获得文件位置、起始偏移量start、结束偏移量end。</p>
+</li>
+<li><p>通过文件位置信息获取到分布式文件的 FileSystem ，然后打开文件。</p>
+</li>
+<li><p>判断是否是压缩文件，如果不使用压缩，就直接从分配给自己的起始偏移量start的位置开始读取文件。如果使用了压缩就需要读取所有的文件内容后再解压缩，然后再进行处理。根据输入数据是否进行了压缩，设置不同的 SplitLineReader 进行接下来的数据读取操作。</p>
+</li>
+<li><p>判断是否为第一个切片，如果不是第一个切片就更新文件起始偏移量的值start。这里采用的是直接忽略掉块的第一行的做法，因为数据可能分布在不同的块中，进而导致数据的不完整性。</p>
+</li>
+</ul>
+<h2 id="nextKeyValue-、-getCurrentKey-、-getCurrentValue"><a href="#nextKeyValue-、-getCurrentKey-、-getCurrentValue" class="headerlink" title="nextKeyValue 、 getCurrentKey 、 getCurrentValue"></a>nextKeyValue 、 getCurrentKey 、 getCurrentValue</h2><p>在最开始提到的Mapper中，map是夹在while循环中的，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (context.nextKeyValue()) &#123;</span><br><span class="line">  map(context.getCurrentKey(), context.getCurrentValue(), context);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>nextKeyValue、getCurrentKey、getCurrentValue</code> 三个方法通过我们分析，可以知道就是 LineRecordReader 中的三个方法。</p>
+<h3 id="nextKeyValue"><a href="#nextKeyValue" class="headerlink" title="nextKeyValue"></a>nextKeyValue</h3><p>LineRecordReader 中 <code>nextKeyValue</code> 的代码实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">nextKeyValue</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (key == <span class="keyword">null</span>) &#123;</span><br><span class="line">    key = <span class="keyword">new</span> LongWritable();</span><br><span class="line">  &#125;</span><br><span class="line">  key.set(pos);</span><br><span class="line">  <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">    value = <span class="keyword">new</span> Text();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> newSize = <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// We always read one extra line, which lies outside the upper</span></span><br><span class="line">  <span class="comment">// split limit i.e. (end - 1)</span></span><br><span class="line">  <span class="keyword">while</span> (getFilePosition() &lt;= end || in.needAdditionalRecordAfterSplit()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (pos == <span class="number">0</span>) &#123;</span><br><span class="line">      newSize = skipUtfByteOrderMark();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      newSize = in.readLine(value, maxLineLength, maxBytesToConsume(pos));</span><br><span class="line">      pos += newSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((newSize == <span class="number">0</span>) || (newSize &lt; maxLineLength)) &#123;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// line too long. try again</span></span><br><span class="line">    LOG.info(<span class="string">"Skipped line of size "</span> + newSize + <span class="string">" at pos "</span> + </span><br><span class="line">              (pos - newSize));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (newSize == <span class="number">0</span>) &#123;</span><br><span class="line">    key = <span class="keyword">null</span>;</span><br><span class="line">    value = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所做的事情就是：</p>
+<ul>
+<li><p>设置默认key类型为LongWritable，value默认类型为Text类型</p>
+</li>
+<li><p>将行偏移量赋值给key，也就是说Map的输入Key存放的就是行的偏移量。</p>
+</li>
+<li><p>从 UncompressedSplitLineReader 中读取文件数据到value中。</p>
+</li>
+<li><p>读完将偏移量信息加上读取的数据长度。</p>
+</li>
+<li><p>如果最终没有数据可读就退出。</p>
+</li>
+</ul>
+<h2 id="getCurrentKey-、-getCurrentValue"><a href="#getCurrentKey-、-getCurrentValue" class="headerlink" title="getCurrentKey 、 getCurrentValue"></a>getCurrentKey 、 getCurrentValue</h2><p>这两个在上面的 <code>nextKeyValue</code> 中已经赋值过，直接返回就行，很简单，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> LongWritable <span class="title">getCurrentKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> key;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Text <span class="title">getCurrentValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>有点乱，我是一遍翻看源码，一遍查资料，反复看了很多遍，总结下来就是MapTask是由每个节点的YarnChild启动的，在真正开始运行map之前，会先根据job配置确定好输入输出类型、是否压缩、输入文件的路径信息、分片信息，加载好相应的读取工具类，然后进行初始化操作，确认好文件偏移量信息。在最终执行读取操作的时候利用已经配置好的工具类，逐行将文件内的数据读取到内存供 <code>map</code> 函数使用。当然这中间还会加入许许多多错误判断机制和默认设置，但是Map的大致流程就是上面说的那样了。源码分析起来好累！</p>
+<hr>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><blockquote>
+<p><a href="https://blog.xiaoxiaomo.com/2016/07/08/Hadoop-MapReduce%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">Hadoop-MapReduce源码分析</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/大数据/" rel="tag"># 大数据</a>
+          
+            <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/19/MapReduceSourceCode-JobAndSplite/" rel="next" title="MapReduce源码分析1-任务提交流程与切片">
+                <i class="fa fa-chevron-left"></i> MapReduce源码分析1-任务提交流程与切片
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/21/Codeabbey网站-一些简单的题/" rel="prev" title="Codeabbey网站-一些简单的题">
+                Codeabbey网站-一些简单的题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MapTask-介绍"><span class="nav-number">1.</span> <span class="nav-text">MapTask 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mapper-类的使用"><span class="nav-number">2.</span> <span class="nav-text">Mapper 类的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mapper类做了什么"><span class="nav-number">3.</span> <span class="nav-text">Mapper类做了什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapTask-是什么"><span class="nav-number">4.</span> <span class="nav-text">MapTask 是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapTask任务的具体执行者-runNewMapper"><span class="nav-number">5.</span> <span class="nav-text">MapTask任务的具体执行者 - runNewMapper</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#读取Map输入的类-NewTrackingRecordReader"><span class="nav-number">5.1.</span> <span class="nav-text">读取Map输入的类 - NewTrackingRecordReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区及合并的实现-NewOutputCollector"><span class="nav-number">5.2.</span> <span class="nav-text">分区及合并的实现 - NewOutputCollector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map中的write的具体实现"><span class="nav-number">5.3.</span> <span class="nav-text">map中的write的具体实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化及运行"><span class="nav-number">6.</span> <span class="nav-text">初始化及运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nextKeyValue-、-getCurrentKey-、-getCurrentValue"><span class="nav-number">7.</span> <span class="nav-text">nextKeyValue 、 getCurrentKey 、 getCurrentValue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nextKeyValue"><span class="nav-number">7.1.</span> <span class="nav-text">nextKeyValue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getCurrentKey-、-getCurrentValue"><span class="nav-number">8.</span> <span class="nav-text">getCurrentKey 、 getCurrentValue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">10.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="翻译,java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="文章来源： Generating Prime Numbers in Java   作者： baeldung   Generating Prime Numbers in Java1. Introduction 简介In this tutorial, we’ll show various ways in which we can generate prime numbers using Java.">
+<meta name="keywords" content="翻译,java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用java语言产生素数-译">
+<meta property="og:url" content="http://yoursite.com/2019/01/18/使用java语言产生素数-译/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="文章来源： Generating Prime Numbers in Java   作者： baeldung   Generating Prime Numbers in Java1. Introduction 简介In this tutorial, we’ll show various ways in which we can generate prime numbers using Java.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用java语言产生素数-译">
+<meta name="twitter:description" content="文章来源： Generating Prime Numbers in Java   作者： baeldung   Generating Prime Numbers in Java1. Introduction 简介In this tutorial, we’ll show various ways in which we can generate prime numbers using Java.">
+<meta name="twitter:image" content="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/18/使用java语言产生素数-译/">
+
+
+
+
+
+  <title>使用java语言产生素数-译 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/使用java语言产生素数-译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用java语言产生素数-译</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T14:43:26+08:00">
+                2019-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/18/使用java语言产生素数-译/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/18/使用java语言产生素数-译/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png" rel="gallery_ck9v4416n003a7ytt0wetqby9" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <blockquote>
+<p>文章来源： <a href="https://www.baeldung.com/java-generate-prime-numbers" target="_blank" rel="noopener">Generating Prime Numbers in Java</a></p>
+</blockquote>
+<blockquote>
+<p>作者： <a href="https://www.baeldung.com/author/baeldung/" target="_blank" rel="noopener">baeldung</a></p>
+</blockquote>
+<hr>
+<h2 id="Generating-Prime-Numbers-in-Java"><a href="#Generating-Prime-Numbers-in-Java" class="headerlink" title="Generating Prime Numbers in Java"></a>Generating Prime Numbers in Java</h2><h2 id="1-Introduction-简介"><a href="#1-Introduction-简介" class="headerlink" title="1. Introduction 简介"></a>1. Introduction 简介</h2><p>In this tutorial, we’ll show various ways in which we can generate prime numbers using Java.</p>
+<p>在本教程中，我将会使用java给你展示几种不同的素数生成方法。</p>
+<p>If you’re looking to check if a number is prime – here’s a <a href="https://www.baeldung.com/java-prime-numbers" target="_blank" rel="noopener">quick guide</a> on how to do that.</p>
+<p>假如你正需要验证一个数字是否为素数 - 这是一个快<a href="https://www.baeldung.com/java-prime-numbers" target="_blank" rel="noopener">速判定素数</a>的指南。</p>
+<a id="more"></a>
+<h2 id="2-Prime-Numbers-素数"><a href="#2-Prime-Numbers-素数" class="headerlink" title="2. Prime Numbers 素数"></a>2. Prime Numbers 素数</h2><p>Let’s start with the core definition. A prime number is a natural number greater than one that has no positive divisors other than one and itself.</p>
+<p>让我们从最核心的定义开始，一个素数就是只能被自身或者1整除的大于1的自然数。</p>
+<p>For example, 7 is prime because 1 and 7 are its only positive integer factors, whereas 12 is not because it has the divisors 3 and 2 in addition to 1, 4 and 6.</p>
+<p>举个栗子，7是个素数，因为它只能被1和7整除。然而12就不是一个素数，因为它能被1,4,6和2,3整除。</p>
+<h2 id="3-Generating-Prime-Numbers-生成素数"><a href="#3-Generating-Prime-Numbers-生成素数" class="headerlink" title="3. Generating Prime Numbers 生成素数"></a>3. Generating Prime Numbers 生成素数</h2><p>In this section, we’ll see how we can generate prime numbers efficiently that are lower than a given value.</p>
+<p>在这一部分，我们将会了解怎样生成小于给定数值的素数。</p>
+<h3 id="3-1-Java-7-And-Before-–-Brute-Force-Java7以及Java7之前，使用蛮力产生素数"><a href="#3-1-Java-7-And-Before-–-Brute-Force-Java7以及Java7之前，使用蛮力产生素数" class="headerlink" title="3.1. Java 7 And Before – Brute Force Java7以及Java7之前，使用蛮力产生素数"></a>3.1. Java 7 And Before – Brute Force Java7以及Java7之前，使用蛮力产生素数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Integer&gt; <span class="title">primeNumbersBruteForce</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; primeNumbers = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isPrimeBruteForce(i)) &#123;</span><br><span class="line">            primeNumbers.add(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> primeNumbers;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPrimeBruteForce</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; number; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (number % i == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>As you can see, primeNumbersBruteForce is iterating over the numbers from 2 to n and simply calling the isPrimeBruteForce() method to check if a number is prime or not.</p>
+<p>正如你所看到的，primeNumbersBruteForce函数迭代从2到n之间的数，并且在每次迭代中简单地调用isPrimeBruteForce()函数来检查一个数字是否为素数。</p>
+<p>The method checks each numbers divisibility by the numbers in a range from 2 till number-1.</p>
+<p>isPrimeBruteForce函数检查每个数字是否能被2到number-1之间的数字整除。</p>
+<p><strong>If at any point we encounter a number that is divisible, we return false.</strong>  At the end when we find that number is not divisible by any of its prior number, we return true indicating its a prime number.</p>
+<p><strong>如果我们遇到任何一个能被整除的数字，就会之间返回false。</strong>最后就能找到那个不能被除自身和1之外的数字整除的那个数，然后函数返回true，表示这是一个素数。</p>
+<h3 id="3-2-Efficiency-And-Optimization-效率和优化"><a href="#3-2-Efficiency-And-Optimization-效率和优化" class="headerlink" title="3.2. Efficiency And Optimization 效率和优化"></a>3.2. Efficiency And Optimization 效率和优化</h3><p>The previous algorithm is not linear and has the time complexity of O(n^2). The algorithm is also not efficient and there’s clearly a room for improvement.</p>
+<p>上面的算法不是线性，它的时间复杂度是O(n²)。这个算法也并不高效，有很明显的效率提升空间。</p>
+<p>Let’s look at the condition in the isPrimeBruteForce() method.</p>
+<p>让我们看一下isPrimeBruteForce()函数中的判断条件。</p>
+<p>When a number is not a prime, this number can be factored into two factors namely a and b i.e. number = a <em> b. **If both a and b were greater than the square root of n, a\</em>b would be greater than n.**</p>
+<p>当一个数字不是素数时，这个数字能够分解为a <em> b形式的两个数字，即number = a </em> b。<strong>如果a和b都比n的平方根大，那么a*b的结果就比n打</strong></p>
+<p>So at least one of those factors must be less than or equal the square root of a number and to check if a number is prime, we only need to test for factors lower than or equal to the square root of the number being checked.</p>
+<p>所以两个因数中至少有一个比这个数字的平方跟小或者与之相等，并且要检查一个数字是否为素数，我们只需要检查小于或者等于待检测数字的平方根的那些因数即可。</p>
+<p>Additionally, prime numbers can never be an even number as even numbers are all divisible by 2.</p>
+<p>另外，素数永远不可能是偶数，因为偶数总是能被2整除。</p>
+<p>Keeping in mind above ideas, let’s improve the algorithm:</p>
+<p>请牢记上面这个思路，下面我们改进一下这个算法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Integer&gt; <span class="title">primeNumbersBruteForce</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; primeNumbers = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> (n &gt;= <span class="number">2</span>) &#123;</span><br><span class="line">        primeNumbers.add(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">3</span>; i &lt;= n; i += <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isPrimeBruteForce(i)) &#123;</span><br><span class="line">            primeNumbers.add(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> primeNumbers;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPrimeBruteForce</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i*i &lt; number; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (number % i == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-3-Using-Java-8-使用Java8"><a href="#3-3-Using-Java-8-使用Java8" class="headerlink" title="3.3. Using Java 8 使用Java8"></a>3.3. Using Java 8 使用Java8</h2><p>Let’s see how we can rewrite the previous solution using Java 8 idioms:</p>
+<p>我们来看一下使用Java8来重写上面逻辑的常见用法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Integer&gt; <span class="title">primeNumbersTill</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> IntStream.rangeClosed(<span class="number">2</span>, n)</span><br><span class="line">      .filter(x -&gt; isPrime(x)).boxed()</span><br><span class="line">      .collect(Collectors.toList());</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> IntStream.rangeClosed(<span class="number">2</span>, (<span class="keyword">int</span>) (Math.sqrt(number)))</span><br><span class="line">      .filter(n -&gt; (n &amp; <span class="number">0X1</span>) != <span class="number">0</span>)</span><br><span class="line">      .allMatch(n -&gt; x % n != <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-4-Using-Sieve-Of-Eratosthenes-使用埃拉托斯特尼筛法"><a href="#3-4-Using-Sieve-Of-Eratosthenes-使用埃拉托斯特尼筛法" class="headerlink" title="3.4. Using Sieve Of Eratosthenes 使用埃拉托斯特尼筛法"></a>3.4. Using Sieve Of Eratosthenes 使用<a href="https://zh.wikipedia.org/zh-hans/%E5%9F%83%E6%8B%89%E6%89%98%E6%96%AF%E7%89%B9%E5%B0%BC%E7%AD%9B%E6%B3%95" target="_blank" rel="noopener">埃拉托斯特尼筛法</a></h3><blockquote>
+<p>埃拉托斯特尼筛法（希腊语：κόσκινον Ἐρατοσθένους，英语：sieve of Eratosthenes ），简称埃氏筛，也称素数筛。这是一种简单且历史悠久的筛法，用来找出一定范围内所有的素数。所使用的原理是从2开始，将每个素数的各个倍数，标记成合数。一个素数的各个倍数，是一个差为此素数本身的等差数列。此为这个筛法和试除法不同的关键之处，后者是以素数来测试每个待测数能否被整除。埃拉托斯特尼筛法是列出所有小素数最有效的方法之一，其名字来自于古希腊数学家埃拉托斯特尼，并且被描述在另一位古希腊数学家尼科马库斯所著的《算术入门》中。</p>
+</blockquote>
+<p>There’s yet another efficient method which could help us to generate prime numbers efficiently, and it’s called Sieve Of Eratosthenes. Its time efficiency is O(n logn).</p>
+<p>还有一种高效的方法能够帮助我们生成素数，这种方法叫埃拉托斯特尼筛法。它的时间复杂度是O(nlogn)。</p>
+<p>Let’s take a look at the steps of this algorithm:</p>
+<p>我们看一下这个算法的步骤：</p>
+<ol>
+<li><p>Create a list of consecutive integers from 2 to n: (2, 3, 4, …, n)</p>
+<p>从2到n生成一个连续的整数列表</p>
+</li>
+<li><p>Initially, let p be equal 2, the first prime number</p>
+<p> 最初状态下，令p等于2，也就是第一个素数。</p>
+</li>
+<li><p>Starting from p, count up in increments of p and mark each of these numbers greater than p itself in the list. These numbers will be 2p, 3p, 4p, etc.; note that some of them may have already been marked</p>
+<p> 从p开始，以p为增量进行计数，并将以p为增量计数形成的列表中的所有大于p的值标记起来，这些数字将会是2p，3p，4p等等的一些数字，注意，这里面的一些数字可能之前已经被标记过。</p>
+</li>
+<li><p>Find the first number greater than p in the list that is not marked. If there was no such number, stop. Otherwise, let p now equal this number (which is the next prime), and repeat from step 3</p>
+<p> 从2到根号n中找出第一个大于p而没有没被标记的数字，如果找不到，就结束查找，否则，就令p等于这个数（这就是下一个素数），然后重复步骤3.</p>
+</li>
+</ol>
+<p>At the end when the algorithm terminates, all the numbers in the list that are not marked are the prime numbers.</p>
+<p>在算法最终结束的时候，在2到n这个列表中所有未被标记的数字就是所有的素数。</p>
+<p>Here’s what the code looks like:</p>
+<p>看一眼代码是怎样写的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Integer&gt; <span class="title">sieveOfEratosthenes</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> prime[] = <span class="keyword">new</span> <span class="keyword">boolean</span>[n + <span class="number">1</span>];</span><br><span class="line">    Arrays.fill(prime, <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> p = <span class="number">2</span>; p * p &lt;= n; p++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (prime[p]) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = p * <span class="number">2</span>; i &lt;= n; i += p) &#123;</span><br><span class="line">                prime[i] = <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    List&lt;Integer&gt; primeNumbers = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (prime[i]) &#123;</span><br><span class="line">            primeNumbers.add(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> primeNumbers;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-5-Working-Example-of-Sieve-Of-Eratosthenes-埃拉托斯特尼筛法的工作实例"><a href="#3-5-Working-Example-of-Sieve-Of-Eratosthenes-埃拉托斯特尼筛法的工作实例" class="headerlink" title="3.5. Working Example of Sieve Of Eratosthenes 埃拉托斯特尼筛法的工作实例"></a>3.5. Working Example of Sieve Of Eratosthenes 埃拉托斯特尼筛法的工作实例</h3><p>Let’s see how it works for n=30.</p>
+<p>我们看一下n=30的情况下是如何工作的。</p>
+<p><img src="https://www.baeldung.com/wp-content/uploads/2017/11/Primes.jpg" alt="example"></p>
+<p>Consider the image above, here are the passes made by the algorithm:</p>
+<p>就上面这个图片来说，下面是通过这个算法验证的数：</p>
+<ol>
+<li><p>The loop starts with 2, so we leave 2 unmarked and mark all the divisors of 2. It’s marked in image with the red color</p>
+<p> 循环从2开始，所以我们不标记2，而是标记所有能被2整除的数，就是上面图片中所有红色标记的数字。</p>
+</li>
+<li><p>The loop moves to 3, so we leave 3 unmarked and mark all the divisors of 3 not already marked. It’s marked in image with the green color</p>
+<p> 循环走到了3这里，我们将3设置为非标记状态，然后将所有能被3整除但是还没有被标记的的数都标记起来，就是上面图片中使用绿色标记的数字。</p>
+</li>
+<li><p>Loop moves to 4, it’s already marked, so we continue</p>
+<p> 循环来到4这里，4已经被标记了，所以就跳过，然后循环继续。</p>
+</li>
+<li><p>Loop moves to 5, so we leave 5 unmarked and mark all the divisors of 5 not already marked. It’s marked in image with the purple color</p>
+<p> 循环来到5这里，我们将5设置为非标记状态，然后将所有能被5整除但是还有没被标记的数字标记起来，就是图片中的紫色的数字。</p>
+</li>
+<li><p>We continue above steps until loop is reached equal to square root of n</p>
+<p> 重复上面的步骤直到循环变量大于或等于根号n。</p>
+</li>
+</ol>
+<h2 id="4-Conclusion-总结"><a href="#4-Conclusion-总结" class="headerlink" title="4. Conclusion 总结"></a>4. Conclusion 总结</h2><p>In this quick tutorial, we illustrated ways in which we can generate prime numbers until ‘N’ value.</p>
+<p>在这个简短的教程中，我们指出了多种生成N值之下的所有素数的方式。</p>
+<p>The implementation of these examples can be found <a href="https://github.com/eugenp/tutorials/tree/master/java-numbers" target="_blank" rel="noopener">over on GitHub</a>.</p>
+<p>可以在Github上找到这些实例的具体实现方法。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/翻译/" rel="tag"># 翻译</a>
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/14/时间复杂度分析-下/" rel="next" title="时间复杂度分析-下">
+                <i class="fa fa-chevron-left"></i> 时间复杂度分析-下
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/19/MapReduceSourceCode-JobAndSplite/" rel="prev" title="MapReduce源码分析1-任务提交流程与切片">
+                MapReduce源码分析1-任务提交流程与切片 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Generating-Prime-Numbers-in-Java"><span class="nav-number">1.</span> <span class="nav-text">Generating Prime Numbers in Java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Introduction-简介"><span class="nav-number">2.</span> <span class="nav-text">1. Introduction 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Prime-Numbers-素数"><span class="nav-number">3.</span> <span class="nav-text">2. Prime Numbers 素数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Generating-Prime-Numbers-生成素数"><span class="nav-number">4.</span> <span class="nav-text">3. Generating Prime Numbers 生成素数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Java-7-And-Before-–-Brute-Force-Java7以及Java7之前，使用蛮力产生素数"><span class="nav-number">4.1.</span> <span class="nav-text">3.1. Java 7 And Before – Brute Force Java7以及Java7之前，使用蛮力产生素数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Efficiency-And-Optimization-效率和优化"><span class="nav-number">4.2.</span> <span class="nav-text">3.2. Efficiency And Optimization 效率和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-Using-Java-8-使用Java8"><span class="nav-number">5.</span> <span class="nav-text">3.3. Using Java 8 使用Java8</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-Using-Sieve-Of-Eratosthenes-使用埃拉托斯特尼筛法"><span class="nav-number">5.1.</span> <span class="nav-text">3.4. Using Sieve Of Eratosthenes 使用埃拉托斯特尼筛法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-Working-Example-of-Sieve-Of-Eratosthenes-埃拉托斯特尼筛法的工作实例"><span class="nav-number">5.2.</span> <span class="nav-text">3.5. Working Example of Sieve Of Eratosthenes 埃拉托斯特尼筛法的工作实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Conclusion-总结"><span class="nav-number">6.</span> <span class="nav-text">4. Conclusion 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="大数据,MapReduce,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="之前介绍了 MapReduce 的原理、 MapReduce 任务的提交与切片以及Map 任务的执行者MapTask相关的源码，知道了 MapReduce 的原理并了解了部分 Map 任务源码的实现，这里分析一下具体执行 Reduce 任务的 ReduceTask 的源码，看一下 Reduce 任务的具体源码实现。   这是 MapReduce 源码分析系列的第三篇文章，有关 MapReduce">
+<meta name="keywords" content="大数据,MapReduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MapReduce源码分析3-ReduceTask">
+<meta property="og:url" content="http://yoursite.com/2019/01/26/MapReduceSourcedoce-ReduceTask/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="之前介绍了 MapReduce 的原理、 MapReduce 任务的提交与切片以及Map 任务的执行者MapTask相关的源码，知道了 MapReduce 的原理并了解了部分 Map 任务源码的实现，这里分析一下具体执行 Reduce 任务的 ReduceTask 的源码，看一下 Reduce 任务的具体源码实现。   这是 MapReduce 源码分析系列的第三篇文章，有关 MapReduce">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MapReduce源码分析3-ReduceTask">
+<meta name="twitter:description" content="之前介绍了 MapReduce 的原理、 MapReduce 任务的提交与切片以及Map 任务的执行者MapTask相关的源码，知道了 MapReduce 的原理并了解了部分 Map 任务源码的实现，这里分析一下具体执行 Reduce 任务的 ReduceTask 的源码，看一下 Reduce 任务的具体源码实现。   这是 MapReduce 源码分析系列的第三篇文章，有关 MapReduce">
+<meta name="twitter:image" content="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/26/MapReduceSourcedoce-ReduceTask/">
+
+
+
+
+
+  <title>MapReduce源码分析3-ReduceTask | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/26/MapReduceSourcedoce-ReduceTask/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MapReduce源码分析3-ReduceTask</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-26T11:52:15+08:00">
+                2019-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/26/MapReduceSourcedoce-ReduceTask/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/26/MapReduceSourcedoce-ReduceTask/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ck9v4418d004i7ytt8dv0o3i6" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <blockquote>
+<p>之前介绍了 <a href="https://jiaoqiyuan.cn/2018/12/24/MapReduce%E7%9A%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">MapReduce 的原理</a>、 <a href="https://jiaoqiyuan.cn/2019/01/19/MapReduceSourceCode-JobAndSplite/" target="_blank" rel="noopener">MapReduce 任务的提交与切片</a>以及<a href="https://jiaoqiyuan.cn/2019/01/20/MapReduceSourceCode-MapTask/" target="_blank" rel="noopener">Map 任务的执行者MapTask</a>相关的源码，知道了 MapReduce 的原理并了解了部分 Map 任务源码的实现，这里分析一下具体执行 Reduce 任务的 ReduceTask 的源码，看一下 Reduce 任务的具体源码实现。</p>
+</blockquote>
+<blockquote>
+<p>这是 MapReduce 源码分析系列的第三篇文章，有关 MapReduce 相关的所有内容可以到<a href="https://jiaoqiyuan.cn/tags/MapReduce/" target="_blank" rel="noopener">这里</a>查看。</p>
+</blockquote>
+<hr>
+<p>之前看到了 MapTask 任务的具体执行流程，Map 任务执行的输出的一个或多个结果最终会交给 Reduce 端，由 Reduce 汇聚处理之后输出。现在就看一下 ReduceTask 的具体源码，看一下 Reduce 端都做了些什么事。这里有关 Shuffle 的代码先不分析，主要看 Reduce 端的实现。</p>
+<a id="more"></a>
+<h2 id="自定义-Reduce-处理逻辑-Reducer"><a href="#自定义-Reduce-处理逻辑-Reducer" class="headerlink" title="自定义 Reduce 处理逻辑 - Reducer"></a>自定义 Reduce 处理逻辑 - Reducer</h2><p>在编写 Reduce 端处理逻辑时一般需要继承 <code>org.apache.hadoop.mapreduce.Reducer</code> 类，然后重写 <code>reduce</code> 方法，就可以用自定义的 <code>reduce</code> 方法来处理数据了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LogReducer</span> <span class="keyword">extends</span> <span class="title">Reducer</span>&lt;<span class="title">TextLongWritable</span>, <span class="title">LogGenericWritable</span>, <span class="title">Text</span>, <span class="title">Text</span>&gt; </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(TextLongWritable key, Iterable&lt;LogGenericWritable&gt; values, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            ......</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Reducer类中有一个 <code>run</code> 方法，reduce函数就是在那里被调用的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Advanced application writers can use the </span></span><br><span class="line"><span class="comment">  * &#123;<span class="doctag">@link</span> #run(org.apache.hadoop.mapreduce.Reducer.Context)&#125; method to</span></span><br><span class="line"><span class="comment">  * control how the reduce task works.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">  setup(context);</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (context.nextKey()) &#123;</span><br><span class="line">      reduce(context.getCurrentKey(), context.getValues(), context);</span><br><span class="line">      <span class="comment">// If a back up store is used, reset it</span></span><br><span class="line">      Iterator&lt;VALUEIN&gt; iter = context.getValues().iterator();</span><br><span class="line">      <span class="keyword">if</span>(iter <span class="keyword">instanceof</span> ReduceContext.ValueIterator) &#123;</span><br><span class="line">        ((ReduceContext.ValueIterator&lt;VALUEIN&gt;)iter).resetBackupStore();        </span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    cleanup(context);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有关 <code>context</code> 上下文的介绍可以参考 <a href="https://jiaoqiyuan.cn/2019/01/20/MapReduceSourceCode-MapTask/" target="_blank" rel="noopener">MapTask源码</a> 那篇文章，这里需要注意的一点是 reduce 端最终汇聚到一个 Reduce 数据量可能会远远超出系统内存，Reduce 是怎么处理这种情况的？</p>
+<p>下面开始看一下 ReduceTask 这个类。</p>
+<h2 id="Reduce-任务的实际执行者-ReduceTask"><a href="#Reduce-任务的实际执行者-ReduceTask" class="headerlink" title="Reduce 任务的实际执行者 - ReduceTask"></a>Reduce 任务的实际执行者 - ReduceTask</h2><p>跟 MapTask 一样，ReduceTask 会从run方法开始执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(JobConf job, <span class="keyword">final</span> TaskUmbilicalProtocol umbilical)</span></span></span><br><span class="line"><span class="function">  <span class="keyword">throws</span> IOException, InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">  job.setBoolean(JobContext.SKIP_RECORDS, isSkipping());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isMapOrReduce()) &#123;</span><br><span class="line">    copyPhase = getProgress().addPhase(<span class="string">"copy"</span>);</span><br><span class="line">    sortPhase  = getProgress().addPhase(<span class="string">"sort"</span>);</span><br><span class="line">    reducePhase = getProgress().addPhase(<span class="string">"reduce"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// start thread that will handle communication with parent</span></span><br><span class="line">  TaskReporter reporter = startReporter(umbilical);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">boolean</span> useNewApi = job.getUseNewReducer();</span><br><span class="line">  initialize(job, getJobID(), reporter, useNewApi);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// check if it is a cleanupJobTask</span></span><br><span class="line">  <span class="keyword">if</span> (jobCleanup) &#123;</span><br><span class="line">    runJobCleanupTask(umbilical, reporter);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (jobSetup) &#123;</span><br><span class="line">    runJobSetupTask(umbilical, reporter);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (taskCleanup) &#123;</span><br><span class="line">    runTaskCleanupTask(umbilical, reporter);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Initialize the codec</span></span><br><span class="line">  codec = initCodec();</span><br><span class="line">  RawKeyValueIterator rIter = <span class="keyword">null</span>;</span><br><span class="line">  ShuffleConsumerPlugin shuffleConsumerPlugin = <span class="keyword">null</span>;</span><br><span class="line">  </span><br><span class="line">  Class combinerClass = conf.getCombinerClass();</span><br><span class="line">  CombineOutputCollector combineCollector = </span><br><span class="line">    (<span class="keyword">null</span> != combinerClass) ? </span><br><span class="line">    <span class="keyword">new</span> CombineOutputCollector(reduceCombineOutputCounter, reporter, conf) : <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">  Class&lt;? extends ShuffleConsumerPlugin&gt; clazz =</span><br><span class="line">        job.getClass(MRConfig.SHUFFLE_CONSUMER_PLUGIN, Shuffle.class, ShuffleConsumerPlugin.class);</span><br><span class="line">        </span><br><span class="line">  shuffleConsumerPlugin = ReflectionUtils.newInstance(clazz, job);</span><br><span class="line">  LOG.info(<span class="string">"Using ShuffleConsumerPlugin: "</span> + shuffleConsumerPlugin);</span><br><span class="line"></span><br><span class="line">  ShuffleConsumerPlugin.Context shuffleContext = </span><br><span class="line">    <span class="keyword">new</span> ShuffleConsumerPlugin.Context(getTaskID(), job, FileSystem.getLocal(job), umbilical, </span><br><span class="line">                <span class="keyword">super</span>.lDirAlloc, reporter, codec, </span><br><span class="line">                combinerClass, combineCollector, </span><br><span class="line">                spilledRecordsCounter, reduceCombineInputCounter,</span><br><span class="line">                shuffledMapsCounter,</span><br><span class="line">                reduceShuffleBytes, failedShuffleCounter,</span><br><span class="line">                mergedMapOutputsCounter,</span><br><span class="line">                taskStatus, copyPhase, sortPhase, <span class="keyword">this</span>,</span><br><span class="line">                mapOutputFile, localMapFiles);</span><br><span class="line">  shuffleConsumerPlugin.init(shuffleContext);</span><br><span class="line"></span><br><span class="line">  rIter = shuffleConsumerPlugin.run();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// free up the data structures</span></span><br><span class="line">  mapOutputFilesOnDisk.clear();</span><br><span class="line">  </span><br><span class="line">  sortPhase.complete();                         <span class="comment">// sort is complete</span></span><br><span class="line">  setPhase(TaskStatus.Phase.REDUCE); </span><br><span class="line">  statusUpdate(umbilical);</span><br><span class="line">  Class keyClass = job.getMapOutputKeyClass();</span><br><span class="line">  Class valueClass = job.getMapOutputValueClass();</span><br><span class="line">  RawComparator comparator = job.getOutputValueGroupingComparator();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (useNewApi) &#123;</span><br><span class="line">    runNewReducer(job, umbilical, reporter, rIter, comparator, </span><br><span class="line">                  keyClass, valueClass);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    runOldReducer(job, umbilical, reporter, rIter, comparator, </span><br><span class="line">                  keyClass, valueClass);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  shuffleConsumerPlugin.close();</span><br><span class="line">  done(umbilical, reporter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Reduce-端的输入迭代器"><a href="#Reduce-端的输入迭代器" class="headerlink" title="Reduce 端的输入迭代器"></a>Reduce 端的输入迭代器</h3><p>这里面有一个 <code>RawKeyValueIterator</code> 类型的迭代器，用于迭代 Reduce 端的输入数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(JobConf job, <span class="keyword">final</span> TaskUmbilicalProtocol umbilical)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException, InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    RawKeyValueIterator rIter = <span class="keyword">null</span>;</span><br><span class="line">    rIter = shuffleConsumerPlugin.run();</span><br><span class="line">    ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>shuffleConsumerPlugin.run()</code> 运行 Shuffle 从多个 Map 中拉取数据到 Reduce 端，供 Reduce 消费。</p>
+<h3 id="Reduce-端的-RawComparator-分组比较器"><a href="#Reduce-端的-RawComparator-分组比较器" class="headerlink" title="Reduce 端的 RawComparator 分组比较器"></a>Reduce 端的 <code>RawComparator</code> 分组比较器</h3><p>MapTask 中的 <code>run</code> 方法下还有一个设置分组比较器的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(JobConf job, <span class="keyword">final</span> TaskUmbilicalProtocol umbilical)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException, InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    RawComparator comparator = job.getOutputValueGroupingComparator();</span><br><span class="line">    ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>设置分组比较器的作用是为 reduce 进行分组， <code>getOutputValueGroupingComparator</code> 的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">  * Get the user defined &#123;<span class="doctag">@link</span> WritableComparable&#125; comparator for </span></span><br><span class="line"><span class="comment">  * grouping keys of inputs to the reduce.</span></span><br><span class="line"><span class="comment">  * </span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> comparator set by the user for grouping values.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@see</span> #setOutputValueGroupingComparator(Class) for details.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RawComparator <span class="title">getOutputValueGroupingComparator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Class&lt;? extends RawComparator&gt; theClass = getClass(</span><br><span class="line">    JobContext.GROUP_COMPARATOR_CLASS, <span class="keyword">null</span>, RawComparator.class);</span><br><span class="line">  <span class="keyword">if</span> (theClass == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> getOutputKeyComparator();</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> ReflectionUtils.newInstance(theClass, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先通过 <code>GROUP_COMPARATOR_CLASS</code> 看一下用户有没有配置分组比较器，如果有就使用用户自定义分组比较器，如果没有就调用 <code>getOutputKeyComparator()</code> 返回一个默认的分组比较器。</p>
+<p>看一下默认的分组比较器是什么，进入 <code>getOutputKeyComparator</code>，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Get the &#123;<span class="doctag">@link</span> RawComparator&#125; comparator used to compare keys.</span></span><br><span class="line"><span class="comment">  * </span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> the &#123;<span class="doctag">@link</span> RawComparator&#125; comparator used to compare keys.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RawComparator <span class="title">getOutputKeyComparator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Class&lt;? extends RawComparator&gt; theClass = getClass(</span><br><span class="line">    JobContext.KEY_COMPARATOR, <span class="keyword">null</span>, RawComparator.class);</span><br><span class="line">  <span class="keyword">if</span> (theClass != <span class="keyword">null</span>)</span><br><span class="line">    <span class="keyword">return</span> ReflectionUtils.newInstance(theClass, <span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">return</span> WritableComparator.get(getMapOutputKeyClass().asSubclass(WritableComparable.class), <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>getOutputKeyComparator</code> 中如果用户设置了 <code>KEY_COMPARATOR</code>，就用用户自定义的 Key 比较器，如果用户没有定义Key比较器，就使用 map 端的key比较器进行分组。</p>
+<h3 id="runNewReducer-进入reduce任务"><a href="#runNewReducer-进入reduce任务" class="headerlink" title="runNewReducer 进入reduce任务"></a><code>runNewReducer</code> 进入reduce任务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">private</span> &lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">runNewReducer</span><span class="params">(JobConf job,</span></span></span><br><span class="line"><span class="function"><span class="params">                  <span class="keyword">final</span> TaskUmbilicalProtocol umbilical,</span></span></span><br><span class="line"><span class="function"><span class="params">                  <span class="keyword">final</span> TaskReporter reporter,</span></span></span><br><span class="line"><span class="function"><span class="params">                  RawKeyValueIterator rIter,</span></span></span><br><span class="line"><span class="function"><span class="params">                  RawComparator&lt;INKEY&gt; comparator,</span></span></span><br><span class="line"><span class="function"><span class="params">                  Class&lt;INKEY&gt; keyClass,</span></span></span><br><span class="line"><span class="function"><span class="params">                  Class&lt;INVALUE&gt; valueClass</span></span></span><br><span class="line"><span class="function"><span class="params">                  )</span> <span class="keyword">throws</span> IOException,InterruptedException, </span></span><br><span class="line"><span class="function">                          ClassNotFoundException </span>&#123;</span><br><span class="line">  ...  </span><br><span class="line">  <span class="comment">// make a task context so we can get the classes</span></span><br><span class="line">  org.apache.hadoop.mapreduce.TaskAttemptContext taskContext =</span><br><span class="line">    <span class="keyword">new</span> org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl(job,</span><br><span class="line">        getTaskID(), reporter);</span><br><span class="line">  <span class="comment">// make a reducer</span></span><br><span class="line">  org.apache.hadoop.mapreduce.Reducer&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt; reducer =</span><br><span class="line">    (org.apache.hadoop.mapreduce.Reducer&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;)</span><br><span class="line">      ReflectionUtils.newInstance(taskContext.getReducerClass(), job);</span><br><span class="line">  org.apache.hadoop.mapreduce.RecordWriter&lt;OUTKEY,OUTVALUE&gt; trackedRW = </span><br><span class="line">    <span class="keyword">new</span> NewTrackingRecordWriter&lt;OUTKEY, OUTVALUE&gt;(<span class="keyword">this</span>, taskContext);</span><br><span class="line">  job.setBoolean(<span class="string">"mapred.skip.on"</span>, isSkipping());</span><br><span class="line">  job.setBoolean(JobContext.SKIP_RECORDS, isSkipping());</span><br><span class="line">  org.apache.hadoop.mapreduce.Reducer.Context </span><br><span class="line">        reducerContext = createReduceContext(reducer, job, getTaskID(),</span><br><span class="line">                                              rIter, reduceInputKeyCounter, </span><br><span class="line">                                              reduceInputValueCounter, </span><br><span class="line">                                              trackedRW,</span><br><span class="line">                                              committer,</span><br><span class="line">                                              reporter, comparator, keyClass,</span><br><span class="line">                                              valueClass);</span><br><span class="line">    ...                                      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>runNewReducer</code> 中，先获取上下文、反射获取 Reducer 对象，最后创建 <code>reducerContext</code> 上下文，这是关键，下面看一下创建 <code>reducerContext</code> 的 <code>createReduceContext()</code> 是怎么实现的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">static</span> &lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt; </span><br><span class="line">org.apache.hadoop.mapreduce.Reducer&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;.Context</span><br><span class="line">createReduceContext(org.apache.hadoop.mapreduce.Reducer</span><br><span class="line">                      &lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt; reducer,</span><br><span class="line">                    Configuration job,</span><br><span class="line">                    org.apache.hadoop.mapreduce.TaskAttemptID taskId, </span><br><span class="line">                    RawKeyValueIterator rIter,</span><br><span class="line">                    org.apache.hadoop.mapreduce.Counter inputKeyCounter,</span><br><span class="line">                    org.apache.hadoop.mapreduce.Counter inputValueCounter,</span><br><span class="line">                    org.apache.hadoop.mapreduce.RecordWriter&lt;OUTKEY,OUTVALUE&gt; output, </span><br><span class="line">                    org.apache.hadoop.mapreduce.OutputCommitter committer,</span><br><span class="line">                    org.apache.hadoop.mapreduce.StatusReporter reporter,</span><br><span class="line">                    RawComparator&lt;INKEY&gt; comparator,</span><br><span class="line">                    Class&lt;INKEY&gt; keyClass, Class&lt;INVALUE&gt; valueClass</span><br><span class="line">) <span class="keyword">throws</span> IOException, InterruptedException &#123;</span><br><span class="line">  org.apache.hadoop.mapreduce.ReduceContext&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt; </span><br><span class="line">  reduceContext = </span><br><span class="line">    <span class="keyword">new</span> ReduceContextImpl&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt;(job, taskId, </span><br><span class="line">                                                            rIter, </span><br><span class="line">                                                            inputKeyCounter, </span><br><span class="line">                                                            inputValueCounter, </span><br><span class="line">                                                            output, </span><br><span class="line">                                                            committer, </span><br><span class="line">                                                            reporter, </span><br><span class="line">                                                            comparator, </span><br><span class="line">                                                            keyClass, </span><br><span class="line">                                                            valueClass);</span><br><span class="line"></span><br><span class="line">  org.apache.hadoop.mapreduce.Reducer&lt;INKEY,INVALUE,OUTKEY,OUTVALUE&gt;.Context </span><br><span class="line">      reducerContext = </span><br><span class="line">        <span class="keyword">new</span> WrappedReducer&lt;INKEY, INVALUE, OUTKEY, OUTVALUE&gt;().getReducerContext(</span><br><span class="line">            reduceContext);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> reducerContext;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里创建了 ReduceContextImpl 类的对象 <code>reduceContext</code>，然后由 <code>reduceContext</code> 创建出 <code>reducerContext</code> 返回。ReduceContextImpl 具体实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ReduceContextImpl</span><span class="params">(Configuration conf, TaskAttemptID taskid,</span></span></span><br><span class="line"><span class="function"><span class="params">                          RawKeyValueIterator input, </span></span></span><br><span class="line"><span class="function"><span class="params">                          Counter inputKeyCounter,</span></span></span><br><span class="line"><span class="function"><span class="params">                          Counter inputValueCounter,</span></span></span><br><span class="line"><span class="function"><span class="params">                          RecordWriter&lt;KEYOUT,VALUEOUT&gt; output,</span></span></span><br><span class="line"><span class="function"><span class="params">                          OutputCommitter committer,</span></span></span><br><span class="line"><span class="function"><span class="params">                          StatusReporter reporter,</span></span></span><br><span class="line"><span class="function"><span class="params">                          RawComparator&lt;KEYIN&gt; comparator,</span></span></span><br><span class="line"><span class="function"><span class="params">                          Class&lt;KEYIN&gt; keyClass,</span></span></span><br><span class="line"><span class="function"><span class="params">                          Class&lt;VALUEIN&gt; valueClass</span></span></span><br><span class="line"><span class="function"><span class="params">                        )</span> <span class="keyword">throws</span> InterruptedException, IOException</span>&#123;</span><br><span class="line">  <span class="keyword">super</span>(conf, taskid, output, committer, reporter);</span><br><span class="line">  <span class="keyword">this</span>.input = input;</span><br><span class="line">  <span class="keyword">this</span>.inputKeyCounter = inputKeyCounter;</span><br><span class="line">  <span class="keyword">this</span>.inputValueCounter = inputValueCounter;</span><br><span class="line">  <span class="keyword">this</span>.comparator = comparator;</span><br><span class="line">  <span class="keyword">this</span>.serializationFactory = <span class="keyword">new</span> SerializationFactory(conf);</span><br><span class="line">  <span class="keyword">this</span>.keyDeserializer = serializationFactory.getDeserializer(keyClass);</span><br><span class="line">  <span class="keyword">this</span>.keyDeserializer.open(buffer);</span><br><span class="line">  <span class="keyword">this</span>.valueDeserializer = serializationFactory.getDeserializer(valueClass);</span><br><span class="line">  <span class="keyword">this</span>.valueDeserializer.open(buffer);</span><br><span class="line">  hasMore = input.next();</span><br><span class="line">  <span class="keyword">this</span>.keyClass = keyClass;</span><br><span class="line">  <span class="keyword">this</span>.valueClass = valueClass;</span><br><span class="line">  <span class="keyword">this</span>.conf = conf;</span><br><span class="line">  <span class="keyword">this</span>.taskid = taskid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里就是根据参数调用构造函数创建出一个 ReduceContextImpl 对象，需要特别注意的是这里的 input，其实就是 Reducer 中调用的 <code>context.nextKey()</code> 时的输入迭代器。</p>
+<h2 id="Reduce中的-nextKey-getCurrentKey-getValues"><a href="#Reduce中的-nextKey-getCurrentKey-getValues" class="headerlink" title="Reduce中的 nextKey getCurrentKey getValues"></a>Reduce中的 <code>nextKey getCurrentKey getValues</code></h2><p>ReduceContextImpl 中还有 <code>nextKey</code> 、 <code>getCurrentKey</code>、<code>getValues</code> 方法的具体实现。</p>
+<h3 id="nextKey"><a href="#nextKey" class="headerlink" title="nextKey"></a>nextKey</h3><p>以nextKey为例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Start processing next unique key. */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">nextKey</span><span class="params">()</span> <span class="keyword">throws</span> IOException,InterruptedException </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (hasMore &amp;&amp; nextKeyIsSame) &#123;</span><br><span class="line">    nextKeyValue();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (hasMore) &#123;</span><br><span class="line">    <span class="keyword">if</span> (inputKeyCounter != <span class="keyword">null</span>) &#123;</span><br><span class="line">      inputKeyCounter.increment(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> nextKeyValue();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先判断是否还有输入数据，如果有数据而且下一个数据的key跟当前的key相同，就直接调用 <code>nextKeyValue</code> 寻找下一个数据，如果有数据但是跟当前的key不相同，就将记录key数量的计数器加1，然后再寻找下一个数据。</p>
+<p>看一下 <code>nextKeyValue</code> 的具体实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Advance to the next key/value pair.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">nextKeyValue</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!hasMore) &#123;</span><br><span class="line">    key = <span class="keyword">null</span>;</span><br><span class="line">    value = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  firstValue = !nextKeyIsSame;</span><br><span class="line">  DataInputBuffer nextKey = input.getKey();</span><br><span class="line">  currentRawKey.set(nextKey.getData(), nextKey.getPosition(), </span><br><span class="line">                    nextKey.getLength() - nextKey.getPosition());</span><br><span class="line">  buffer.reset(currentRawKey.getBytes(), <span class="number">0</span>, currentRawKey.getLength());</span><br><span class="line">  key = keyDeserializer.deserialize(key);</span><br><span class="line">  DataInputBuffer nextVal = input.getValue();</span><br><span class="line">  buffer.reset(nextVal.getData(), nextVal.getPosition(), nextVal.getLength()</span><br><span class="line">      - nextVal.getPosition());</span><br><span class="line">  value = valueDeserializer.deserialize(value);</span><br><span class="line"></span><br><span class="line">  currentKeyLength = nextKey.getLength() - nextKey.getPosition();</span><br><span class="line">  currentValueLength = nextVal.getLength() - nextVal.getPosition();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isMarked) &#123;</span><br><span class="line">    backupStore.write(nextKey, nextVal);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//判断是否还有数据</span></span><br><span class="line">  hasMore = input.next();</span><br><span class="line">  <span class="keyword">if</span> (hasMore) &#123;</span><br><span class="line">    nextKey = input.getKey();</span><br><span class="line">    nextKeyIsSame = comparator.compare(currentRawKey.getBytes(), <span class="number">0</span>, </span><br><span class="line">                                    currentRawKey.getLength(),</span><br><span class="line">                                    nextKey.getData(),</span><br><span class="line">                                    nextKey.getPosition(),</span><br><span class="line">                                    nextKey.getLength() - nextKey.getPosition()</span><br><span class="line">                                        ) == <span class="number">0</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    nextKeyIsSame = <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  inputValueCounter.increment(<span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实 <code>nextKeyValue</code> 的主要功能就是寻找下一个数据</p>
+<p>nextKeyValue 做的事情有：</p>
+<ol>
+<li><p>如果hasMore为假表示没有数据了，就清空 key 和 value 的值，直接返回false；如果hasMore为真就继续往下走。</p>
+</li>
+<li><p>读取数据，先进性反序列化，对key和value赋值。</p>
+</li>
+<li><p>判断是否还有数据，如果有就比较当前 key 和下一条数据中的 key 是否相等，如果相等，nextKeyIsSame为true，如果不相等，nextKeyIsSame为false。</p>
+</li>
+<li><p>最后没调用一个nextKeyValue， <code>inputValueCounter</code> 计数器就加1.</p>
+</li>
+</ol>
+<h3 id="getCurrentKey"><a href="#getCurrentKey" class="headerlink" title="getCurrentKey"></a>getCurrentKey</h3><p>getCurrentKey 直接返回key就行了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> KEYIN <span class="title">getCurrentKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> key;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="getValues"><a href="#getValues" class="headerlink" title="getValues"></a>getValues</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ValueIterable iterable = <span class="keyword">new</span> ValueIterable();</span><br><span class="line">...</span><br><span class="line"><span class="keyword">public</span> </span><br><span class="line"><span class="function">Iterable&lt;VALUEIN&gt; <span class="title">getValues</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> iterable;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里直接返回了一个 <code>iterable</code> 内部类 ValueIterable.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="class"><span class="keyword">class</span> <span class="title">ValueIterable</span> <span class="keyword">implements</span> <span class="title">Iterable</span>&lt;<span class="title">VALUEIN</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> ValueIterator iterator = <span class="keyword">new</span> ValueIterator();</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Iterator&lt;VALUEIN&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> iterator;</span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而 ValueIterable 中有创建了一个 ValueIterator 的内部类， ValueIterator实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="class"><span class="keyword">class</span> <span class="title">ValueIterator</span> <span class="keyword">implements</span> <span class="title">ReduceContext</span>.<span class="title">ValueIterator</span>&lt;<span class="title">VALUEIN</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> inReset = <span class="keyword">false</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> clearMarkFlag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (inReset &amp;&amp; backupStore.hasNext()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125; </span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"hasNext failed"</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> firstValue || nextKeyIsSame;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> VALUEIN <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (inReset) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (backupStore.hasNext()) &#123;</span><br><span class="line">          backupStore.next();</span><br><span class="line">          DataInputBuffer next = backupStore.nextValue();</span><br><span class="line">          buffer.reset(next.getData(), next.getPosition(), next.getLength()</span><br><span class="line">              - next.getPosition());</span><br><span class="line">          value = valueDeserializer.deserialize(value);</span><br><span class="line">          <span class="keyword">return</span> value;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          inReset = <span class="keyword">false</span>;</span><br><span class="line">          backupStore.exitResetMode();</span><br><span class="line">          <span class="keyword">if</span> (clearMarkFlag) &#123;</span><br><span class="line">            clearMarkFlag = <span class="keyword">false</span>;</span><br><span class="line">            isMarked = <span class="keyword">false</span>;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"next value iterator failed"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// if this is the first record, we don't need to advance</span></span><br><span class="line">    <span class="keyword">if</span> (firstValue) &#123;</span><br><span class="line">      firstValue = <span class="keyword">false</span>;</span><br><span class="line">      <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// if this isn't the first record and the next key is different, they</span></span><br><span class="line">    <span class="comment">// can't advance it here.</span></span><br><span class="line">    <span class="keyword">if</span> (!nextKeyIsSame) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException(<span class="string">"iterate past last value"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// otherwise, go to the next key/value pair</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      nextKeyValue();</span><br><span class="line">      <span class="keyword">return</span> value;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException ie) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"next value iterator failed"</span>, ie);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException ie) &#123;</span><br><span class="line">      <span class="comment">// this is bad, but we can't modify the exception list of java.util</span></span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"next value iterator interrupted"</span>, ie);        </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">"remove not implemented"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里面比较重要的时 <code>next</code> 和 <code>hasNext</code> 方法， <code>hasNext</code> 方法通过 <code>firstValue || nextKeyIsSame</code> 知道接下来还有没有数据可以使用，这里使用 <code>nextKeyIsSame</code> 作为条件是因为Reduce处理数据迭代器是针对相同 key 的数据放入同一个迭代器中，所以在实现时就采用 <code>nextKeyIsSame</code> 来判断下一个是否还有相同 key 值的数据可供读取。</p>
+<p>ValueIterator 中的 <code>next</code> 方法最终调用的还是 ReduceContextImpl 中的 <code>nextKeyValue</code> 方法，因为最终读取数据还是要使用 ReduceContextImpl 中的 input，只不过用 <code>nextKeyIsSame</code> 来判断要不要放到同一个迭代器中给用户使用而已。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Reduce端通过迭代器一次读取两条数据，第一条用于读取数据，第二条用于判断第二条数据是否交由同一个Reduce进行处理。所以即使数据量在Reduce端再大，也不会导致内存不足的情况发生，因为我们一次只需要能够存放两条数据的剩余内存即可，通过反复迭代，达到处理所有数据的效果。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/大数据/" rel="tag"># 大数据</a>
+          
+            <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/25/Codeabbey网站-涉及算法相关的题/" rel="next" title="Codeabbey网站-涉及算法相关的题">
+                <i class="fa fa-chevron-left"></i> Codeabbey网站-涉及算法相关的题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/26/discussing-docker-pros-and-cons/" rel="prev" title="Docker技术的优缺点">
+                Docker技术的优缺点 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义-Reduce-处理逻辑-Reducer"><span class="nav-number">1.</span> <span class="nav-text">自定义 Reduce 处理逻辑 - Reducer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reduce-任务的实际执行者-ReduceTask"><span class="nav-number">2.</span> <span class="nav-text">Reduce 任务的实际执行者 - ReduceTask</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reduce-端的输入迭代器"><span class="nav-number">2.1.</span> <span class="nav-text">Reduce 端的输入迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reduce-端的-RawComparator-分组比较器"><span class="nav-number">2.2.</span> <span class="nav-text">Reduce 端的 RawComparator 分组比较器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runNewReducer-进入reduce任务"><span class="nav-number">2.3.</span> <span class="nav-text">runNewReducer 进入reduce任务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reduce中的-nextKey-getCurrentKey-getValues"><span class="nav-number">3.</span> <span class="nav-text">Reduce中的 nextKey getCurrentKey getValues</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nextKey"><span class="nav-number">3.1.</span> <span class="nav-text">nextKey</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getCurrentKey"><span class="nav-number">3.2.</span> <span class="nav-text">getCurrentKey</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getValues"><span class="nav-number">3.3.</span> <span class="nav-text">getValues</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

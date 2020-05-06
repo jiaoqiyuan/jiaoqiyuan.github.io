@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="git,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近在面试中碰到了Git使用的问题，自己答得并不好，这里总结一下git的使用方法，给自己也给需要的人看一下。">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git使用笔记">
+<meta property="og:url" content="http://yoursite.com/2019/03/17/git使用笔记/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="最近在面试中碰到了Git使用的问题，自己答得并不好，这里总结一下git的使用方法，给自己也给需要的人看一下。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://git-scm.com/images/branching-illustration@2x.png">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git使用笔记">
+<meta name="twitter:description" content="最近在面试中碰到了Git使用的问题，自己答得并不好，这里总结一下git的使用方法，给自己也给需要的人看一下。">
+<meta name="twitter:image" content="https://git-scm.com/images/branching-illustration@2x.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/17/git使用笔记/">
+
+
+
+
+
+  <title>Git使用笔记 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/git使用笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git使用笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-17T13:11:12+08:00">
+                2019-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/17/git使用笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/03/17/git使用笔记/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://git-scm.com/images/branching-illustration@2x.png" rel="gallery_ck9v4416k00327yttgdckhsdu" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://git-scm.com/images/branching-illustration@2x.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <blockquote>
+<p>最近在面试中碰到了Git使用的问题，自己答得并不好，这里总结一下git的使用方法，给自己也给需要的人看一下。</p>
+</blockquote>
+<hr>
+<a id="more"></a>
+<h2 id="Git的由来"><a href="#Git的由来" class="headerlink" title="Git的由来"></a>Git的由来</h2><p>Git是Linus开发的用于托管Linux源码的版本控制系统，git出现之前，Linux的源码都是托管在一个叫做BitKeeper的版本控制系统之上的，不过由于Linux开发者试图破解BitKeeper的协议导致BitKeeper公司的不满，于是收回了Linux免费使用BitKeeper的权限。Linus大怒，于是自己花了两周开发了一套版本控制系统，就是最早期的Git，牛就一个字！</p>
+<h2 id="Git与传统版本控制系统（如SVN）的区别"><a href="#Git与传统版本控制系统（如SVN）的区别" class="headerlink" title="Git与传统版本控制系统（如SVN）的区别"></a>Git与传统版本控制系统（如SVN）的区别</h2><p>传统版本控制系统一般就是指集中式控制系统，版本库在中央服务器中存放，我们需要先从中央服务器中拿到代码，再进行编辑后重新上传到中央服务器中。这里系统最大的问题是需要联网才能工作，如果网络有故障或者网速很慢，会比较蛋疼。</p>
+<p>以Git为代表的分布式版本控制系统去掉了中央服务器的概念，每个人的电脑就是自己的”中央服务器”，你只需要把需要进行版本控制的代码放到本地电脑，不需要联网就能工作了。那你可能会问，只在自己电脑上进行版本控制，那怎么进行多人协作呢？别急，要进行多人协作只需要连根网线，把各自的修改推送给对方就可以了。</p>
+<p>集中式和分布式版本控制系统的区别主要在于，分布式版本控制系统安全性要更高一些，因为每个人的电脑中都有一份完整的代码库，任何一个人的电脑坏掉都不要紧，从其他人电脑中拉取一份就可以了。但是集中式版本控制系统如果中央服务器挂了，所有人就都别干活了。</p>
+<p>Git在实际使用中，很少在两个人之间直接推送版本库的修改，而是使用一台公共主机作为中间存储机，每个人都将自己的修改推送到这台中间机上，同时从这台中间机上更新代码到本地上来。</p>
+<p>类似于这样：</p>
+<p><img src="https://github.com/jiaoqiyuan/pics/raw/master/git_note/git_dis.jpeg" alt="1"></p>
+<p>另外Git还有强大的分支管理系统，远比SVN优秀。</p>
+<p>Git还免费！</p>
+<h2 id="Git安装"><a href="#Git安装" class="headerlink" title="Git安装"></a>Git安装</h2><p>只讲以Ubuntu为代表的Linux系统下的安装方法吧，其他系统自行google吧。</p>
+<p>一个命令搞定：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ol>
+<li><p>配置git</p>
+<p> 一些标识信息：</p>
+ <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">conf</span> --<span class="keyword">global</span> user.name <span class="string">"jony"</span></span><br><span class="line">git <span class="keyword">conf</span> --<span class="keyword">global</span> user.email <span class="string">"jony@jony.com"</span></span><br></pre></td></tr></table></figure>
+<p> 这里的global表示的是配置级别，Git一共有三个配置级别：</p>
+<ul>
+<li><p>–local 【默认,高优先级】只影响本地仓库。配置内容会放在当前文件夹的config文件中：<code>.git/config</code></p>
+</li>
+<li><p>–global 【中优先级】会影响到所有当前用户的Git仓库，配置内容存放在<code>~/.gitconfig</code></p>
+</li>
+<li><p>–system 【低优先级】影响系统所有的git仓库，配置内容存放在 <code>/etc/gitconfig</code></p>
+</li>
+</ul>
+</li>
+<li><p>初始化仓库init</p>
+ <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">➜  git_test git:(master) tree -a</span><br><span class="line">.</span><br><span class="line">└── .git</span><br><span class="line">    ├── HEAD</span><br><span class="line">    ├── branches</span><br><span class="line">    ├── config</span><br><span class="line">    ├── description</span><br><span class="line">    ├── hooks</span><br><span class="line">    │   ├── applypatch-msg.sample</span><br><span class="line">    │   ├── commit-msg.sample</span><br><span class="line">    │   ├── fsmonitor-watchman.sample</span><br><span class="line">    │   ├── post-update.sample</span><br><span class="line">    │   ├── pre-applypatch.sample</span><br><span class="line">    │   ├── pre-commit.sample</span><br><span class="line">    │   ├── pre-push.sample</span><br><span class="line">    │   ├── pre-rebase.sample</span><br><span class="line">    │   ├── pre-receive.sample</span><br><span class="line">    │   ├── prepare-commit-msg.sample</span><br><span class="line">    │   └── update.sample</span><br><span class="line">    ├── info</span><br><span class="line">    │   └── exclude</span><br><span class="line">    ├── objects</span><br><span class="line">    │   ├── info</span><br><span class="line">    │   └── pack</span><br><span class="line">    └── refs</span><br><span class="line">        ├── heads</span><br><span class="line">        └── tags</span><br><span class="line"><span class="number">10</span> directories, <span class="number">15</span> files</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看版本库状态git status</p>
+<p> 在介绍git status命令之前需要明白git进行版本控制的基础，git将文件状态分为未跟踪和已跟踪两部分，另外将版本库在不同状态下又分为三个工作区域，分别是工作区、暂存区和提交区。</p>
+<p> Git是先将工作区也就是版本库所在目录下的文件加入到暂存区，当暂存区的文件添加到一定量时由用户再将暂存区的文件一并加入到提交区，进入提交区的文件就可以被Git管控，进行版本控制了。</p>
+<p> 另外加入远程地址后，还可以把提交区的文件内容推送到远程仓库，从而与他人协作开发。</p>
+<p> <img src="https://github.com/jiaoqiyuan/pics/raw/master/git_note/git_status.png" alt="2"></p>
+<p> git status就是用于查看当前版本控制库的状态的命令，通过这个命令可以看到你当前的版本库到底处于上图中的那个状态下。</p>
+<p> 我切换到了另一个自己的git项目下，使用<code>git status</code>命令查看当前版本库状态：</p>
+ <figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">➜  pics git:(master) git status </span><br><span class="line"><span class="keyword">On</span> branch master</span><br><span class="line">Your branch <span class="keyword">is</span> up-<span class="keyword">to</span>-<span class="built_in">date</span> <span class="keyword">with</span> <span class="comment">'origin/master'.</span></span><br><span class="line"><span class="literal">nothing</span> <span class="keyword">to</span> commit, working directory clean</span><br></pre></td></tr></table></figure>
+<p> 在该目录下添加一个文件：</p>
+ <figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  pics git:(master) touch <span class="keyword">a</span></span><br><span class="line">➜  pics git:(master) ✗ git status </span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-<span class="built_in">to</span>-<span class="built_in">date</span> <span class="keyword">with</span> <span class="string">'origin/master'</span>.</span><br><span class="line">Untracked <span class="built_in">files</span>:</span><br><span class="line">(use <span class="string">"git add &lt;file&gt;..."</span> <span class="built_in">to</span> <span class="built_in">include</span> <span class="keyword">in</span> what will be committed)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">a</span></span><br><span class="line"></span><br><span class="line">nothing added <span class="built_in">to</span> commit but untracked <span class="built_in">files</span> present (use <span class="string">"git add"</span> <span class="built_in">to</span> track)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>git add</code>添加工作目录下的文件到暂存区</p>
+<p> 如上所说，git想要将文件纳入版本控制中，就需要将文件添加到版本库中，添加的命令就是<code>git add</code>。</p>
+</li>
+<li><p>gitignore文件</p>
+<p> 如果在当前目录下不想添加某些或某种类型的文件，就可以通过编写一个.gitignore文件，将不想添加的文件名或某种类型文件的通配名加入到.gitignore文件中即可，需要记住的是.gitignore文件需要加入到版本控制中去。</p>
+<p> 这就相当于在进行<code>git add</code>操作时，进行了一层gitignore的过滤。</p>
+</li>
+<li><p>从暂存区删除文件<code>git rm</code></p>
+<ul>
+<li><p><code>git rm --cached</code>：仅从暂存区删除。</p>
+</li>
+<li><p><code>git rm</code>:从暂存区和工作去都删除相关文件。</p>
+</li>
+<li><p><code>git rm $(git ls-files --deleted)</code>:小技巧，删除所有被跟踪，但是在工作目录被删除的文件。</p>
+</li>
+</ul>
+</li>
+<li><p>提交暂存区的文件<code>git commit</code></p>
+<p> <code>git commit</code>用于将暂存区的内容提交到版本控制系统上，提交之后的内容才能被版本控制记录。</p>
+</li>
+<li><p>查看历史提交记录<code>git log</code></p>
+<p> 使用<code>git log</code>可以查看详细的历史提交记录，使用<code>git log --oneline</code>可以简要查看提交历史记录。</p>
+</li>
+<li><p>自定义git命令(别名)</p>
+<p> 比如自定义<code>git log</code>的查看提交记录的命令<code>git lg</code></p>
+ <figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.lg <span class="string">"log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset' --abbrev-commit"</span></span><br></pre></td></tr></table></figure>
+<p> 使用<code>git log</code>查看提交记录：</p>
+ <figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">* c9e<span class="number">7b</span>28 - (HEAD -&gt; master, <span class="keyword">origin/master, </span><span class="keyword">origin/HEAD) </span><span class="keyword">add </span>git_dis (<span class="number">2</span> hours ago) &lt;<span class="keyword">jiaoqiyuan&gt;</span></span><br><span class="line"><span class="keyword">* </span><span class="number">11</span>c787c - <span class="keyword">add </span>git_dis (<span class="number">2</span> hours ago) &lt;<span class="keyword">jiaoqiyuan&gt;</span></span><br><span class="line"><span class="keyword">* </span><span class="number">15</span>aa062 - <span class="keyword">add </span>git_dis (<span class="number">2</span> hours ago) &lt;<span class="keyword">jiaoqiyuan&gt;</span></span><br><span class="line"><span class="keyword">* </span><span class="number">5037</span>e89 - <span class="keyword">add </span>git_note <span class="keyword">dir </span>(<span class="number">13</span> hours ago) &lt;<span class="keyword">jiaoqiyuan&gt;</span></span><br><span class="line"><span class="keyword">* </span><span class="number">78</span>fa4d8 - <span class="keyword">Add </span>files via upload (<span class="number">13</span> hours ago) &lt;Qiyuan <span class="keyword">Jiao&gt;</span></span><br><span class="line"><span class="keyword">* </span><span class="number">05</span>fa<span class="number">4f</span>6 - Create README.md (<span class="number">13</span> hours ago) &lt;Qiyuan <span class="keyword">Jiao&gt;</span></span><br></pre></td></tr></table></figure>
+<p> 根据–global参数我们可以知道，这个配置是存放在<code>~/.gitconfig</code>中的:</p>
+ <figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">    email = jiaoqiyuan<span class="title">@outlook.com</span></span><br><span class="line">    name = jiaoqiyuan</span><br><span class="line">[<span class="keyword">alias</span>]</span><br><span class="line">        lg = log --color --graph --pretty=format:'<span class="symbol">%Cred</span><span class="symbol">%h</span><span class="symbol">%Creset</span> -<span class="symbol">%C</span>(yellow)<span class="symbol">%d</span><span class="symbol">%Creset</span> <span class="symbol">%s</span> <span class="symbol">%Cgreen</span>(<span class="symbol">%cr</span>) <span class="symbol">%C</span>(bold blue)&lt;<span class="symbol">%an</span>&gt;<span class="symbol">%Creset</span>' --abbrev-commit</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>显示版本差异<code>git diff</code></p>
+<ul>
+<li><p><code>git diff</code>：显示工作区与暂存区的差异。</p>
+</li>
+<li><p><code>git diff --cached [&lt;reference&gt;]</code>：显示暂存区与某次提交的差异，默认是HEAD。reference表示某次提交版本的SHA-1编码。</p>
+</li>
+<li><p><code>git diff &lt;reference&gt;</code>：显示工作区与某次提交的差异。</p>
+</li>
+</ul>
+</li>
+<li><p>撤销本地修改<code>git checkout</code></p>
+<p><code>git checkout -- &lt;file&gt;</code>: 撤销文件的修改。</p>
+</li>
+<li><p>撤销暂存区的修改<code>git reset</code></p>
+<p><code>git reset HEAD &lt;file&gt;</code>：将文件在暂存区的修改撤销掉，恢复到工作区。</p>
+</li>
+<li><p>撤销全部改动<code>git checkout HEAD -- &lt;file&gt;</code></p>
+<p>直接撤销暂存区的文件并恢复到工作目录之前的状态。</p>
+</li>
+<li><p>直接将工作区的文件提交到提交区<code>git commit -a</code></p>
+<p>将文件更改后直接提交，省去添加到暂存区的过程。</p>
+</li>
+</ol>
+<p><img src="https://github.com/jiaoqiyuan/pics/raw/master/git_note/git_workspace.png" alt="3"></p>
+<h2 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h2><p>分支操作是git的另一大优秀特性，也是我面试进坑的地方，平时没怎么使用git写作开发，分支操作不是很熟悉，这里记录一下。</p>
+<ol>
+<li><p>分支的增删改查<code>git branch</code></p>
+<ul>
+<li><p>创建一个分支：<code>git branch &lt;branchName&gt;</code></p>
+</li>
+<li><p>删除一个分支：<code>git branch -d &lt;branchName&gt;</code></p>
+</li>
+<li><p>显示所有分支信息：<code>git branch -v</code></p>
+</li>
+<li><p>切换分支：<code>git checkout &lt;branch&gt;</code></p>
+</li>
+</ul>
+</li>
+<li><p>reset和checkout的区别</p>
+<ul>
+<li><p>commit操作：reset是回退到某个版本，HEAD的branch（分支版本）都移动到指定分支；checkout只是切换分支，只移动HEAD，branch(分支版本)不变。</p>
+</li>
+<li><p>file操作：reset作用于文件时是将文件从暂存区恢复到工作区，一般是add后使用reset将文件恢复到add前的状态；checkout用于将工作区的文件回到某状态，一般是修改文件内容后将文件内容恢复到修改前的状态。</p>
+</li>
+</ul>
+</li>
+<li><p>保存当前分支状态<code>git stash</code>，返回到干净的工作空间</p>
+<p> 用于保存当前分支状态，使用户在没有提交当前修改的情况下也能切换到其他分支，这在开发过程中是很有用的，比如在当前分支正在编码过程中有其他紧急任务需要处理，这时又不能直接提交当前的共作，但是又需要切换到其他分支，这时就可以使用<code>git stash</code>。</p>
+<p> 先使用<code>git stash save &quot;save my work now&quot;</code></p>
+<p> 再切换到其他分支，工作完成后再将之前保存到stash的内容检出<code>git stash apply stash@{0}</code>，然后删除stash<code>git stash drop stash@{0}</code>。</p>
+<p> 这两步可以合为一步，直接使用<code>git stash pop stash@{0}</code>即可。</p>
+<p> <img src="https://github.com/jiaoqiyuan/pics/raw/master/git_note/git_stash.png" alt="4"></p>
+</li>
+<li><p>合并分支<code>git merge</code></p>
+<p> 特性分支完成开发后需要合并到主分支，这时使用<code>git merge</code>命令完成。</p>
+<p> 一般在有远程服务器的场景下常用的使用是：<code>git fetch origin master</code>，然后<code>git merger origin master</code>。也可以直接使用git pull一步完成：<code>git pull origin master</code>。</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>git的学习重在使用，github官方有几个不错的练手地方，<a href="http://try.github.io/" target="_blank" rel="noopener">点击这里</a> 查看。</p>
+<p>阮一峰老师总结了一些git常用方法，<a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html" target="_blank" rel="noopener">点击这里</a>查看，总结得很好，常用命令一般就这几个：</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015120901.png" alt="7"></p>
+<p>还有廖雪峰老师的git教程，很不错，<a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/" target="_blank" rel="noopener">点击这里</a>查看。</p>
+<p>另外还有一些git的使用方法没介绍，例如<code>git rebase</code>，自己多查查吧。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/13/常用数据结构算法及其示例-排序/" rel="next" title="常用数据结构算法及其示例-排序">
+                <i class="fa fa-chevron-left"></i> 常用数据结构算法及其示例-排序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/18/hive自定义UDAF的编写/" rel="prev" title="hive自定义UDAF的编写">
+                hive自定义UDAF的编写 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git的由来"><span class="nav-number">1.</span> <span class="nav-text">Git的由来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git与传统版本控制系统（如SVN）的区别"><span class="nav-number">2.</span> <span class="nav-text">Git与传统版本控制系统（如SVN）的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git安装"><span class="nav-number">3.</span> <span class="nav-text">Git安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本操作"><span class="nav-number">4.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分支操作"><span class="nav-number">5.</span> <span class="nav-text">分支操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="参考文章来源：极客时间 链接地址：为什么插入排序比冒泡排序更受欢迎？  归并排序和快速排序都用到了分治的思想。 归并排序归并排序原理归并排序的核心思想就是分两部分进行分别排序，然后将排序好的两部分再合并到一起，这样整个数组都有序了。  归并的核心就是分治，分治跟递归很像，而且分治算法一般就是通过递归实现的，分治是一种思想，递归是一种编程技巧。 如何用递归实现归并排序呢？ 首先分析递归公式，然后找到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="归并排序与快速排序">
+<meta property="og:url" content="http://yoursite.com/2018/11/25/归并排序与快速排序/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="参考文章来源：极客时间 链接地址：为什么插入排序比冒泡排序更受欢迎？  归并排序和快速排序都用到了分治的思想。 归并排序归并排序原理归并排序的核心思想就是分两部分进行分别排序，然后将排序好的两部分再合并到一起，这样整个数组都有序了。  归并的核心就是分治，分治跟递归很像，而且分治算法一般就是通过递归实现的，分治是一种思想，递归是一种编程技巧。 如何用递归实现归并排序呢？ 首先分析递归公式，然后找到">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/db/2b/db7f892d3355ef74da9cd64aa926dc2b.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/95/2f/95897ade4f7ad5d10af057b1d144a22f.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/4d/81/4d892c3a2e08a17f16097d07ea088a81.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/66/dc/6643bc3cef766f5b3e4526c332c60adc.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/08/e7/086002d67995e4769473b3f50dd96de7.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/aa/05/aa03ae570dace416127c9ccf9db8ac05.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/89/91/898d94fc32e0a795fd65897293b98791.jpg">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="归并排序与快速排序">
+<meta name="twitter:description" content="参考文章来源：极客时间 链接地址：为什么插入排序比冒泡排序更受欢迎？  归并排序和快速排序都用到了分治的思想。 归并排序归并排序原理归并排序的核心思想就是分两部分进行分别排序，然后将排序好的两部分再合并到一起，这样整个数组都有序了。  归并的核心就是分治，分治跟递归很像，而且分治算法一般就是通过递归实现的，分治是一种思想，递归是一种编程技巧。 如何用递归实现归并排序呢？ 首先分析递归公式，然后找到">
+<meta name="twitter:image" content="https://static001.geekbang.org/resource/image/db/2b/db7f892d3355ef74da9cd64aa926dc2b.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/25/归并排序与快速排序/">
+
+
+
+
+
+  <title>归并排序与快速排序 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/25/归并排序与快速排序/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">归并排序与快速排序</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-25T11:56:28+08:00">
+                2018-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/25/归并排序与快速排序/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/11/25/归并排序与快速排序/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>参考文章来源：</strong>极客时间</p>
+<p><strong>链接地址：</strong><a href="https://time.geekbang.org/column/article/41913" target="_blank" rel="noopener">为什么插入排序比冒泡排序更受欢迎？</a></p>
+<hr>
+<pre><code>归并排序和快速排序都用到了分治的思想。
+</code></pre><h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><h3 id="归并排序原理"><a href="#归并排序原理" class="headerlink" title="归并排序原理"></a>归并排序原理</h3><p>归并排序的核心思想就是分两部分进行分别排序，然后将排序好的两部分再合并到一起，这样整个数组都有序了。</p>
+<p><img src="https://static001.geekbang.org/resource/image/db/2b/db7f892d3355ef74da9cd64aa926dc2b.jpg" alt="归并分解"></p>
+<p>归并的核心就是分治，分治跟递归很像，而且分治算法一般就是通过递归实现的，分治是一种思想，递归是一种编程技巧。</p>
+<p>如何用递归实现归并排序呢？</p>
+<p>首先分析递归公式，然后找到终止条件，最后将递归公式翻译成代码。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">递推公式：</span><br><span class="line"><span class="function"><span class="title">merge_sort</span><span class="params">(p…r)</span></span> = merge(merge_sort(p…q), merge_sort(q+<span class="number">1</span>…r))</span><br><span class="line"></span><br><span class="line">终止条件：</span><br><span class="line"><span class="selector-tag">p</span> &gt;= r 不用再继续分解</span><br></pre></td></tr></table></figure>
+<p>这里merge_sort(p…r)表示给下标为p到r的数组进行排序，将这个问题转化为两个子问题：merge(merge_sort(p…q)，merge_sort(q+1…r))。其中q表示p和r中间的为孩子，也就是(p+r)/2，将p到q和q+1到r的两个子数组都排好序后再合并起来，那么p到r的数据也就排好序了。</p>
+<p>具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> sorts;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by wangzheng on 2018/10/16.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 归并排序算法, a是数组，n表示数组大小</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    mergeSortInternally(a, <span class="number">0</span>, n-<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 递归调用函数</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeSortInternally</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> p, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 递归终止条件</span></span><br><span class="line">    <span class="keyword">if</span> (p &gt;= r) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 取p到r之间的中间位置q,防止（p+r）的和超过int类型最大值</span></span><br><span class="line">    <span class="keyword">int</span> q = p + (r - p)/<span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 分治递归</span></span><br><span class="line">    mergeSortInternally(a, p, q);</span><br><span class="line">    mergeSortInternally(a, q+<span class="number">1</span>, r);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将A[p...q]和A[q+1...r]合并为A[p...r]</span></span><br><span class="line">    merge(a, p, q, r);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> p, <span class="keyword">int</span> q, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = p;</span><br><span class="line">    <span class="keyword">int</span> j = q+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">0</span>; <span class="comment">// 初始化变量i, j, k</span></span><br><span class="line">    <span class="keyword">int</span>[] tmp = <span class="keyword">new</span> <span class="keyword">int</span>[r-p+<span class="number">1</span>]; <span class="comment">// 申请一个大小跟a[p...r]一样的临时数组</span></span><br><span class="line">    <span class="keyword">while</span> (i&lt;=q &amp;&amp; j&lt;=r) &#123;</span><br><span class="line">      <span class="keyword">if</span> (a[i] &lt;= a[j]) &#123;</span><br><span class="line">        tmp[k++] = a[i++]; <span class="comment">// i++等于i:=i+1</span></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        tmp[k++] = a[j++];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断哪个子数组中有剩余的数据</span></span><br><span class="line">    <span class="keyword">int</span> start = i;</span><br><span class="line">    <span class="keyword">int</span> end = q;</span><br><span class="line">    <span class="keyword">if</span> (j &lt;= r) &#123;</span><br><span class="line">      start = j;</span><br><span class="line">      end = r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将剩余的数据拷贝到临时数组tmp</span></span><br><span class="line">    <span class="keyword">while</span> (start &lt;= end) &#123;</span><br><span class="line">      tmp[k++] = a[start++];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将tmp中的数组拷贝回a[p...r]</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= r-p; ++i) &#123;</span><br><span class="line">      a[p+i] = tmp[i];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里面的merge函数是将排序后的两个子序列合并到一起，示意图如下：</p>
+<p><img src="https://static001.geekbang.org/resource/image/95/2f/95897ade4f7ad5d10af057b1d144a22f.jpg" alt="merge示意图"></p>
+<p>merge时，先申请一个临时数组tmp，大小与要排序的数组a相同，用i和j分别指向a[p…q]和a[q+1…r]的第一个元素，比较a[i]和a[j]，如果a[i]&lt;=a[j]，就把a[i]放到临时数组tmp中，并且i后移一位，否则将a[j]放入tmp，j后移一位。一直到其中一个子序列中的所有元素都放入到tmp中，再把另一个数组中的数据依次加入到tmp的末尾，这时tmp中就是已经排好序的啦。最后将tmp的数据拷贝到原数组a中就完成了。</p>
+<h3 id="归并排序性能分析"><a href="#归并排序性能分析" class="headerlink" title="归并排序性能分析"></a>归并排序性能分析</h3><ul>
+<li><p>归并排序是稳定排序算法吗?</p>
+<p>归并排序稳不稳定其实主要看merge函数,合并过程中可以发现,值相同的元素我们是先把前面一个序列的值先放入tmp数组的,这就保证了值相同的元素在合并后的先后顺序是不变的,所以归并排序是稳定排序算法.</p>
+</li>
+<li><p>归并排序的时间复杂度是多少?</p>
+<p>归并排序是通过递归实现的,时间复杂度分析起来会有点复杂.</p>
+<p>递归使用的场景是一个问题a可以分解成多个子问题b,c,那么求解问题a就可以分解为求解问题b,c,问题b和c解决后再把b和c的结果合并成a的结果.如果我们定义求解问题a的时间是T(a),求解b和c的时间是T(b)和T(c),那么我们就可以得到这个公式:</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">T(<span class="name">a</span>) = T(<span class="name">b</span>) + T(<span class="name">c</span>) + K</span><br></pre></td></tr></table></figure>
+<p>其中K是两个子问题b和c结果合并成问题a所消耗的时间.</p>
+<p>假设对于n个元素进行递归排序的总时间是T(n),那么分解成两个子数组排序的时间都是T(n/2),merge函数合并两个子数组的时间复杂度是O(n),所以归并排序的时间复杂度就可以通过下面这个公式计算得到:</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">T</span>(<span class="number">1</span>) = C；   <span class="built_in">n</span>=<span class="number">1</span> 时，只需要常量级的执行时间，所以表示为 C。</span><br><span class="line"><span class="built_in">T</span>(<span class="built_in">n</span>) = <span class="number">2</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">2</span>) + <span class="built_in">n</span>； <span class="built_in">n</span>&gt;<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>进一步分解:</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">T</span>(<span class="built_in">n</span>) = <span class="number">2</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">2</span>) + <span class="built_in">n</span></span><br><span class="line">    = <span class="number">2</span>*(<span class="number">2</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">4</span>) + <span class="built_in">n</span>/<span class="number">2</span>) + <span class="built_in">n</span> = <span class="number">4</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">4</span>) + <span class="number">2</span>*<span class="built_in">n</span></span><br><span class="line">    = <span class="number">4</span>*(<span class="number">2</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">8</span>) + <span class="built_in">n</span>/<span class="number">4</span>) + <span class="number">2</span>*<span class="built_in">n</span> = <span class="number">8</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">8</span>) + <span class="number">3</span>*<span class="built_in">n</span></span><br><span class="line">    = <span class="number">8</span>*(<span class="number">2</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">16</span>) + <span class="built_in">n</span>/<span class="number">8</span>) + <span class="number">3</span>*<span class="built_in">n</span> = <span class="number">16</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">16</span>) + <span class="number">4</span>*<span class="built_in">n</span></span><br><span class="line">    ......</span><br><span class="line">    = <span class="number">2</span>^k * <span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">2</span>^k) + k * <span class="built_in">n</span></span><br></pre></td></tr></table></figure>
+<p>最终可以得到T(n)=2^kT(n/2^k) + kn,当数据区间变为1的时候排序就完成了,所以当T(n/2^k)=T(1)时,排序就结束了.这时,n/2^k=1,计算可以得到k=log<sub>2</sub><sup>n</sup>,将k的值带入公式,得到T(n)=Cn+nlog<sub>2</sub><sup>n</sup>,如果用大O标记法来表示的话,T(n)就等于O(nlog<sub>2</sub><sup>n</sup>).</p>
+<p>从上面的分析可以看出,归并排序与原始数据的有序程度无关,所以其时间复杂度是极其稳定的,不管是最好最坏还是平均情况,时间复杂度都是O(nlog<sub>2</sub><sup>n</sup>).</p>
+</li>
+<li><p>归并排序的空间复杂度是多少?</p>
+<p>归并排序的时间复杂度不错,但是它应用的并没有像快速排序那样广泛,就是因为它有一个致命弱点,那就是归并排序不是原地排序算法.</p>
+<p>因为归并排序的合并函数在合并两个有序数组时,需要借助额外的内存空间.如果按照上面的递归方法分析空间复杂度,那么归并整个过程的时间复杂度就是O(nlog<sub>2</sub><sup>n</sup>).但是这样是不对的.</p>
+<p>空间复杂度不会像时间复杂度一样累加,尽管每次合并都需要申请额外的内存空间,但是合并完成后临时开辟的内存空间就被释放了,在任何时刻,cpu只会有一个函数在执行,也就是只有一个临时的内存空间被使用,临时空间最大也不会超过n个数据的大小,所有空间复杂度就是O(n).</p>
+</li>
+</ul>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><h3 id="快速排序原理"><a href="#快速排序原理" class="headerlink" title="快速排序原理"></a>快速排序原理</h3><p>快速排序简称”快排”,快排利用跟归并一样的分治思想,但是快排选取的中间节点pivot是数组下标p到r的任意一个数据节点,这是跟归并选取中间节点不同的.</p>
+<p><img src="https://static001.geekbang.org/resource/image/4d/81/4d892c3a2e08a17f16097d07ea088a81.jpg" alt="快排原理"></p>
+<p>选取完pivot后,遍历p到r之间的所有数据,将小鱼pivot的放到左边,大于pivot的放到右边,pivot放到中间.这样,数组p到r之间的数据就分成了三个部分.</p>
+<p>然后再进行分区,递归实现,直到区间缩小为1,就说明所有的数据都有序了.用递推公式来表示上面的过程就是这样:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">递推公式：</span><br><span class="line"><span class="function"><span class="title">quick_sort</span><span class="params">(p…r)</span></span> = quick_sort(p…q-<span class="number">1</span>) + quick_sort(q+<span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">终止条件：</span><br><span class="line"><span class="selector-tag">p</span> &gt;= r</span><br></pre></td></tr></table></figure>
+<p>翻译成代码就是这样:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> sorts;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by wangzheng on 2018/10/16.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 快速排序，a是数组，n表示数组的大小</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    quickSortInternally(a, <span class="number">0</span>, n-<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 快速排序递归函数，p,r为下标</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortInternally</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> p, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (p &gt;= r) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> q = partition(a, p, r); <span class="comment">// 获取分区点</span></span><br><span class="line">    quickSortInternally(a, p, q-<span class="number">1</span>);</span><br><span class="line">    quickSortInternally(a, q+<span class="number">1</span>, r);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> p, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pivot = a[r];</span><br><span class="line">    <span class="keyword">int</span> i = p;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = p; j &lt; r; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (a[j] &lt; pivot) &#123;</span><br><span class="line">        <span class="keyword">int</span> tmp = a[i];</span><br><span class="line">        a[i] = a[j];</span><br><span class="line">        a[j] = tmp;</span><br><span class="line">        ++i;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> tmp = a[i];</span><br><span class="line">    a[i] = a[r];</span><br><span class="line">    a[r] = tmp;</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">"i="</span> + i);</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的partition函数是分区函数,用于随机选取一个元素作为pivot(一般情况下会选取p到<br>r区间的最后一个元素),然后对数组A[p…r]分区,返回pivot的下标.如果不考虑空间消耗,partition可以写得非常简单,比如像下图所示的那样:</p>
+<p><img src="https://static001.geekbang.org/resource/image/66/dc/6643bc3cef766f5b3e4526c332c60adc.jpg" alt="partition分区"></p>
+<p>申请两个临时数组x和y,遍历A[p…r],将小于pivot的元素拷贝到x,将大于pivot的元素拷贝到y,最后将x和y中的数据顺序拷贝到A就可以了.</p>
+<p>但是这种情况下需要消耗很多额外内存空间,导致快排不是原地排序算法啦.其实可以不同这样,这里有种非常巧妙的办法,就是上面代码中写的那样,有点类似选择排序.我们通过游标i把A分成连个部分:p到i-1的元素都小于pivot,暂称为”已处理区间”;i到r-1成为”未处理区间”.每次都从未处理区间A[i…r-1]取一个元素A[j]与pivot比较,如果小于pivot,就将这个元素加入已处理区间尾部,也就是A[i].</p>
+<p>这里将A[j]插入a[i]的位置时,如果正常搬移数据那就太费时间了,这里采用交换的方式,将A[i]与A[j]交换一下即可,时间复杂度为O(1),很简单.整个过程如下图所示:</p>
+<p><img src="https://static001.geekbang.org/resource/image/08/e7/086002d67995e4769473b3f50dd96de7.jpg" alt="partition分区优化"></p>
+<p>上面讲的分区过程涉及到交换操作,如果有两个相同的元素比如这个序列:6,8,7,6,3,4,5,9,4.当比较到3时,进行第一次数据交换,第一个6就与3进行了位置互换,最后两个6的相对先后顺序就变了,所以快速排序不是稳定排序算法.</p>
+<p>那么这里有一个问题,快速排序和归并排序都是采用分治思想,他们的区别在哪里呢?</p>
+<p><img src="https://static001.geekbang.org/resource/image/aa/05/aa03ae570dace416127c9ccf9db8ac05.jpg" alt="快排与归并区别"></p>
+<ul>
+<li><p>归并排序是先处理子问题,然后合并,整个处理流程是自底向上的.快排正好相反,它是先分区,在处理子问题.</p>
+</li>
+<li><p>归并排序是稳定的,时间复杂度是O(nlogn),但它不是原地排序.快速排序通过巧妙设计原地分区函数partition,可以实现原地排序,解决了归并排序内存占用过多的问题.</p>
+</li>
+</ul>
+<h3 id="快速排序性能分析"><a href="#快速排序性能分析" class="headerlink" title="快速排序性能分析"></a>快速排序性能分析</h3><p><strong>快排是稳定排序吗?</strong></p>
+<p>不是的,这在上面已经说过啦.</p>
+<p><strong>快排是原地排序吗?</strong></p>
+<p>是的,上面已经说过.</p>
+<p><strong>快排的时间复杂度是多少?</strong></p>
+<p>快排也是用递归实现的,可以套用前面的公式,如果每次分区都能正好把数组分成大小接近相等的两个区间,那么快排时间复杂度与归并排序就是一样的,因为他们此时的推导公式是完全一样的,都是:</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">T</span>(<span class="number">1</span>) = C；   <span class="built_in">n</span>=<span class="number">1</span> 时，只需要常量级的执行时间，所以表示为 C。</span><br><span class="line"><span class="built_in">T</span>(<span class="built_in">n</span>) = <span class="number">2</span>*<span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">2</span>) + <span class="built_in">n</span>； <span class="built_in">n</span>&gt;<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>但是我们不能保证每次都能选择合适的pivot均分数组,比如一个已经有序的数组:1,3,5,6,8,如果每次选择最后以一个元素作为pivot,那么每次分区得到的两个区间就是极不均等的,我们需要大约n次操作才能完成快排整个过程,每次分区我们都需要扫描大约n/2个元素,这种情况下快排的时间复杂度就变成了O(n²).</p>
+<p>上面分别降到了两种极端情况下快排的时间复杂度,一个是分区极度均衡,一个是分区极度不均衡,他们分别对应的就是快排最好情况时间复杂度和最坏情况时间复杂度.那么快排的平均时间复杂度是多少呢?</p>
+<p>假设每次分区操作都将区间分为9:1的两个区间,时间复杂度递推公式就会变成下面这样:</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">T</span>(<span class="number">1</span>) = C；   <span class="built_in">n</span>=<span class="number">1</span> 时，只需要常量级的执行时间，所以表示为 C。</span><br><span class="line"></span><br><span class="line"><span class="built_in">T</span>(<span class="built_in">n</span>) = <span class="built_in">T</span>(<span class="built_in">n</span>/<span class="number">10</span>) + <span class="built_in">T</span>(<span class="number">9</span>*<span class="built_in">n</span>/<span class="number">10</span>) + <span class="built_in">n</span>； <span class="built_in">n</span>&gt;<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>这个递推公式推倒起来相当麻烦,这里给出结论:T(n)大部分情况下可以做到O(nlogn),只有极端情况下才会退化到O(n²).</p>
+<h2 id="如何在-O-n-的时间复杂度内查找一个无序数组中的第K大元素"><a href="#如何在-O-n-的时间复杂度内查找一个无序数组中的第K大元素" class="headerlink" title="如何在 O(n) 的时间复杂度内查找一个无序数组中的第K大元素"></a>如何在 O(n) 的时间复杂度内查找一个无序数组中的第K大元素</h2><p>比如有一个序列:4,2,5,12,3这样一组数据,第3大元素就是4.</p>
+<p>采用分治思想,将数组区间A[0…n-1]最后一个元素A[n-1]作为pivot,对数组A进行原地分区成三部分:A[0…p-1],A[p],A[p+1…n-1]].如果p+1=k(这里结合下面的图片好好理解一下),那么A[p]就是要找的元素;如果K&gt;p+1,则说明第K大元素出现在A[p+1…n-1]这个区间中,继续按照上面的思路在A[p+1…n-1]内继续分区查找.同理,如果K&lt;p+1,那么就在A[0…p-1]区间内查找.</p>
+<p><img src="https://static001.geekbang.org/resource/image/89/91/898d94fc32e0a795fd65897293b98791.jpg" alt="寻找第K大元素"></p>
+<p>上述过程的时间复杂度是O(n)吗? 第一次分区需要遍历n个元素,第二区遍历n/2,以此类推,n/4,n/8,n/16…</p>
+<p>最后总的时间复杂度就是n+n/2+n/4+n/8…+1=2n-1.所以最终时间复杂度就是O(n).</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>归并和快排相对于冒泡,插入,选择排序稍微复杂一点,他们都采用分治思想,通过递归实现,过程很相似,只不过在具体实现流程和细节方面有些许差别.归并排序主要是理解merger合并函数,快排主要是理解partition分区函数.</p>
+<p>归并排序在任何情况下时间复杂度比较稳定,这也是它的缺点,即它不是原地排序算法,归并排序是稳定排序算法,空间复杂度也比较高,是O(n),正因为如此,他没有快排应用广泛.</p>
+<p>快排虽然最坏情况下时间复杂度是O(n²),但是其均时间复杂度是O(nlogn),而且快排时间复杂度退化到O(n²)的概率非常小,可以通过合理选择pivot来避免,另外快排不是稳定排序,空间复杂度是O(1).</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/23/破坏程序员生产力的12件事/" rel="next" title="破坏程序员生产力的12件事(译)">
+                <i class="fa fa-chevron-left"></i> 破坏程序员生产力的12件事(译)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/30/Python的数据序列化(译)/" rel="prev" title="Python的数据序列化(译)">
+                Python的数据序列化(译) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#归并排序"><span class="nav-number">1.</span> <span class="nav-text">归并排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#归并排序原理"><span class="nav-number">1.1.</span> <span class="nav-text">归并排序原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#归并排序性能分析"><span class="nav-number">1.2.</span> <span class="nav-text">归并排序性能分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速排序"><span class="nav-number">2.</span> <span class="nav-text">快速排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#快速排序原理"><span class="nav-number">2.1.</span> <span class="nav-text">快速排序原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速排序性能分析"><span class="nav-number">2.2.</span> <span class="nav-text">快速排序性能分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何在-O-n-的时间复杂度内查找一个无序数组中的第K大元素"><span class="nav-number">3.</span> <span class="nav-text">如何在 O(n) 的时间复杂度内查找一个无序数组中的第K大元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

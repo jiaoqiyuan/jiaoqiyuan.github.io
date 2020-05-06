@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这是我的第一篇技术博文，从今天开始学习网络方面的知识，不求细节， 先大体理解网络是怎么运行的以及涉及到的物理设备都是做什么的。 1，前言今天我们开始讲一讲网络方面的知识，网络这方面的内容比较多，各种协议和硬件设备让人眼花缭乱，什么TCP/IP协议、ICMP协议、HTTP（HTTPS）协议、FTP（FTPS）协议等等，还有路由器、交换机、集线器等等，都让人觉得无从下手。想要完全掌握网络方面的知识几乎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络那些事儿1-浏览器中输入的网址背后的事儿">
+<meta property="og:url" content="http://yoursite.com/2018/02/27/网络那些事儿1-浏览器中输入的网址背后的事儿/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="这是我的第一篇技术博文，从今天开始学习网络方面的知识，不求细节， 先大体理解网络是怎么运行的以及涉及到的物理设备都是做什么的。 1，前言今天我们开始讲一讲网络方面的知识，网络这方面的内容比较多，各种协议和硬件设备让人眼花缭乱，什么TCP/IP协议、ICMP协议、HTTP（HTTPS）协议、FTP（FTPS）协议等等，还有路由器、交换机、集线器等等，都让人觉得无从下手。想要完全掌握网络方面的知识几乎">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjD4JwicqPVBCs21nKicdria16EEHibQbUfv6CB1ZyGc1XbmnRU0HzKX1DhoA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&retryload=0">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjDuxprvchgCb83MmRGJdic8U4mGGawXibjblS0VWMD2HUqAiazib5iclaKMbA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&retryload=0">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjDKAcQJVjfI8icUjwHQRcO3aibKyCSszd0wricsCnicgUv8aQlTwtCiagnqng/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&retryload=0">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjDN3Qq98jyZMbJFPoMhey6h9bWvUOGOred088bXHDPfPbvF4BVrT7Dww/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&retryload=0">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络那些事儿1-浏览器中输入的网址背后的事儿">
+<meta name="twitter:description" content="这是我的第一篇技术博文，从今天开始学习网络方面的知识，不求细节， 先大体理解网络是怎么运行的以及涉及到的物理设备都是做什么的。 1，前言今天我们开始讲一讲网络方面的知识，网络这方面的内容比较多，各种协议和硬件设备让人眼花缭乱，什么TCP/IP协议、ICMP协议、HTTP（HTTPS）协议、FTP（FTPS）协议等等，还有路由器、交换机、集线器等等，都让人觉得无从下手。想要完全掌握网络方面的知识几乎">
+<meta name="twitter:image" content="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjD4JwicqPVBCs21nKicdria16EEHibQbUfv6CB1ZyGc1XbmnRU0HzKX1DhoA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&retryload=0">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/27/网络那些事儿1-浏览器中输入的网址背后的事儿/">
+
+
+
+
+
+  <title>网络那些事儿1-浏览器中输入的网址背后的事儿 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/27/网络那些事儿1-浏览器中输入的网址背后的事儿/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">网络那些事儿1-浏览器中输入的网址背后的事儿</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-27T21:51:26+08:00">
+                2018-02-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络那些事儿/" itemprop="url" rel="index">
+                    <span itemprop="name">网络那些事儿</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/27/网络那些事儿1-浏览器中输入的网址背后的事儿/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/02/27/网络那些事儿1-浏览器中输入的网址背后的事儿/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>这是我的第一篇技术博文，从今天开始学习网络方面的知识，不求细节，
+先大体理解网络是怎么运行的以及涉及到的物理设备都是做什么的。
+</code></pre><h2 id="1，前言"><a href="#1，前言" class="headerlink" title="1，前言"></a>1，前言</h2><p>今天我们开始讲一讲网络方面的知识，网络这方面的内容比较多，各种协议和硬件设备让人眼花缭乱，什么TCP/IP协议、ICMP协议、HTTP（HTTPS）协议、FTP（FTPS）协议等等，还有路由器、交换机、集线器等等，都让人觉得无从下手。想要完全掌握网络方面的知识几乎是不可能的，但是对于开发人员来说掌握必要的网络知识是很有必要的，对于非技术人员了解一下与自己息息相关的网络背后的原理对自也会有很多好处，毕竟这是个互联网世界。</p>
+<p>我大学时候的课程中开设有计算机网络这门课程，当时对计算机和网络都还没有一个相对清晰的认识，包括对编程的认识也只是简单地写一些C语言代码，周围同学也没有在编程方面比较厉害或者对编程比较感兴趣的人（这里说一下我本科学的是信息工程专业，学校是一个很一般的二本院校，通信技术和计算机基础课程都有学习），当时也就随便听听这个课，保证最后不挂科就觉得ok了。现在知道了还是要打好基础，不然后面真的很难受，后续这些年因为学习和工作需要补充了一些网络方面的知识，但是我现在也还是觉得自己对网络的认识还差很多，所以这是一个跟大家共同学习和交流的文章，我说的不一定是没有错误的，请大家明白这一点，同时也给自己一些压力，再次重新学习一下网络的知识。</p>
+<h2 id="2，URL解析"><a href="#2，URL解析" class="headerlink" title="2，URL解析"></a>2，URL解析</h2><p>下面我们还是继续讨论网络方面的事情吧，网络确实是一个比较复杂的东西，而网络之所以这么复杂还能够被广泛传播和应用，恰恰体现了它的重要性，现在我们几乎所有人都和网络有着不可分离的关系，我们的智能手机能够连接网络，我们的平板设备也能连接网络，即使是我们之前的2G手机，只要它有通话功能，都是需要连接网络的。</p>
+<p>网络这么重要而且复杂，我们要怎么找到一个切入点进行学习呢，这里我要推荐一本非常好的书，书名叫「网络是怎么连接的」，是一个叫户根勤的一个日本人写的，我后续要讲的网络方面的内容很大程度上参考了这本书。这本书应该算是一个网络方面的科普类书籍吧，里面没有很详细得介绍网络的具体知识，比如TCP/IP的详细原理、路由表的具体维护原理，更深入的原理的理解，可以参考「TCP/IP详解」这套丛书，有三卷，相当详细，而且很厚，可以作为参考书。</p>
+<p>我们先不管网络的发展，直接从浏览器输入一个网址开始，看看网络是怎么做出的一系列操作，然后给我们想要的反馈结果。</p>
+<p>这里有一个图很好地展示了网络中常用的协议和设备类型。<img src="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjD4JwicqPVBCs21nKicdria16EEHibQbUfv6CB1ZyGc1XbmnRU0HzKX1DhoA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;retryload=0" alt="网络常用协议和设备类型"></p>
+<p>基本上我们每天从浏览器访问的网站的后台过程都能够用这个图进行概括。从本地web浏览器开始，我们将网站的地址输入浏览器，当然这里输入的是域名（URL格式的字符串如<a href="https://zhidao.baidu.com/question/204659012.html，" target="_blank" rel="noopener">https://zhidao.baidu.com/question/204659012.html，</a> <a href="ftp://test/file，" target="_blank" rel="noopener">ftp://test/file，</a> file等），而不是该网站的公网IP，因为IP实在太难记录且容易混淆，域名则更符合人类记忆和理解习惯，而且在网络传输效率方面，IP相对于域名也有很大的优势，一般IP长度为32比特，也就是4字节，但是域名一般都有几十个字节，最长可以达到255字节，二者数据传输量相差几倍甚至几十倍，在网络传输中如果使用域名会导致路由器负担增加，影响网络传输效率，所以我们一般是直接输入域名进行网络访问。</p>
+<p>浏览器先解析这个URL，根据具体的协议类型对不同类型的URL进行相应的解析，浏览器内使用最多的是http协议，这里就以http协议作为研究对象。URL先解析出web服务器名和数据（文件）的路径名，（有时候会有省略文件名的情况，这种情况下就需要根据URL结尾它是不是带有‘/’来判断这个数据（文件）是路径名还是文件名，如果是路径名，则访问该路径下默认的网页，一般叫index.html；如果是文件名，则直接访问该文件资源）。</p>
+<h2 id="3，生成HTTP请求"><a href="#3，生成HTTP请求" class="headerlink" title="3，生成HTTP请求"></a>3，生成HTTP请求</h2><p>解析完URL中的网络地址后，接下来就需要根据解析出来的信息来对WEB服务端发起网络请求，这里网络请求的发起就牵扯到HTTP消息请求和响应。HTTP主要方法有GET、POST、HEAD、OPTIONS、PUT、DELETE、TRACE、CONNECT。除了这些方法还有其他的一些方法，但是很少遇到，其中在上面这些方法中最常用的是GET和POST。在上一步中，我们解析到了WEB服务器地址，此时我们就可以通过GET或者POST方法向WEB服务器发送请求消息，WEB服务器接收到请求消息后根据请求消息内的要求完成一些指定的工作，然后返回给我们一个响应消息，响应消息中包含有一个状态码，用来表示WEB服务端相应的操作结果是成功还是发生了错误。比如当我们访问一个找不到的文件时，服务端会给我们返回一个404 Not Found的错误信息，其实这就是状态码。状态码后面就是头字段和网页数据信息，客户端收到响应消息后，浏览器从中读取出所需信息并显示在屏幕上，HTTP的工作就完成了。在这里面，GET和POST方法都是发送请求的方法，但是二者最明显的差别是GET是明文的方式发送请求，数据是跟随在URL中，以用户可见的方式来请求数据的，而POST是需要在表单中加入数据，连同URL一同发送给服务端，表单是用户不可见的信息，然后服务端进行响应，这里的数据可能是用户名/密码等验证信息，所以接受POST方式请求的服务端在安全性方面比GET方式要好很多。其实GET和POST的区别不止于此，具体信息可以参考这个链接&lt;&gt;</p>
+<p>接下来就要生成HTTP请求消息了，请求消息有具体的格式，每一行的每个字段都有特定的含义，大致是这样的：<img src="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjDuxprvchgCb83MmRGJdic8U4mGGawXibjblS0VWMD2HUqAiazib5iclaKMbA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;retryload=0" alt="请求消息格式"></p>
+<h2 id="4，接收HTTP响应"><a href="#4，接收HTTP响应" class="headerlink" title="4，接收HTTP响应"></a>4，接收HTTP响应</h2><p>客户端向服务端发送HTTP请求后，服务端接收到请求消息，然后做出响应，将响应消息发回客户端，客户端接收到的特定格式的内容，这样方便解析，响应消息内容大致是这样的：<img src="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjDKAcQJVjfI8icUjwHQRcO3aibKyCSszd0wricsCnicgUv8aQlTwtCiagnqng/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;retryload=0" alt="响应消息格式"></p>
+<p>响应消息中包含有HTTP状态码，分别有不同的含义，大致是这样的：<img src="http://mmbiz.qpic.cn/mmbiz_png/d2kQj83oUY1xt5XicbPcLbaqZAWgA3rjDN3Qq98jyZMbJFPoMhey6h9bWvUOGOred088bXHDPfPbvF4BVrT7Dww/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;retryload=0" alt="响应消息状态码"></p>
+<p>返回响应消息后，浏览器就会将其中的数据提取出来显示在屏幕上，如果网页中只有文字，那到此就处理完毕了。但是实际情况下是大多数网页是不仅仅只有文字信息的，还会有图片信息，如果相应消息中还包含有图片等资源，浏览器会再次访问服务器，按照指定的文件名向服务器请求并显示在指定浏览器标签的指定位置。这其中判断所需文件、获取这些文件并显示在屏幕这一系列工作都是浏览器的任务，WEB服务端对此毫不知情，服务端只负责接受客户端的请求，然后发送相应信息给客户端。</p>
+<p>5，通过DNS解析域名</p>
+<p>上面介绍客户端向WEB服务端发送请求时，省略了一个重要的过程，就是查询WEB服务端公网IP的过程。这里面用到了一个机制，叫DNS（域名服务系统），它能够将服务器名称和IP地址进行关联，客户端通过Socket库查询WEB服务器的IP地址，这个Socket库能够查询最近的DNS服务器“XXX的IP地址是什么？”。这里Socket库可以理解为让应用程序调用操作系统网络功能的接口库。DNS服务器接收到查询信息后会首先从自己保存的记录中查一下有没有该请求的适配项，如果有直接返回，如果该DNS服务器没有相关信息，则向上级DNS服务器转交该请求，以此类推，如果始终没有找到，则最终会到达根DNS服务器，根域DNS服务器根据请求中的域名信息判断域名所处的范围，然后交给下级的DNS服务器，下级服务器再根据相关信息进行查找和下发，直到找到该域名的IP。</p>
+<p>6，发送HTTP请求</p>
+<p>找到服务端的IP后，接下来就是向该服务端发送HTTP请求消息，现在就讲一下这些消息的发送是怎么完成的。还记得我们刚刚提到的Socket库吗，这里消息的发送就是通过Socket库实现的。任何数据和信息在网络上都是通过电信号来传递的，我们的HTTP请求消息也不例外，这里我们先不解释怎么把消息转化为电信号传递出去，我们暂时可以理解为Socket帮我们实现了这部分功能。我们现在要做的就是根据之前请求到的服务端IP跟WEB服务端建立Socket连接，然后通过Socket将我们的请求消息发送过去，就是这么简单。</p>
+<p>收据的收发分若干阶段，概括起来大致如下4个：</p>
+<ul>
+<li><p>创建套接字</p>
+</li>
+<li><p>将管道连接到服务端的套接字上</p>
+</li>
+<li><p>收发数据</p>
+</li>
+<li><p>断开管道并删除套接字</p>
+</li>
+</ul>
+<p>具体的操作我就不讲了，网络上有很多关于socket编程的讲解和例子，我的重点不是讲解具体的实现，而是理解网络上整体的数据传输流程，这其中牵扯到太多东西。</p>
+<p>7，总结</p>
+<p>这样我们就从浏览器的URL开始，首先解析域名，通过DNS域名服务器得到WEB服务端的IP地址，然后生成HTTP请求消息，WEB服务端接收到客户端请求后作出响应操作，然后给客户端返回一个HTTP响应消息，客户端接收到该响应消息后在浏览器将消息内容显示到浏览器中，这样我们就完成了一个网络的请求和响应的过程。这其中省略了很多过程，里面的数据传递非常复杂，还牵扯有各种网络协议，后面我们慢慢了解。下一次我们讲这些请求消息是怎么通过物理网卡、网线、交换机、路由器等一路直达服务端的，比较偏重硬件部分了。</p>
+<h1 id="文章中的图片不能显示，可以直接去这个网站"><a href="#文章中的图片不能显示，可以直接去这个网站" class="headerlink" title="文章中的图片不能显示，可以直接去这个网站"></a><strong>文章中的图片不能显示，可以直接去<a href="http://mp.weixin.qq.com/s/0nGlF7bdOvGcqCPBCEzuKg" target="_blank" rel="noopener">这个网站</a></strong></h1>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/04/python数据处理工具/" rel="next" title="python数据处理工具">
+                <i class="fa fa-chevron-left"></i> python数据处理工具
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/03/网络那些事儿2-数据途经网卡发生的事儿1/" rel="prev" title="网络那些事儿2-数据途经网卡发生的事儿1">
+                网络那些事儿2-数据途经网卡发生的事儿1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1，前言"><span class="nav-number">1.</span> <span class="nav-text">1，前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2，URL解析"><span class="nav-number">2.</span> <span class="nav-text">2，URL解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3，生成HTTP请求"><span class="nav-number">3.</span> <span class="nav-text">3，生成HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4，接收HTTP响应"><span class="nav-number">4.</span> <span class="nav-text">4，接收HTTP响应</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#文章中的图片不能显示，可以直接去这个网站"><span class="nav-number"></span> <span class="nav-text">文章中的图片不能显示，可以直接去这个网站</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

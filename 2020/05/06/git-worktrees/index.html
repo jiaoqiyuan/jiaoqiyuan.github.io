@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="git,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Before There Were Trees在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (ye">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git WorkTrees：你从未听说过的 Git 最佳特性">
+<meta property="og:url" content="http://yoursite.com/2020/05/06/git-worktrees/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="Before There Were Trees在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (ye">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://git-scm.com/images/branching-illustration@2x.png">
+<meta property="og:updated_time" content="2020-05-06T09:01:09.721Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git WorkTrees：你从未听说过的 Git 最佳特性">
+<meta name="twitter:description" content="Before There Were Trees在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (ye">
+<meta name="twitter:image" content="https://git-scm.com/images/branching-illustration@2x.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/05/06/git-worktrees/">
+
+
+
+
+
+  <title>Git WorkTrees：你从未听说过的 Git 最佳特性 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/06/git-worktrees/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git WorkTrees：你从未听说过的 Git 最佳特性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-06T15:08:29+08:00">
+                2020-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/05/06/git-worktrees/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2020/05/06/git-worktrees/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  16
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://git-scm.com/images/branching-illustration@2x.png" rel="gallery_ck9v4416l00347yttghpdnyf7" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://git-scm.com/images/branching-illustration@2x.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h3 id="Before-There-Were-Trees"><a href="#Before-There-Were-Trees" class="headerlink" title="Before There Were Trees"></a>Before There Were Trees</h3><h3 id="在有-worktree-之前"><a href="#在有-worktree-之前" class="headerlink" title="在有 worktree 之前"></a>在有 worktree 之前</h3><p>When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (yes, this was before Slack) about an error being thrown in production. I’d take a look at the stacktrace in Sentry, and find the offending section of code. From there I’d return to my terminal, stash my changes, open a new bugfix branch off master, and begin trying to reproduce the error locally.</p>
+<p>我最初使用 git 时，有一个习惯就是经常使用 <code>stash</code> (暂存) 代码。我正在开发一个特定功能，并且会看到有关在生产中引发错误的 Hipchat 警报（对，这是在 Slack 之前）。<strong><em>这里的 Hipchat 和 Slack 是两个聊天工具，就想象成我们熟悉的微信或者 QQ 也行。</em></strong> 我需要看一眼哨兵中的堆栈信息，找到有问题的那部分代码。在这之后我需要回到终端，暂存我的修改，在 master 分支上打开一个新的 bugfix 分支，然后尝试在本地尝试复现这个错误。</p>
+<p>Usually this process would happen without too much pain. If there were untracked files in my working tree, I’d just add them and stash everything. After I’d pushed a bugfix branch up to Github, I’d unstash my changes and unstage any of the original untracked files I had added. Occasionally I’d make a mistake and do something awful like accidentally trashing my untracked files, or uncommitted changes.</p>
+<p>通常情况下这个操作不会让人感觉太痛苦。如果 git 工作空间中有未跟踪的文件，我只需要 add 一下这些文件然后 stash 所有修改就可以了。在我推送了一个 bugfix 分支到 Github 后，使用 unstash 取消我之前暂存的修改，而且 unstage 我之前使用 add 添加的未跟踪的文件就可以。有时我会犯个错误，并且做一些糟糕的事情，例如不小心丢掉了我的未跟踪文件或未提交的更改。</p>
+<p>Other times, I’d be working on a feature, and I’d see a PR review request from one of my coworkers. I generally try to review code as fast as possible, and depending on how urgent the change was, I would stop what I was working on to review the changes. Again, this meant stashing my changes and pulling down the code locally to try out the new changes, and verify edge case behavior.</p>
+<p>其他时候，当我正在开发一项功能时，可能会看到一位同事的 PR 审查请求。通常我会尽可能早地审查代码，而且根据 PR 修改的紧急程度，我可能需要停止手头的事情来检查修改的代码。同样地，这意味着我需要暂存我的修改然后拉取远端代码到本地，运行涉及修改的那部分代码的功能，并验证一些边界情况。</p>
+<p>Eventually, I got frustrated with the pain of stashing and unstashing, and decided that I should just clone the repository into another directory, and I would use that copy of the repository for bugfixes and code reviews. And this mostly worked. However, it isn’t without its downsides.</p>
+<p>最终，在 stash 和 unstash 的痛苦过程中我感到沮丧，我觉得我应该在其他目录再 clone 一个项目，使用这个目录下的项目进行 bug 修复和代码审查。而且这通常是有效果的。 但是，这也有一些弊端。</p>
+<p>One big issue with having multiple copies of a repo in different directories is that branches aren’t shared between them. Sure, you can set one directory to be a remote of the other, but it’s still painful to constantly be syncing branches. In practice, if you use a development model where all code gets pushed to a central repository like Github, this isn’t as painful. Similarly, if you use stashing a lot, as I did, it takes a tiny bit of work to apply a stash from my directory to the other as a patch.</p>
+<p>一个很大的问题是在不同不目录下使用工程的多个拷贝的不同分支之间是无法共享数据的。当然，你可以将一个目录设置为另一个目录的远程目录，但是持续同步分支仍然很麻烦。实际情况下，如果你使用一个像 Github 的开发模式，将所有代码都推送到到一个中心仓库，这还不算多让人痛苦。与之相似，如果你经常像我那样使用 stash 暂存修改，将我目录中暂存的修改作为补丁应用到另一个目录则需要亿点点工作量。</p>
+<p>Another issue is that each directory has its own .git directory. This means all sorts of configuration has to be duplicated. I use a fair number of git pre-commit hooks, so these now needed to exist in both directories. Again, there are ways to work around this, such as using symlinks, or possibly centralizing some of this config in your home folder’s .gitconfig, but it’s not ideal.</p>
+<p>另一个问题是每个目录都有自己的 <code>.git</code> 目录，这表示所有配置都需要在各个目录下重复进行。我使用了大量的 git pre-commit 钩子，因此现在两个目录中都必须存在这些钩子。同样，有一些方法可以解决这个问题，例如使用符号链接，或者将某些配置集中在主文件夹的 <code>.gitconfig</code> 文件中，但是这样做并不理想。</p>
+<p>Finally, this process didn’t easily scale beyond the 2 concurrent repo case. When I found myself needing to halt my existing work, create a bugfix, and review a coworkers code all at the same time, I was faced with the prospect of cloning another copy of the repo. Cloning the repo wasn’t exactly quick, and again I was faced with the burden of copying and keeping in sync all the configuration I had for the existing two repositories.</p>
+<p>最后一个问题，在同时处理两个以上的项目时会比较困难。当我同时需要停止当前的工作，创建一个 bugfix 分支，review 同事的代码时，我就想还是再 clone 一个项目到本地吧。clone 一个项目也是需要花费时间的，然后我又要面对拷贝带来的问题以及配置另外两个项目中使用到的 git 配置。</p>
+<h3 id="Enter-Git-Worktrees"><a href="#Enter-Git-Worktrees" class="headerlink" title="Enter Git Worktrees"></a>Enter Git Worktrees</h3><h3 id="使用-Git-Worktrees"><a href="#使用-Git-Worktrees" class="headerlink" title="使用 Git Worktrees"></a>使用 Git Worktrees</h3><p>Git Worktrees are a feature that allow you to have a single repository with multiple checked out working branches at the same time. Now that may not sound that cool, but let me lay out an example.</p>
+<p>Git Worktrees 这个特性让你在只拥有一个项目仓库的情况下可以 checkout 出多个工作分支。现在听起来可能并不是那么酷，那么让我举一个例子吧。</p>
+<p>I have a copy of the <code>ApertureScience</code> repository located at <code>/home/James/Aperture</code>. I’m going to begin working on a new feature, <code>cake</code>. Before I start this work, I’m first going to run <code>git worktree add cake</code>. This will create a new directory for me to do my work located at <code>/home/James/Aperture/cake</code>. I spend a few hours working on my <code>cake</code> feature.</p>
+<p>在 <code>/home/James/Aperture</code> 目录下我有一个 <code>ApertureScience</code> 仓库的副本，我打算在一个新的分支 <code>cake</code> 上展开工作，在开始工作前，我需要首先执行 <code>git worktree add cake</code>，为我接下来工作创建一个新的目录 <code>/home/James/Aperture/cake</code>，然后我就可以在接下来的几个小时里为 <code>cake</code> 特性编写代码了。</p>
+<p>A wild error appears in our production app. Probably a rogue test subject causing trouble… Better go deal with that.</p>
+<p>我们的生产应用中出现了一个严重错误。可能是一个测试对象导致的问题……最好去解决这个问题。</p>
+<p>I stop working on the <code>cake</code> feature and run the command <code>git worktree add bugfix</code> inside the <code>/home/James/Aperture</code> directory. This almost instantly creates a new working copy of the repository at <code>/home/James/Aperture/bugfix</code> on a new branch called <code>bugfix</code>. I cd into that directory and run whatever commands I need to boot up the application. Once I discover the bug and figure out what changes need to be made to fix, I commit the changes, push up my branch for review, and then return to the feature work I was doing on <code>/home/James/Aperture/cake</code>. No stashing hassle, and no worrying that my most recent pre-commit hooks aren’t running.</p>
+<p>这时我停止开发 <code>cake</code> 特性，然后在<code>/home/James/Aperture</code> 目录下执行 <code>git worktree add bugfix</code>，执行这个命令后几乎可以立即在 <code>/home/James/Aperture/bugfix</code> 目录下创建一个新的名叫 <code>bugfix</code> 的拷贝了当前工作环境的分支，我 <code>cd</code> 进这个目录后可以执行任何我启动应用需要的命令。一旦发现错误并找出需要进行哪些更改才能修复，我提交更改，向上推我的分支进行审核，然后返回 <code>/home/James/Aperture/cake</code> 目录继续进行 <code>cake</code> 特性的开发。没有 stash 带来的麻烦，也不需要担心我的 pre-commit hooks 不工作的问题。</p>
+<p>Effectively, you can work on as many things in parallel as you’d like and can feel free to just pause your work and come back later.</p>
+<p>实际上，您可以根据需要并行处理许多事情，并且可以随时暂停工作，稍后再回来继续之前的工作。</p>
+<p>Why aren’t more people talking about Git Worktrees?? They’re incredible!</p>
+<p>为什么没有更多的人谈论 Git Worktrees ？？ 他们太不可思议了！</p>
+<h3 id="Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too"><a href="#Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too" class="headerlink" title="Can You Really Have Your Cake and Bugfix Branches Too?"></a>Can You Really Have Your Cake and Bugfix Branches Too?</h3><h3 id="你真的有-cake-和-bugfix-分支吗？"><a href="#你真的有-cake-和-bugfix-分支吗？" class="headerlink" title="你真的有 cake 和 bugfix 分支吗？"></a>你真的有 cake 和 bugfix 分支吗？</h3><p>Of course, there are some downsides to be aware of when using git worktrees.</p>
+<p>当然，使用 git worktrees 时要注意一些缺点。</p>
+<p>If you’re not stashing your code, or being forced to commit it, you’re more likely to just leave code in a working state. Usually, this is fine, but it means that you may not have any refs in the reflog if something goes wrong, or you may be less likely to have a committed copy of your code somewhere if you suffer a disk failure.</p>
+<p>如果你没有暂存你的代码，或者被强制要求 commit，你可能只是将代码置于工作状态，通常情况下这是没问题的，但这也意味着在出现问题时你无法通过 reglog 来记录一个操作，或者如果你遇到磁盘故障，则不太可能在某处拥有已提交的代码副本。</p>
+<p>It’s possible that being able to work on more things at once may also be detrimental to your productivity. You might wind up splitting your focus and try to do too many things in parallel.</p>
+<p>一次可以处理更多事情可能也会降低你的工作效率。你可能会分散注意力，并尝试并行执行太多操作。</p>
+<p>Finally, some tools may not fully support worktrees well. Worktrees rely on the fact that git allows .git to be a file that points to a directory, instead of an actual directory. Some tools incorrectly assume that .git must be directory and run into issues with worktrees.</p>
+<p>最后，一些工具还没有很好地支持 worktrees，Worktrees 依赖于 git 允许 <code>.git</code> 作为指向目录的文件，而不是一个真实的目录。一些工具错误地认为 <code>.git</code> 必须是目录，并且使用 worktrees 会遇到一些问题。</p>
+<h3 id="Recommended-Setup"><a href="#Recommended-Setup" class="headerlink" title="Recommended Setup"></a>Recommended Setup</h3><h3 id="推荐设置"><a href="#推荐设置" class="headerlink" title="推荐设置"></a>推荐设置</h3><p>I tend to try to keep things tidy, so I have my worktrees setup in a specific fashion to allow me to work easily. My worktrees folder looks like the following:</p>
+<p>我趋向于保持一切整洁，所以我以特定的方式设置了工作树来帮助我轻松工作。我的 worktrees 目录大概像下面这个样子：</p>
+<p><code>/home/James/worktrees/.bare</code> — This is the actual git repository, a bare instance. This stores only the repo metadata and has no actual working tree. I keep this in a separate hidden directory so that I can create new worktrees from this folder, but don’t accidentally try to check out a branch in the <code>worktrees</code> directory, which is an operation that can only be done in a working tree.</p>
+<p><code>/home/James/worktrees/.bare</code> –这是实际的git仓库，一个裸实例。这里仅存储仓库元数据，而没有实际的工作树。我将其保存在一个单独的隐藏目录中，以便可以在这个文件夹中创建新的工作树，但不要意外地尝试检出 worktrees 目录中的分支，该操作只能在工作树中完成。</p>
+<p><code>/home/James/worktree/.git</code> — This file just points to the <code>.bare</code> directory.</p>
+<p><code>/home/James/worktree/.git</code> — 该文件仅指向 <code>.bare</code> 目录。</p>
+<p><code>/home/James/worktree/master</code> — I always keep a copy of master, mostly so that if something comes up I can spin up a local copy of whatever is running in production.</p>
+<p><code>/home/James/worktree/master</code> — 我通常会保留一份 master 副本，主要是为了在出现问题时可以在生产环境中运行任何本地副本。</p>
+<p><code>/home/James/worktree/hotfix</code> — This branch is kept as a place where I perform hotfixes. It happens with enough frequency that I keep a dedicated worktree around for it.</p>
+<p><code>/home/James/worktree/hotfix</code> — 该分支保留为我执行 bugfix 的地方。bugfix 频繁发生，我为此保留了一个专用的工作树。</p>
+<p><code>/home/James/worktree/&lt;feature&gt;</code> — I have a number of different feature worktrees, which are divided by particular feature areas of the codebase.</p>
+<p><code>/home/James/worktree/&lt;feature&gt;</code> — 我有许多不同的功能工作树，它们按代码库的特定功能区域划分。</p>
+<p>I’ve tried a couple different schemes for how to organize these branches, and still think there’s room for improvement, but am fairly happy with having at least a <code>master</code> worktree that allows easily spinning up exactly what is live on master, and a number of feature branches that allow me to work on multiple things in parallel. I also like to keep around worktrees such as, <code>dependencies</code> where I can drop in, bump a dependency, and spend a few minutes working on getting our code base to work with a new version of the dependency.</p>
+<p>我已经尝试了几种不同的方案来组织这些分支，但仍然认为还有改进的余地，不过我对至少拥有一个主工作树很满意，该工作树可以轻松地将主工作完全分解，以及许多功能分支，这些分支允许我并行处理多个事情。我还喜欢保留工作树，例如可以插入的依赖项，增加依赖项，并花几分钟时间来使我们的代码库与新版本的依赖项一起使用。</p>
+<p>As a bonus, if you use Docker-Compose, or any other tool that is isolated by directory path, you can have multiple copies of your application running at the same time. Docker-Compose relies on using it’s containing folder for as a name for the containers that are created and for managing running containers. Of course, to make this work, you need to make sure your application is able to properly isolate itself with dynamic port allocation, etc.</p>
+<p>另外，如果使用 Docker-Compose 或按目录路径隔离的任何其他工具，则可以同时运行应用程序的多个副本。Docker-Compose 依靠将其包含文件夹用作创建的容器的名称以及管理运行中的容器。当然，要使其正常工作，你需要确保你的应用程序能够通过动态端口分配等适当地隔离自身。</p>
+<p>All in all, this style of working has made it so much easier for me to context switch when it is necessary, and provides me with small chunks of work that I can get done in less than 1 hour increments.</p>
+<p>总而言之，这种工作方式使我在需要时可以更轻松地进行上下文切换，并且为我提供了可以不到 1 小时就完成的小块工作。</p>
+<p>I consider git worktrees to be one of the secret weapons in my toolbox and could not imagine going back to developing without them.</p>
+<p>我认为 git worktrees 是我工具箱中的秘密武器之一，无法想象没有它们该如何回过头去进行那些开发工作。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/24/TinyhttpSourceCodeAnalysis/" rel="next" title="Tinyhttpd源码解析">
+                <i class="fa fa-chevron-left"></i> Tinyhttpd源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Before-There-Were-Trees"><span class="nav-number">1.</span> <span class="nav-text">Before There Were Trees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在有-worktree-之前"><span class="nav-number">2.</span> <span class="nav-text">在有 worktree 之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Enter-Git-Worktrees"><span class="nav-number">3.</span> <span class="nav-text">Enter Git Worktrees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Git-Worktrees"><span class="nav-number">4.</span> <span class="nav-text">使用 Git Worktrees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Can-You-Really-Have-Your-Cake-and-Bugfix-Branches-Too"><span class="nav-number">5.</span> <span class="nav-text">Can You Really Have Your Cake and Bugfix Branches Too?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#你真的有-cake-和-bugfix-分支吗？"><span class="nav-number">6.</span> <span class="nav-text">你真的有 cake 和 bugfix 分支吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recommended-Setup"><span class="nav-number">7.</span> <span class="nav-text">Recommended Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推荐设置"><span class="nav-number">8.</span> <span class="nav-text">推荐设置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

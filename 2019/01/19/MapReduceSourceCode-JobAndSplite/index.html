@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="大数据,MapReduce,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="从MapReduce的源码看一下MapReduce的一些具体实现方法。   关于Mapreduce的原理部分可以参考我之前的一篇文章：MapReduce的原理">
+<meta name="keywords" content="大数据,MapReduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MapReduce源码分析1-任务提交流程与切片">
+<meta property="og:url" content="http://yoursite.com/2019/01/19/MapReduceSourceCode-JobAndSplite/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="从MapReduce的源码看一下MapReduce的一些具体实现方法。   关于Mapreduce的原理部分可以参考我之前的一篇文章：MapReduce的原理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MapReduce源码分析1-任务提交流程与切片">
+<meta name="twitter:description" content="从MapReduce的源码看一下MapReduce的一些具体实现方法。   关于Mapreduce的原理部分可以参考我之前的一篇文章：MapReduce的原理">
+<meta name="twitter:image" content="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/19/MapReduceSourceCode-JobAndSplite/">
+
+
+
+
+
+  <title>MapReduce源码分析1-任务提交流程与切片 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/19/MapReduceSourceCode-JobAndSplite/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MapReduce源码分析1-任务提交流程与切片</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-19T11:17:01+08:00">
+                2019-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/19/MapReduceSourceCode-JobAndSplite/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/19/MapReduceSourceCode-JobAndSplite/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ck9v4418c004h7ytth1kjz00h" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <blockquote>
+<p>从MapReduce的源码看一下MapReduce的一些具体实现方法。</p>
+</blockquote>
+<blockquote>
+<p>关于Mapreduce的原理部分可以参考我之前的一篇文章：<a href="https://jiaoqiyuan.cn/2018/12/24/MapReduce%E7%9A%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">MapReduce的原理</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="日志解析实例"><a href="#日志解析实例" class="headerlink" title="日志解析实例"></a>日志解析实例</h2><p>从一个日志解析的实例来看一下 MapReduce 程序在执行过程中的具体代码执行过程，以及 MapReduce 功能的一些具体代码实现。一般情况下我们编写 MapReduce 程序时在提交 MapReduce 作业时会是到一个函数： <code>waitForCompletion</code> ，这就是源码分析的入口函数，我将会从这个函数展开，一步步学习和分析下 MapReduce 程序的内部源码实现。</p>
+<p>下面是一个简单MapReduce程序的代码，不是 WordCount ，是一个日志分析的MapReduce程序，而且只是为了说明 MapReduce 的基本用法，没有设置Reduce类，仅仅实现了Mapper，对日志中的内容进行解析和重组，重新输出到 HDFS 上。</p>
+<p>代码链接<a href="https://github.com/jiaoqiyuan/163-bigdate-note/blob/master/%E6%97%A5%E5%BF%97%E8%A7%A3%E6%9E%90%E5%8F%8A%E8%AE%A1%E7%AE%97%EF%BC%9AMR/%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAMR%E7%A8%8B%E5%BA%8F/etl/src/main/com/bigdata/etl/job/ParseLogJob.java" target="_blank" rel="noopener">点这里</a>。</p>
+<p>main函数中重要的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException, InterruptedException </span>&#123;</span><br><span class="line">    <span class="comment">//创建job</span></span><br><span class="line">    Configuration config = <span class="keyword">new</span> Configuration();</span><br><span class="line">    Job job = Job.getInstance(config);</span><br><span class="line">    <span class="comment">//通过job设置一些参数</span></span><br><span class="line">    job.setJarByClass(ParseLogJob.class);</span><br><span class="line">    job.setJobName(<span class="string">"parselog"</span>);</span><br><span class="line">    job.setMapperClass(LogMapper.class);</span><br><span class="line">    <span class="comment">//设置reduce个数为0，因为没有使用reduce所以必须设置为0</span></span><br><span class="line">    job.setNumReduceTasks(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//添加输入和输出数据</span></span><br><span class="line">    FileInputFormat.addInputPath(job, <span class="keyword">new</span> Path(args[<span class="number">0</span>]));</span><br><span class="line">    Path outputPath = <span class="keyword">new</span> Path(args[<span class="number">1</span>]);</span><br><span class="line">    FileOutputFormat.setOutputPath(job, outputPath);</span><br><span class="line">    <span class="comment">//如果输出路径已经存在就先删除，这只在测试阶段使用，生产环境一般不用，因为数据可能存在价值一般不会删除数据</span></span><br><span class="line">    FileSystem fs = FileSystem.get(config);</span><br><span class="line">    <span class="keyword">if</span> (fs.exists(outputPath)) &#123;</span><br><span class="line">        fs.delete(outputPath, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//运行程序</span></span><br><span class="line">    <span class="keyword">if</span> (!job.waitForCompletion(<span class="keyword">true</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(job.getJobName() + <span class="string">"failed!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="获取配置信息的-Configuration-类"><a href="#获取配置信息的-Configuration-类" class="headerlink" title="获取配置信息的 Configuration 类"></a>获取配置信息的 Configuration 类</h2><p>MapReduce程序要提交到 Hadoop 的 Yarn 上运行，使用的是一个叫Job的封装类，里面包含了一些设置 MapReduce 任务执行时可以配置的一些参数，比如设置Job名称、试着使用的Mapper类、获取Job的运行状态等等，<br>这个类实现了 JobContext 接口，JobContext 也就是Job的上下文信息，规定了job运行过程中可以获得的Job信息有哪些。</p>
+<p>获得Job的方式一般是通过 Configuration 实例来配置Job后获得一个Job，使用Configuration时，就可以将Hadoop的配置信息读取进来，Configuration中有这样一段静态代码块。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span>&#123;</span><br><span class="line">  <span class="comment">//print deprecation warning if hadoop-site.xml is found in classpath</span></span><br><span class="line">  ClassLoader cL = Thread.currentThread().getContextClassLoader();</span><br><span class="line">  <span class="keyword">if</span> (cL == <span class="keyword">null</span>) &#123;</span><br><span class="line">    cL = Configuration.class.getClassLoader();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(cL.getResource(<span class="string">"hadoop-site.xml"</span>)!=<span class="keyword">null</span>) &#123;</span><br><span class="line">    LOG.warn(<span class="string">"DEPRECATED: hadoop-site.xml found in the classpath. "</span> +</span><br><span class="line">        <span class="string">"Usage of hadoop-site.xml is deprecated. Instead use core-site.xml, "</span></span><br><span class="line">        + <span class="string">"mapred-site.xml and hdfs-site.xml to override properties of "</span> +</span><br><span class="line">        <span class="string">"core-default.xml, mapred-default.xml and hdfs-default.xml "</span> +</span><br><span class="line">        <span class="string">"respectively"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  addDefaultResource(<span class="string">"core-default.xml"</span>);</span><br><span class="line">  addDefaultResource(<span class="string">"core-site.xml"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道静态代码块时在当前类在被加载时最先执行的代码，是而且仅执行一次，是给类初始化时用的，对比来看，构造函数是给对象初始化时用的。通过上面的代码，就将本地配置的 Hadoop 环境中的默认配置文件加载到内存中。</p>
+<p>这里的 addDefaultResource 函数是将配置文件名添加到一个 <code>CopyOnWriteArrayList</code> 中， <code>CopyOnWriteArrayList</code> 是一个采用了 Copy on Write 模式的线程安全的 ArrayList，在这里使用是为了保证多线程环境下 <code>Configuration</code> 能够安全地工作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> CopyOnWriteArrayList&lt;String&gt; defaultResources =</span><br><span class="line">    <span class="keyword">new</span> CopyOnWriteArrayList&lt;String&gt;();</span><br><span class="line"></span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">addDefaultResource</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!defaultResources.contains(name)) &#123;</span><br><span class="line">      defaultResources.add(name);</span><br><span class="line">      <span class="keyword">for</span>(Configuration conf : REGISTRY.keySet()) &#123;</span><br><span class="line">        <span class="keyword">if</span>(conf.loadDefaults) &#123;</span><br><span class="line">          conf.reloadConfiguration();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>需要说明的是 <code>Configuration</code> 加载配置文件的方式使用的是懒加载方式（<code>Lazy Loading</code>），在创建 <code>Configuration</code> 对象时，并没有立即将配置文件解析加载进对象中，而是只在后续使用到相应的配置文件内的信息时再进行解析和加载。</p>
+<p>关于configuration的详细信息可以参考这篇<a href="http://bachiscoding.com/2016/06/10/configuration-in-hadoop/" target="_blank" rel="noopener">Hadoop 中的 Configuration</a>，讲的很详细。</p>
+<h2 id="MapReduce作业提交者-Job"><a href="#MapReduce作业提交者-Job" class="headerlink" title="MapReduce作业提交者 - Job"></a>MapReduce作业提交者 - Job</h2><p>Job 是 MapReduce 作业的单位，一个Job对应一个 MapReduce 作业，MapReduce 作业在实际运行中由Job创建和提交 Hadoop 集群运行。在创建 MapReduce 作业时，可以通过 Job 对 MapReduce 运行时的参数进行配置，从而更好地控制作业的执行，提高运行效率，节省集群资源，这就是 MapRedude 调优相关的内容了，不再展开。</p>
+<p>上面说到Job一般是使用 <code>Configuration</code> 对象创建的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Configuration config = <span class="keyword">new</span> Configuration();</span><br><span class="line">Job job = Job.getInstance(config);</span><br></pre></td></tr></table></figure>
+<p>另外通过Job可以设置MapReduce任务执行时的一些参数，比如设置Job名称、试着使用的Mapper类、获取Job的运行状态等等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//通过job设置一些参数</span></span><br><span class="line">job.setJarByClass(ParseLogJob.class);</span><br><span class="line">job.setJobName(<span class="string">"parselog"</span>);</span><br><span class="line">job.setMapperClass(LogMapper.class);</span><br><span class="line"><span class="comment">//设置reduce个数为0，因为没有使用reduce所以必须设置为0</span></span><br><span class="line">job.setNumReduceTasks(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="真正的提交者-waitForCompletion"><a href="#真正的提交者-waitForCompletion" class="headerlink" title="真正的提交者 - waitForCompletion"></a>真正的提交者 - <code>waitForCompletion</code></h2><p>在加载好配置文件(注意是懒加载，真正使用到相关配置信息时才会从文件中解析和加载配置信息)，创建好Job后，由job的<code>waitForCompletion</code>进行任务的提交操作，<code>waitForCompletion</code>源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Submit the job to the cluster and wait for it to finish.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> verbose print the progress to the user</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> true if the job succeeded</span></span><br><span class="line"><span class="comment">* <span class="doctag">@throws</span> IOException thrown if the communication with the </span></span><br><span class="line"><span class="comment">*         &lt;code&gt;JobTracker&lt;/code&gt; is lost</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">waitForCompletion</span><span class="params">(<span class="keyword">boolean</span> verbose</span></span></span><br><span class="line"><span class="function"><span class="params">                                )</span> <span class="keyword">throws</span> IOException, InterruptedException,</span></span><br><span class="line"><span class="function">                                        ClassNotFoundException </span>&#123;</span><br><span class="line"><span class="keyword">if</span> (state == JobState.DEFINE) &#123;</span><br><span class="line">  <span class="comment">//真正的提交操作</span></span><br><span class="line">  submit();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (verbose) &#123;</span><br><span class="line">  <span class="comment">//监控任务运行过程中的状态信息并打印到终端</span></span><br><span class="line">  monitorAndPrintJob();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// get the completion poll interval from the client.</span></span><br><span class="line">  <span class="keyword">int</span> completionPollIntervalMillis = </span><br><span class="line">    Job.getCompletionPollInterval(cluster.getConf());</span><br><span class="line">  <span class="keyword">while</span> (!isComplete()) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      Thread.sleep(completionPollIntervalMillis);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException ie) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//返回作业运行结果</span></span><br><span class="line"><span class="keyword">return</span> isSuccessful();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里面真正的提交操作时 <code>submit</code> 函数，展开 <code>submit</code> 函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Submit the job to the cluster and return immediately.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">submit</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException, InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">  ensureState(JobState.DEFINE);</span><br><span class="line">  <span class="comment">//使用新的 MapReduce API</span></span><br><span class="line">  setUseNewAPI();</span><br><span class="line">  <span class="comment">//连接YARN，进行通信</span></span><br><span class="line">  connect();</span><br><span class="line">  <span class="keyword">final</span> JobSubmitter submitter = </span><br><span class="line">      getJobSubmitter(cluster.getFileSystem(), cluster.getClient());</span><br><span class="line">  status = ugi.doAs(<span class="keyword">new</span> PrivilegedExceptionAction&lt;JobStatus&gt;() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> JobStatus <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException, </span></span><br><span class="line"><span class="function">    ClassNotFoundException </span>&#123;</span><br><span class="line">      <span class="comment">//执行作业的提交操作</span></span><br><span class="line">      <span class="keyword">return</span> submitter.submitJobInternal(Job.<span class="keyword">this</span>, cluster);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  state = JobState.RUNNING;</span><br><span class="line">  LOG.info(<span class="string">"The url to track the job: "</span> + getTrackingURL());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>submit 中setUserNewAPI表示使用新版MapReduceAPI（Hadoop1.x的旧版没有YARN，Hadoop2.x开始支持YARN，采用了新的 MapReduce API）， connect() 表示连接YARN的ResourceManager，进行ApplicationMaster和相关资源的申请，具体流程参考<a href="https://jiaoqiyuan.cn/2018/12/27/YARN%E7%9A%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">YARN的原理</a>那篇文章，这里先不展开分析。</p>
+<p><code>connect</code> 中会为 Cluster 的对象 cluster 赋值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException, InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (cluster == <span class="keyword">null</span>) &#123;</span><br><span class="line">    cluster = </span><br><span class="line">      ugi.doAs(<span class="keyword">new</span> PrivilegedExceptionAction&lt;Cluster&gt;() &#123;</span><br><span class="line">                  <span class="function"><span class="keyword">public</span> Cluster <span class="title">run</span><span class="params">()</span></span></span><br><span class="line"><span class="function">                        <span class="keyword">throws</span> IOException, InterruptedException, </span></span><br><span class="line"><span class="function">                                ClassNotFoundException </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">new</span> Cluster(getConfiguration());</span><br><span class="line">                  &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过 clster 可以得到一个 <code>JobSubmitter</code> 对象 submitter ，最后由 submitter 进行作业的提交</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> JobSubmitter submitter = </span><br><span class="line">    getJobSubmitter(cluster.getFileSystem(), cluster.getClient());</span><br><span class="line">status = ugi.doAs(<span class="keyword">new</span> PrivilegedExceptionAction&lt;JobStatus&gt;() &#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> JobStatus <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException, </span></span><br><span class="line"><span class="function">  ClassNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> submitter.submitJobInternal(Job.<span class="keyword">this</span>, cluster);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>通过查看 <code>submitJobInternal</code> 的描述信息，我们就能知道这个函数就是真正的逻辑计算所在的地方：</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Internal method <span class="keyword">for</span> submitting jobs <span class="keyword">to</span> the system.</span><br><span class="line">The job submission <span class="keyword">process</span> involves:</span><br><span class="line">Checking the input <span class="keyword">and</span> output specifications <span class="keyword">of</span> the job.</span><br><span class="line">Computing the InputSplits <span class="keyword">for</span> the job.</span><br><span class="line">Setup the requisite accounting information <span class="keyword">for</span> the DistributedCache <span class="keyword">of</span> the job, <span class="keyword">if</span> necessary.</span><br><span class="line">Copying the job<span class="symbol">'s</span> jar <span class="keyword">and</span> <span class="keyword">configuration</span> <span class="keyword">to</span> the <span class="keyword">map</span>-reduce system directory <span class="keyword">on</span> the distributed <span class="keyword">file</span>-system.</span><br><span class="line">Submitting the job <span class="keyword">to</span> the JobTracker <span class="keyword">and</span> optionally monitoring it<span class="symbol">'s</span> status.</span><br><span class="line"></span><br><span class="line">Params:</span><br><span class="line">job – the <span class="keyword">configuration</span> <span class="keyword">to</span> submit</span><br><span class="line">cluster – the handle <span class="keyword">to</span> the Cluster</span><br><span class="line">Throws:</span><br><span class="line">ClassNotFoundException –</span><br><span class="line">InterruptedException –</span><br><span class="line">java.io.IOException</span><br><span class="line">Inferred annotations:</span><br><span class="line"><span class="keyword">Parameter</span> job: @org.jetbrains.annotations.NotNull</span><br><span class="line"><span class="keyword">Parameter</span> cluster: @org.jetbrains.annotations.NotNull</span><br></pre></td></tr></table></figure>
+<h2 id="真正的幕后主使-submitJobInternal"><a href="#真正的幕后主使-submitJobInternal" class="headerlink" title="真正的幕后主使 - submitJobInternal"></a>真正的幕后主使 - <code>submitJobInternal</code></h2><p>通过层层递进，发现最终执行计算任务的是一个Jobsubmitter类中的一个叫做submitJobInternal()的方法。进入这个方法，因为内部代码太长，我们看重点，这里调用了一个 <code>writeSplits()</code> 方法，这就是分片操作实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">JobStatus <span class="title">submitJobInternal</span><span class="params">(Job job, Cluster cluster)</span> </span></span><br><span class="line"><span class="function">  <span class="keyword">throws</span> ClassNotFoundException, InterruptedException, IOException </span>&#123;</span><br><span class="line">  ......</span><br><span class="line">  <span class="comment">// Create the splits for the job</span></span><br><span class="line">  LOG.debug(<span class="string">"Creating splits at "</span> + jtFs.makeQualified(submitJobDir));</span><br><span class="line">  <span class="keyword">int</span> maps = writeSplits(job, submitJobDir);</span><br><span class="line">  conf.setInt(MRJobConfig.NUM_MAPS, maps);</span><br><span class="line">  LOG.info(<span class="string">"number of splits:"</span> + maps);</span><br><span class="line">  ......</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="MapReduce-分片操作"><a href="#MapReduce-分片操作" class="headerlink" title="MapReduce 分片操作"></a>MapReduce 分片操作</h3><p>通过注释也可以知道，这是map分片的相关操作，接着看，进入 <code>writeSplits</code> 方法内部看一下，里面有个分支判断，用于选择使用那种分片方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (jConf.getUseNewMapper()) &#123;</span><br><span class="line">  maps = writeNewSplits(job, jobSubmitDir);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  maps = writeOldSplits(jConf, jobSubmitDir);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用的是 Hadoop2.x 版本的 MapReduce 框架，所以肯定是调用 <code>writeNewSplits</code>，再进入 <code>writeNewSplits</code> 看一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> &lt;T extends InputSplit&gt;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">writeNewSplits</span><span class="params">(JobContext job, Path jobSubmitDir)</span> <span class="keyword">throws</span> IOException,</span></span><br><span class="line"><span class="function">    InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">  <span class="comment">//先从job中把Configuration拿出来</span></span><br><span class="line">  Configuration conf = job.getConfiguration();</span><br><span class="line">  <span class="comment">//通过反射机制获取输入数据格式</span></span><br><span class="line">  InputFormat&lt;?, ?&gt; input =</span><br><span class="line">    ReflectionUtils.newInstance(job.getInputFormatClass(), conf);</span><br><span class="line">  <span class="comment">//由输入类来做分片操作</span></span><br><span class="line">  List&lt;InputSplit&gt; splits = input.getSplits(job);</span><br><span class="line">  T[] array = (T[]) splits.toArray(<span class="keyword">new</span> InputSplit[splits.size()]);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// sort the splits into order based on size, so that the biggest</span></span><br><span class="line">  <span class="comment">// go first</span></span><br><span class="line">  Arrays.sort(array, <span class="keyword">new</span> SplitComparator());</span><br><span class="line">  JobSplitWriter.createSplitFiles(jobSubmitDir, conf, </span><br><span class="line">      jobSubmitDir.getFileSystem(conf), array);</span><br><span class="line">  <span class="keyword">return</span> array.length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="获取-Map-默认输入数据类型"><a href="#获取-Map-默认输入数据类型" class="headerlink" title="获取 Map 默认输入数据类型"></a>获取 Map 默认输入数据类型</h4><p>这里内容较多，首先获取到 Configuration 的实例，然后获取Map输入数据类型，这个在main函数中设置job的时候我们可以自定义，如果没有定义，默认是Text类型的数据。为什么说默认是Text类型的数据呢？往下看就知道了，进入job.getInputFormatClass()的实现类JobContextImpl中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Get the &#123;<span class="doctag">@link</span> InputFormat&#125; class for the job.</span></span><br><span class="line"><span class="comment">  * </span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> the &#123;<span class="doctag">@link</span> InputFormat&#125; class for the job.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">public</span> Class&lt;? extends InputFormat&lt;?,?&gt;&gt; getInputFormatClass() </span><br><span class="line">    <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">  <span class="keyword">return</span> (Class&lt;? extends InputFormat&lt;?,?&gt;&gt;) </span><br><span class="line">    conf.getClass(INPUT_FORMAT_CLASS_ATTR, TextInputFormat.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里使用 <code>conf.getClass</code> 来获取输入数据类型，如果没有设置，默认就是 TextInputFormat 类型的数据，我们之前说的Map默认输入数据类型是Text，原来在代码中就在这里体现出来了。</p>
+<h4 id="获取-Map-分片"><a href="#获取-Map-分片" class="headerlink" title="获取 Map 分片"></a>获取 Map 分片</h4><p>在 <code>writeNewSplits</code> 中还有一个 <code>getSplits(job)</code> 方法，根据继承关系，可以找到 FileInputformat类中实现了这个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">  * Generate the list of files and make them into FileSplits.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> job the job context</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;InputSplit&gt; <span class="title">getSplits</span><span class="params">(JobContext job)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  StopWatch sw = <span class="keyword">new</span> StopWatch().start();</span><br><span class="line">  <span class="comment">//分片最小值和最大值</span></span><br><span class="line">  <span class="keyword">long</span> minSize = Math.max(getFormatMinSplitSize(), getMinSplitSize(job));</span><br><span class="line">  <span class="keyword">long</span> maxSize = getMaxSplitSize(job);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// generate splits 生成分片</span></span><br><span class="line">  List&lt;InputSplit&gt; splits = <span class="keyword">new</span> ArrayList&lt;InputSplit&gt;();</span><br><span class="line">  List&lt;FileStatus&gt; files = listStatus(job); <span class="comment">//将输入路径下的所有文件放入列表中</span></span><br><span class="line">  <span class="keyword">for</span> (FileStatus file: files) &#123;</span><br><span class="line">    Path path = file.getPath();</span><br><span class="line">    <span class="keyword">long</span> length = file.getLen();</span><br><span class="line">    <span class="keyword">if</span> (length != <span class="number">0</span>) &#123;</span><br><span class="line">      BlockLocation[] blkLocations;</span><br><span class="line">      <span class="keyword">if</span> (file <span class="keyword">instanceof</span> LocatedFileStatus) &#123;</span><br><span class="line">        blkLocations = ((LocatedFileStatus) file).getBlockLocations();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//获取分布式文件系统块信息</span></span><br><span class="line">        FileSystem fs = path.getFileSystem(job.getConfiguration());</span><br><span class="line">        blkLocations = fs.getFileBlockLocations(file, <span class="number">0</span>, length);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (isSplitable(job, path)) &#123; <span class="comment">//允许切片</span></span><br><span class="line">        <span class="comment">//获取切片大小</span></span><br><span class="line">        <span class="keyword">long</span> blockSize = file.getBlockSize();</span><br><span class="line">        <span class="keyword">long</span> splitSize = computeSplitSize(blockSize, minSize, maxSize);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> bytesRemaining = length;</span><br><span class="line">        <span class="keyword">while</span> (((<span class="keyword">double</span>) bytesRemaining)/splitSize &gt; SPLIT_SLOP) &#123;</span><br><span class="line">          <span class="comment">//获取切片索引</span></span><br><span class="line">          <span class="keyword">int</span> blkIndex = getBlockIndex(blkLocations, length-bytesRemaining);</span><br><span class="line">          <span class="comment">//往切片表中添加切片信息</span></span><br><span class="line">          splits.add(makeSplit(path, length-bytesRemaining, splitSize,</span><br><span class="line">                      blkLocations[blkIndex].getHosts(),</span><br><span class="line">                      blkLocations[blkIndex].getCachedHosts()));</span><br><span class="line">          bytesRemaining -= splitSize;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (bytesRemaining != <span class="number">0</span>) &#123;</span><br><span class="line">          <span class="keyword">int</span> blkIndex = getBlockIndex(blkLocations, length-bytesRemaining);</span><br><span class="line">          splits.add(makeSplit(path, length-bytesRemaining, bytesRemaining,</span><br><span class="line">                      blkLocations[blkIndex].getHosts(),</span><br><span class="line">                      blkLocations[blkIndex].getCachedHosts()));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// not splitable</span></span><br><span class="line">        splits.add(makeSplit(path, <span class="number">0</span>, length, blkLocations[<span class="number">0</span>].getHosts(),</span><br><span class="line">                    blkLocations[<span class="number">0</span>].getCachedHosts()));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">      <span class="comment">//Create empty hosts array for zero length files</span></span><br><span class="line">      splits.add(makeSplit(path, <span class="number">0</span>, length, <span class="keyword">new</span> String[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// Save the number of input files for metrics/loadgen</span></span><br><span class="line">  job.getConfiguration().setLong(NUM_INPUT_FILES, files.size());</span><br><span class="line">  sw.stop();</span><br><span class="line">  <span class="keyword">if</span> (LOG.isDebugEnabled()) &#123;</span><br><span class="line">    LOG.debug(<span class="string">"Total # of splits generated by getSplits: "</span> + splits.size()</span><br><span class="line">        + <span class="string">", TimeTaken: "</span> + sw.now(TimeUnit.MILLISECONDS));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> splits;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先是获取minSize 和 maxSize分别是分片的最小值和最大值，最小值的计算方法是取 <code>getFormatMinSplitSize()</code> 和 <code>getMinSplitSize(job)</code> 之中的最大值，<code>getFormatMinSplitSize()</code> 这里设置的是1，而getMinSplitSize(job)是从配置中获取最小值的配置信息，如果没有配置默认也是1。这就是分片最小值的默认情况，默认最小值为1. 分片最大值是通过 <code>getMaxSplitSize(job)</code> 方法获取的，如果没有配置，默认获取到的是Long的最大值0x7fffffffffffffffL。</p>
+<p>然后获取输入路径下的所有文件，我们这里使用的输入是HDFS文件目录， <code>listStatus</code> 方法会将输入路径下的每个文件信息放入FileStatus组成的列表中，接下来的遍历操作就可以正对每个文件进行分片处理了。</p>
+<p>接下来的遍历操作就是计算每个文件切片的逻辑代码，先获取文件的路径和大小，然后通过路径和配置文件信息获取分布式文件系统对象 FileSystem ，通过 FileSystem 的 <code>getFileBlockLocations</code> 方法就可以获取到分布式文件的块信息。</p>
+<p>根据配置信息判断当前文件是否允许切片(分片)，允许切片才会由接下来的操作。先获取块大小blockSize，然后获取切片大小，这里需要注意的是切片大小的获取方法，它是通在 blockSize 、 maxSiz e和 minSize 中先找出 maxSize 和 blockSize 的最小值 min ，然后再将这个最小值min与minSize对比，找出二者中的最大值。默认情况下切片大小等于块的大小。这样做的目的是防止切片大小大于块的大小，因为如果切片值大于块的大小，那么一个切片在后面计算完落盘的时候就会存储到不同的HDFS块中，而不同的块又可能分散在集群中的各个节点上，不利于后期再次读写这个分片数据。</p>
+<blockquote>
+<p>通过控制 minSize 和 maxSiz 的大小，就可以实现调整分片大小的问题。</p>
+</blockquote>
+<p>接下来是根据计算出来的切片大小 splitSize 和 文件大小 length ，将文件切片并将每个切片的信息放入切片列表 splits 中，实现的大致思路是先获取切片的索引位置，再将文件path、起始偏移量、分片大小、块的host信息、块的缓冲信息组织成切片信息，存放到splits中。splits中存放的内容大概如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">file</th>
+<th style="text-align:center">start</th>
+<th style="text-align:center">spliteSize</th>
+<th style="text-align:center">hosts</th>
+<th style="text-align:center">inMemoryHosts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">file1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">node1 node2</td>
+<td style="text-align:center">node3 node4</td>
+</tr>
+<tr>
+<td style="text-align:center">file1</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">node1 node2</td>
+<td style="text-align:center">node3 node4</td>
+</tr>
+<tr>
+<td style="text-align:center">file2</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">node1 node2</td>
+<td style="text-align:center">node3 node4</td>
+</tr>
+<tr>
+<td style="text-align:center">file2</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">node1 node2</td>
+<td style="text-align:center">node3 node4</td>
+</tr>
+</tbody>
+</table>
+<p>也就是最终会有四个分片信息，最终会调用4个Map任务进行处理。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到现在为止，我们分析了从配置文件的读取到job的创建，然后是任务的提交，其中任务的提交分析到了分片的具体代码实现，先到这里，下次接着从代码里看一下真正干事儿的MapTask和ReduceTask是怎么工作的。</p>
+<hr>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><blockquote>
+<p><a href="http://bachiscoding.com/2016/06/10/configuration-in-hadoop/" target="_blank" rel="noopener">configuration-in-hadoop</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/大数据/" rel="tag"># 大数据</a>
+          
+            <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/18/使用java语言产生素数-译/" rel="next" title="使用java语言产生素数-译">
+                <i class="fa fa-chevron-left"></i> 使用java语言产生素数-译
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/20/MapReduceSourceCode-MapTask/" rel="prev" title="MapReduce源码分析2-MapTask">
+                MapReduce源码分析2-MapTask <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#日志解析实例"><span class="nav-number">1.</span> <span class="nav-text">日志解析实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取配置信息的-Configuration-类"><span class="nav-number">2.</span> <span class="nav-text">获取配置信息的 Configuration 类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce作业提交者-Job"><span class="nav-number">3.</span> <span class="nav-text">MapReduce作业提交者 - Job</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#真正的提交者-waitForCompletion"><span class="nav-number">4.</span> <span class="nav-text">真正的提交者 - waitForCompletion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#真正的幕后主使-submitJobInternal"><span class="nav-number">5.</span> <span class="nav-text">真正的幕后主使 - submitJobInternal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MapReduce-分片操作"><span class="nav-number">5.1.</span> <span class="nav-text">MapReduce 分片操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取-Map-默认输入数据类型"><span class="nav-number">5.1.1.</span> <span class="nav-text">获取 Map 默认输入数据类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取-Map-分片"><span class="nav-number">5.1.2.</span> <span class="nav-text">获取 Map 分片</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：How unreliable is UDP?  Fight for Pareto 遵守帕累托原则Pareto’s law states that 80% of the results come from 20% of features (effort) of your application. Bear this in mind when planning th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="极简主义软件工程师宣言-译">
+<meta property="og:url" content="http://yoursite.com/2018/12/14/极简主义软件工程师宣言-译/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：How unreliable is UDP?  Fight for Pareto 遵守帕累托原则Pareto’s law states that 80% of the results come from 20% of features (effort) of your application. Bear this in mind when planning th">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="极简主义软件工程师宣言-译">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：How unreliable is UDP?  Fight for Pareto 遵守帕累托原则Pareto’s law states that 80% of the results come from 20% of features (effort) of your application. Bear this in mind when planning th">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/14/极简主义软件工程师宣言-译/">
+
+
+
+
+
+  <title>极简主义软件工程师宣言-译 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/14/极简主义软件工程师宣言-译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">极简主义软件工程师宣言-译</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-14T08:03:23+08:00">
+                2018-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/14/极简主义软件工程师宣言-译/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/12/14/极简主义软件工程师宣言-译/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>信息来源：<a href="http://www.ruanyifeng.com/blog/2018/12/weekly-issue-35.html" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+<p>文章来源：<a href="http://minifesto.org/" target="_blank" rel="noopener">How unreliable is UDP?</a></p>
+<hr>
+<h2 id="Fight-for-Pareto-遵守帕累托原则"><a href="#Fight-for-Pareto-遵守帕累托原则" class="headerlink" title="Fight for Pareto 遵守帕累托原则"></a>Fight for <a href="https://baike.baidu.com/item/%E5%B8%95%E7%B4%AF%E6%89%98%E6%9C%80%E4%BC%98" target="_blank" rel="noopener">Pareto</a> 遵守帕累托原则</h2><p>Pareto’s law states that 80% of the results come from 20% of features (effort) of your application. Bear this in mind when planning the next scrum/delivery.</p>
+<p>帕累托原则指出20%的因素影响着80%的结果，在计划下一次交付时要记住这一点。</p>
+<p>The best engineers are those who can estimate the effort of new requirements and they are the only with enough information to refuse the 80% that is not in the optimal next scope.</p>
+<p>最好的工程师是那些可以估算新需求的人，只有他们才拥有足够的信息来拒绝80%对结果影响不大的非重要因素。</p>
+<p>Own it! This is not the army, they pay you to think and take decisions and responsibility so speak up if you consider the requirements proposed are superfluous.</p>
+<p>牢记帕累托原则吧！提需求的不是军方，他们付钱来让你思考并做决定和负责任，所以如果你认为一些需求是多余的，那就大声说出来吧。</p>
+<p>The worst code you’ve ever written is the code that is no longer used. Is called YAGNI (You Are Not Gonna Need It).</p>
+<p>你写出的最垃圾的代码是那些不再使用的代码，我们称之为YAGNI（You Are Not Gonna Need It）</p>
+<p>The best code you’ve ever written is the code you didn’t write, simply because it’s the only that never fails.</p>
+<p>你写出的最牛逼的代码是你还没写出来的那些代码，很简单，因为只有它们是没有任何错误的。</p>
+<h2 id="Prioritize-优先级"><a href="#Prioritize-优先级" class="headerlink" title="Prioritize 优先级"></a>Prioritize 优先级</h2><p>There’s something I call fixing a bug by sedimentation (fixing it by accumulation of other bugs) or by erosion (client changed his mind). These are good examples where prioritization and waiting saved you from doing a worthless job.</p>
+<p>有一些我称之为通过降级（就是通过积累其他bug来修复它）或者侵蚀（客户改变了注意）来修复bug。有很多好的例子来证明按优先级做事和等待一段时间能帮助你避免做无用功。</p>
+<p>Minimalism is not about not doing things but about focusing first in the most important.</p>
+<p>极简主义不是不做事情，而是着重做最重要的事情。</p>
+<h2 id="Perfect-is-enemy-of-good-“完美”是”不错”的敌人"><a href="#Perfect-is-enemy-of-good-“完美”是”不错”的敌人" class="headerlink" title="Perfect is enemy of good “完美”是”不错”的敌人"></a>Perfect is enemy of good “完美”是”不错”的敌人</h2><p>Look for perfection, but not yet. Iteration is that friend that gives you the right advises at the right time.</p>
+<p>追求完美，但是不要太过头。迭代能够在正确时间给你正确建议。</p>
+<p>First do it, then do it right, then do it better.</p>
+<p>先开始做，然后再考虑做对做好。</p>
+<p>Engineers like to think that the world could be designed, however Nature shows the opposite. Any sufficiently complex system cannot be built out of design, it has to be evolved.</p>
+<p>工程师喜欢认为世界是可以设计的，但是大自然显然站在了对立面。任何足够复杂的系统都不能在设计之外构建，必须保持进化。</p>
+<p>Consider everything as a work in progress and don’t panic if it doesn’t work right yet, remember Mosher’s law, if everything worked right, you’d be out of a job.</p>
+<p>将一切视为正在进行的工作，如果它还不能正常工作，请不要惊慌，记住Mosher定律，如果一切正常，你就会失业。</p>
+<h2 id="Kill-the-baby-扼杀萌芽"><a href="#Kill-the-baby-扼杀萌芽" class="headerlink" title="Kill the baby 扼杀萌芽"></a>Kill the baby 扼杀萌芽</h2><p>Kill it. The sooner the better. Don’t be afraid of throwing to the rubbish a project you’ve working on last months.</p>
+<p>扼杀萌芽，越早越好。不要害怕将你上个月工作的项目丢到垃圾桶。</p>
+<p>When you start from scratch, innovation comes organically inspired by previous experiences.</p>
+<p>当你从头开始时，创建会受到之前经验的启发。</p>
+<p>Evaluate your work constantly. This is what the book Lean Startup is all about, make your MVP (Minimum Viable Prototype) and validate it, if it doesn’t fit, kill it, you will already learned from it.</p>
+<p>经常评估你的工作，这也是<a href="http://theleanstartup.com/" target="_blank" rel="noopener">Learn Startup</a>这本书的主要内容，打造你自己的MVP (Minimum Viable Prototype)并且对它验证，即使这个不合适，至少你已经从中吸取到了经验。</p>
+<p>Fail fast, learn soon.</p>
+<p>失败地块，学习地也快。</p>
+<h2 id="Add-value-增加价值"><a href="#Add-value-增加价值" class="headerlink" title="Add value 增加价值"></a>Add value 增加价值</h2><p>Nobody can know much of everything.</p>
+<p>没有人能够了解一切。</p>
+<p>Try to ask yourself how can you add value to your team. What do they need the most? Somebody who is an expert with scalability?, Somebody who knows every detail of the programming language? Somebody more focused in the product? A coordinator?</p>
+<p>试着问问自己，如何为团队增加价值，他们最需要什么？有可扩展性的专家吗？有谁知道编程语言的每一个细节？有人更专注于产品？协调员？</p>
+<p>Every team is different so you have to adapt and choose, try to analyse the strengths and weakness of both you and your team.</p>
+<p>每个团队都是不同的，所以你必须适应和选择，试着分析你和你的团队的优势和劣势。</p>
+<p>Learn to love a particular thing and master it. Try to position yourself, it’s like a brand, you like products that fulfill your needs not those who do a lot of things you already do by yourself.</p>
+<p>学会爱一个特定的东西并掌握它。尝试定位自己，就像一个品牌，你喜欢满足你需求的产品，而不是大部分需求都是你自己来完成的产品。</p>
+<p>Of course it’s easier to get along well with people with whom you share common language but the real power is on complementary people, remember the A-team!</p>
+<p>当然，与你有共同语言的人相处会很容易，但真正的有用的事能够形成互补的人，请记住A团队！</p>
+<h2 id="Basics-first-基础是首要"><a href="#Basics-first-基础是首要" class="headerlink" title="Basics, first 基础是首要"></a>Basics, first 基础是首要</h2><p>In some late point of our life we realise about the importance of basics. It’s normally old people who claim they have gone back to basics. Don’t be a fool and don’t wait to realise about that so late, bet for basics, first.</p>
+<p>在我们生命的某个晚期，我们意识到基础知识的重要性，通常都是老人在说他们需要重新重视基础知识。不要成为傻瓜，也不要到太晚的时候才意识到基础知识的重要性，你应该从一开始就重视基础知识。</p>
+<p>There are very valuable concepts in CS (Computer Science) and the good thing is that you can apply them to every new design. You should try always a top-down thinking starting from them.</p>
+<p>在计算机科学中有很多有价值的概念，而且有一点好处是你可以将这些概念应用到你所有新的设计中取。你应该从这些概念出发，保持从上到下的思考方式。</p>
+<p>Borrowing an old saying, the three most important things in software development are: architecture, architecture and architecture, in that order.</p>
+<p>借用一句古话，软件开发中的最重要的三件事是：架构，架构，还是架构。</p>
+<p>Some examples of basics are: Separation of concerns, Systems engineering theory, GOF design patterns, GRASP responsability patterns, SOLID principles, Cleancode smells &amp; heuristics, Agile guidelines, Algorithmia, Data structures, HTTP specification…</p>
+<p>一些基础知识列举如下：关注点分离，系统工程理论，GOF设计模式，GRASP责任模式，SOLID原则， Cleancode smells &amp; heuristics，敏捷指南，算法，数据结构，HTTP规范。。。。</p>
+<p>For example before you start digging into the details of how to use an specific unit test framework Jasmine, JUnit, Mocha… start learning in how to write testable code (for example isolating stateless code of your application and reducing the coupling between components).</p>
+<p>比如，在开始深入研究如何使用特定单元测试框架Jasmine，junit，Mocha的细节之前，学习怎样编写可测试的代码（例如，隔离应用程序的无状态代码并减少组件之间的耦合）。</p>
+<h2 id="Think-different-差异化思考"><a href="#Think-different-差异化思考" class="headerlink" title="Think different 差异化思考"></a>Think different 差异化思考</h2><p>Simple is harder than complex, minimalism requires a lot of creativity in order to find new ways of doing more with less.</p>
+<p>简单比复杂更难，极简主义需要很多的创新来以简克繁。</p>
+<p>Technical Skill is the mastery of complexity, while Creativity is the master of simplicity.</p>
+<p>技术技能是复杂性的解决方案，而创造力是极简的源泉。</p>
+<p>Creativity is intelligence having fun! so enjoy the opportunity.</p>
+<p>创造力是充满乐趣的智慧！所以享受创造力带来的这个享受机会吧。</p>
+<p>So don’t focus on working more, but in working less but smartly, Think! about your work, turn off the autopilot, leave the comfort zone and take control.</p>
+<p>所以，不要一直想着干得更多，而是聪明得干得更少，认真思考一下你得工作，关掉自动驾驶，将舒适性调为0后，自己接手控制。</p>
+<p>And hey! Don’t be shy, it takes guts to change the status quo. But remember, the world you are living in is made by people no smarter than you are, they just believed it was possible.</p>
+<p>嘿，不要害羞，改变是需要勇气的。但是请记住，构成这个世界的人并不比你更聪明。他们只是相信这是可能的。</p>
+<p>Of course people will think you are a weirdo sometimes because the things you try are different, but you can’t be a leader if you are not an innovator.</p>
+<p>当然，当你尝试一些不同的事情时，他们会觉得你是怪物，但是不创新的话你永远不可能称为引领者。</p>
+<p>For example I’m sure every one of us has thought in some point that his company is losing too much time in meetings where you discuss about nothing. So Jeff Bezos, Founder and CEO of Amazon, has a particular and apparently a weird way to conduct meetings in his company. When all the attendants arrive to the meeting room they have 30 minutes to read the report of the meeting IN STRICT SILENCE. After that the meeting can start.</p>
+<p>比如，我敢肯定我们每个人都有这样想过，公司浪费太多时间在那些竟是什么也没讨论出来的会议上。所以亚马逊的创始人兼CEO杰夫贝索斯就他们公司产品会的议立了一条看起来明显很奇怪的规则。当所有参会者到达会议室后，花30分钟时间安静阅读一下会议报告，然后才开始会议。</p>
+<h2 id="Synthesise-合成"><a href="#Synthesise-合成" class="headerlink" title="Synthesise 合成"></a>Synthesise 合成</h2><p>We have to write code for humans, not machines, and synthesis is the key of communication.</p>
+<p>我们写的代码是给人看的，不是机器，所以综合是沟通的关键。</p>
+<p>A good example is the Pascal’s quotation “If I Had More Time, I Would Have Written a Shorter Letter”.</p>
+<p>一个很好的例子是Pascal的引文“如果我有更多的时间，我会写一封更短的信”。</p>
+<p>Try to keep methods as short as possible, classes with a single responsibility, few parameters, avoid redundant comments… The work is finished when you have nothing to take away.</p>
+<p>尽量保持方法尽可能短，只有一个责任的类，几个参数，避免多余的注释……当你没有任何东西可以去掉时，工作就完成了。</p>
+<h2 id="Keep-it-plain-保持清醒"><a href="#Keep-it-plain-保持清醒" class="headerlink" title="Keep it plain 保持清醒"></a>Keep it plain 保持清醒</h2><p>In software programming you can solve any problem by adding another layer of indirection, except the problem of too much indirection. This is true, and it means that we have to find balance in the complexity of our designs.</p>
+<p>在软件编程中，你可以通过添加另一层间接来解决任何问题，但是这会引起中间层过多的问题。确实是的，这意味着我们必须在设计的复杂性中找到平衡。</p>
+<p>Abstraction is good, it allows us to create a new semantic level in which one can be absolutely precise. However, in some cases like refactoring we have to understand the big picture and it makes everything harder.</p>
+<p>抽象化是好，它允许我们创建一个新的语义级别而且可以足够精准，但是在某些情况下，我们需要了解整个项目工作流程，这让一切变得难以理解。</p>
+<p>This is why we have to look for the natural points where we can make the division and try to understand the different possible trade-offs.</p>
+<p>这就是为什么我们需要寻找可以进行划分的自然点，并尝试理解不同的权衡。</p>
+<p>Examples of that are: Root-Leaf paradigm in Domain Model. Controller/Tools paradigm, High Cohesion/Low Coupling principle, plain RESTful APIs…</p>
+<p>这方面的例子是：领域模型中的根叶范式。控制器/工具范例，高内聚/低耦合原理，简单的RESTful API ……</p>
+<h2 id="Clean-kipple"><a href="#Clean-kipple" class="headerlink" title="Clean kipple"></a>Clean kipple</h2><p>There’s a concept named kipple that refers to all those things we keep but we never use. Our homes are full of it, so are our codebases. For example, legacy methods we are afraid to delete, just-in-case libraries we will never need, out of date comments…</p>
+<p>有一个名为kipple的概念，指的是我们保留但我们永远不会使用的所有东西。我们的家里充满了这种东西，我们的代码库也是如此。我们害怕删除之前遗留的代码，我们永远不会使用的所谓的以防万一的库，过时的注释。。。</p>
+<p>It’s only human nature to complicate so we have to enforce ourselves to simplify. This is a process we have to follow periodically, identify the kipple and destroy it.</p>
+<p>人性就是复杂的，所以我们需要强迫自己简化。这是我们必须遵循的过程，识别kipple并清理掉它。</p>
+<p>Minimalism: it’s all about avoiding distractions so that we can focus in the important things.</p>
+<p>极简主义：一切都是为了避免分心，以便我们可以专注于重要的事情</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/13/时间复杂度分析-上/" rel="next" title="时间复杂度分析-上">
+                <i class="fa fa-chevron-left"></i> 时间复杂度分析-上
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/17/提问的智慧/" rel="prev" title="提问的智慧">
+                提问的智慧 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fight-for-Pareto-遵守帕累托原则"><span class="nav-number">1.</span> <span class="nav-text">Fight for Pareto 遵守帕累托原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prioritize-优先级"><span class="nav-number">2.</span> <span class="nav-text">Prioritize 优先级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Perfect-is-enemy-of-good-“完美”是”不错”的敌人"><span class="nav-number">3.</span> <span class="nav-text">Perfect is enemy of good “完美”是”不错”的敌人</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kill-the-baby-扼杀萌芽"><span class="nav-number">4.</span> <span class="nav-text">Kill the baby 扼杀萌芽</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Add-value-增加价值"><span class="nav-number">5.</span> <span class="nav-text">Add value 增加价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Basics-first-基础是首要"><span class="nav-number">6.</span> <span class="nav-text">Basics, first 基础是首要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Think-different-差异化思考"><span class="nav-number">7.</span> <span class="nav-text">Think different 差异化思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Synthesise-合成"><span class="nav-number">8.</span> <span class="nav-text">Synthesise 合成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keep-it-plain-保持清醒"><span class="nav-number">9.</span> <span class="nav-text">Keep it plain 保持清醒</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clean-kipple"><span class="nav-number">10.</span> <span class="nav-text">Clean kipple</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

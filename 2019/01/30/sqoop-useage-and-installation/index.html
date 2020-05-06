@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="大数据,Sqoop,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Sqoop是为解决传统数据仓库在应对大数据时的弊端而创建的数据导入导出工具，可以将数据从传统数据仓库中导入到分布式文件系统或者大数据数据仓库（如Hive）。">
+<meta name="keywords" content="大数据,Sqoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sqoop的安装配置及原理">
+<meta property="og:url" content="http://yoursite.com/2019/01/30/sqoop-useage-and-installation/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="Sqoop是为解决传统数据仓库在应对大数据时的弊端而创建的数据导入导出工具，可以将数据从传统数据仓库中导入到分布式文件系统或者大数据数据仓库（如Hive）。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://hadoopsters.files.wordpress.com/2015/09/sqoopflow.png">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sqoop的安装配置及原理">
+<meta name="twitter:description" content="Sqoop是为解决传统数据仓库在应对大数据时的弊端而创建的数据导入导出工具，可以将数据从传统数据仓库中导入到分布式文件系统或者大数据数据仓库（如Hive）。">
+<meta name="twitter:image" content="https://hadoopsters.files.wordpress.com/2015/09/sqoopflow.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/30/sqoop-useage-and-installation/">
+
+
+
+
+
+  <title>Sqoop的安装配置及原理 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/30/sqoop-useage-and-installation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Sqoop的安装配置及原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-30T09:43:10+08:00">
+                2019-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/30/sqoop-useage-and-installation/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/30/sqoop-useage-and-installation/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  23
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://hadoopsters.files.wordpress.com/2015/09/sqoopflow.png" rel="gallery_ck9v4418w005c7yttu25blg1r" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://hadoopsters.files.wordpress.com/2015/09/sqoopflow.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <blockquote>
+<p>Sqoop是为解决传统数据仓库在应对大数据时的弊端而创建的数据导入导出工具，可以将数据从传统数据仓库中导入到分布式文件系统或者大数据数据仓库（如Hive）。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="Sqoop出现的历史背景"><a href="#Sqoop出现的历史背景" class="headerlink" title="Sqoop出现的历史背景"></a>Sqoop出现的历史背景</h2><h3 id="业务数据系统"><a href="#业务数据系统" class="headerlink" title="业务数据系统"></a>业务数据系统</h3><blockquote>
+<p>随着互联网的发展，各行各业都在产生数据巨大的数据，各式应用渗透到生活的各个方面，进而产生了各种类型的数据。</p>
+</blockquote>
+<p>大量数据的出现为商业公司进行市场分析和决策提供了重要依据，也帮助产生更好的产品。数据也是运营的关键，数据通常存储在数据库中，为后续的数据分析提供了方便。</p>
+<p><strong>电商系统的数据</strong></p>
+<ul>
+<li><p>用户信息</p>
+<p>存储一些比如姓名、年龄、性别、地域、手机、注册时间等信息。</p>
+</li>
+<li><p>商品信息</p>
+<p>比如商品的名称、类别、品牌、价格、型号、尺寸等等。</p>
+</li>
+<li><p>订单信息</p>
+<p>包括订单号、商品、金额、商家、客户、时间等。</p>
+</li>
+<li><p>仓储信息</p>
+<p>比如仓储地点给、货物名称、库存数量、进货时间、货物位置、仓库名称等。</p>
+</li>
+</ul>
+<p>知道了这些信息就可以创建用户画像，进行有针对性的信息推送，比如云音乐。</p>
+<h3 id="数据同步与传统数据仓库"><a href="#数据同步与传统数据仓库" class="headerlink" title="数据同步与传统数据仓库"></a>数据同步与传统数据仓库</h3><p><strong>数据同步</strong></p>
+<p>分析业务系统的数据，一种简单的操作方式是直接访问业务系统的数据库，如下图所示：</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/%E7%9B%B4%E6%8E%A5%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="数据同步"></p>
+<p>业务系统和数据分析应用依赖同一个数据库，数据库既要处理OLTP事务型操作（如线上的用户请求），又要处理OLAP的查询（如离线数据分析）。</p>
+<p>两种业务使用同一个数据库的优点是可以保证数据的实时性，业务系统产生的数据变化可以立即反馈到OLAT的查询中，没有任何数据延迟。</p>
+<p>这种框架的缺点也十分明显，数据库同时要处理两种业务需求，会产生额外的压力，进而影响线上业务的服务质量，就是因为又这个缺点，这个框架在生产环境中很少使用。</p>
+<p><strong>主从复制框架</strong></p>
+<p>为克服多种业务直接访问同一个数据库引起的问题，避免线上业务和数据分析业务在数据库层面的互相影响，一般会使用下面这种数据同步框架：</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%BC%8F.png" alt="主从复制"></p>
+<p>在线应用服务访问数据库的Master节点，数据分析服务访问数据库的Slave节点，Master和Slave之间使用主从同步的方式保证数据的一致性，这种系统可以保证在不影响线上系统的情况下进行数据的实时分析业务。</p>
+<p>该框架的核心在于主从同步，那么主从同步的原理是什么？</p>
+<p>以MySQL为例，每条数据库操作请求都会记录在binlog中，操作请求的时间、操作的表、修改的字段值等信息都会被记录下来，从节点Slave只要拿到了Master节点的binlog，就可以按Master节点的操作对Slave节点重复进行一次数据库的相同操作，等于将Master节点的数据库复制了一份到从节点。</p>
+<p>这个框架解决了在线和离线不同业务系统相互影响的问题，但是所查询的数据还是仅限于某个应用系统中，未能实现不同服务的数据打通，生成统一的数据视图，所以该框架还不能完全满足数据分析师的需求，也就是数据孤岛问题。</p>
+<p><strong>传统数据仓库</strong></p>
+<p>Hadoop出现之前，为解决数据孤岛问题，需要使用传统的数据仓库工具和聚合业务工具来解决。</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/%E4%BC%A0%E7%BB%9F%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93.png" alt="传统数据仓库"></p>
+<p>MySql、Oracle数据库的数据需要先通过ETL清洗、聚合，导入到数据仓库服务中，然后数据仓库作为统一数据源，直接对接报表系统、数据挖掘、数据分析等服务。</p>
+<p>传统数据仓库服务包括 <a href="https://baike.baidu.com/item/Teradata" target="_blank" rel="noopener">Teradata</a> 、 <a href="https://zh.wikipedia.org/wiki/ODS" target="_blank" rel="noopener">ODS</a> 等，他们都提供了SQL语法支持，学习门槛较低。另外还支持JDBC、ODBC连接，接入也比较方便。这使得当时数据仓库变得十分流行。</p>
+<p>传统数据仓库相对于现在使用场景来说也有自己的缺点：</p>
+<p>是闭源系统，代码不公开，定位和解决问题比较困难，只能依赖文档，有很大的局限性。有BUG只能等待官方修复。</p>
+<p>成本昂贵，部署和服务支持的费用都很高。</p>
+<p>扩容复杂，集群上限较低。</p>
+<p>性能有瓶颈，比如社交推荐可能认识好友的场景，随着用户数量的增长，由于扩容复杂，集群计算能力越来越难以满足要求。</p>
+<p>Hadoop不存在这样的问题，所以打通传统数据仓库与Hadoop之间的数据流动就变得非常有必要。</p>
+<h2 id="Sqoop功能与架构"><a href="#Sqoop功能与架构" class="headerlink" title="Sqoop功能与架构"></a>Sqoop功能与架构</h2><h3 id="Sqoop介绍"><a href="#Sqoop介绍" class="headerlink" title="Sqoop介绍"></a>Sqoop介绍</h3><p>为解决传统数据仓库的痛点，比如系统闭源、成本昂贵、扩容复杂、性能有明显瓶颈，Apache社区开源了Sqoop这个数据创数框架。</p>
+<ul>
+<li><p>Sqoop由Cloudera开发并贡献给Apache社区。</p>
+</li>
+<li><p>Sqoop是Apache顶级项目。</p>
+</li>
+<li><p>结构化数据与大数据系统间的数据同步。</p>
+</li>
+<li><p>有两个版本：1.4.x和1.99.x，其中1.99.x是基于sqoop2的框架，但功能还没完全覆盖1.4.x的sqoop，所以建议还是先使用1.4.x。</p>
+</li>
+</ul>
+<h3 id="Sqoop功能"><a href="#Sqoop功能" class="headerlink" title="Sqoop功能"></a>Sqoop功能</h3><ul>
+<li><p>将关系型数据库数据导入HDFS，解决HDFS的数据来源问题，使数据能够方便地进入HDFS。</p>
+</li>
+<li><p>支持HDFS数据导出到关系型数据库，Hadoop计算出的数据可以方便地写回到数据库中。</p>
+</li>
+<li><p>支持关系型数据库直接将数据导入到Hive。</p>
+</li>
+<li><p>Sqoop是批处理类型的任务，不是常驻服务，不需要像WEB服务一样常驻运行，在需要的时候提交任务就可以完成数据的导入导出。</p>
+</li>
+<li><p>Sqoop是使用命令行进行任务的提交，提供类似于Shell的脚本的Sqopp命令，提交方式很简便。</p>
+</li>
+<li><p>Sqoop支持各种存储类型，包括行存、列存以及各种数压缩算法。</p>
+</li>
+</ul>
+<h3 id="Sqoop架构"><a href="#Sqoop架构" class="headerlink" title="Sqoop架构"></a>Sqoop架构</h3><p>如果自己设计一个数据库数据导入导出工具的话，会怎么实现呢？首先比较简单而且也容易想到的方式是使用JDBC，将数据从数据库中拉取出来然后写入HDFS，这种方法简单易行，但是缺点也很明显，数据量较大时，效率不高。</p>
+<p>Sqoop是怎么做的呢，它其实是依赖MapReduce的计算框架，将数据导入并行化，采用分而治之的思想，每个Map只处理一部分数据，然后由Reduce将Map的中间结果聚合起来。</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/Sqoop%E6%A1%86%E6%9E%B6.png" alt="Sqoop架构"></p>
+<p>其实并不需要Reduce，只是用Map就可以完成数据的并行导入导出工作了，每个Map使用JDBC将数据从数据库抽取出来，写入到HDFS，就可以完成数据的导入任务。</p>
+<p>由于使用了MapReduce并发计算的特性，Sqoop可以显著提高数据导入导出的效率。在实际使用中，Sqoop一般不会称为性能的瓶颈，在磁盘读写和宽带都不是瓶颈的前提下，数据的导入导出效率往往取决于DB的性能。</p>
+<p>上面的框架中Sqoop和数据库之间使用的是JDBC，所以逻辑上讲，所有支持JDBC操作的数据库都支持使用Sqoop将数据导入到HDFS中，当然各个数据库之间会存在差异，目前在不改造Sqoop的前提下，Sqoop支持的数据库有：MySQL，Oracle，SqlServer， postgreSQL，DB2等，基本涵盖了所有主流的数据库。</p>
+<h3 id="Sqoop任务执行流程"><a href="#Sqoop任务执行流程" class="headerlink" title="Sqoop任务执行流程"></a>Sqoop任务执行流程</h3><p>Sqoop执行流程如下图所示：</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/Sqoop%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B.png" alt="Sqoop任务执行流程"></p>
+<h4 id="数据对象生成"><a href="#数据对象生成" class="headerlink" title="数据对象生成"></a>数据对象生成</h4><p>在实际开发过程中，在使用JDBC访问数据库里数据的时候，通常会使用一个Java Bean存储数据库数据，JavaBean中每个成员变量对应数据库中的一个Column（列），并且JavaBean中会有大量的get、set函数来获取和修改数据，程序运行过程中，JavaBean可以用来保留数据，这样，对数据的操作就转换成了对JavaBean对象的操作。</p>
+<p>Sqoop也使用类似的机制，在导入导出前会现根据数据库的数据结构，生成对应的JavaBean对象，加入有一个名为Order的数据表，存放的是订单信息，其中id是主键，在导入过程中就会生成一个Order的JavaBean，JavaBean里的属性分别对应于数据库中的几个Column（列）。</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1%E7%94%9F%E6%88%90.png" alt="数据对象生成"></p>
+<p>生成JavaBean的一个关键问题是怎样做类型映射，也就是把数据库中的列数据类型和JavaBean中的成员变量的类型映射起来，Sqoop中定义的映射关系如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">SQL TYPE</th>
+<th style="text-align:center">JAVA TYPE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">INTEGER</td>
+<td style="text-align:center">java.lang.Integer</td>
+</tr>
+<tr>
+<td style="text-align:center">VARCHAR</td>
+<td style="text-align:center">java.lang.String</td>
+</tr>
+<tr>
+<td style="text-align:center">LONGVARCHAR</td>
+<td style="text-align:center">java.lang.String</td>
+</tr>
+<tr>
+<td style="text-align:center">NUMERIC</td>
+<td style="text-align:center">java.math.BigDecimal</td>
+</tr>
+<tr>
+<td style="text-align:center">DECIMAL</td>
+<td style="text-align:center">java.math.BigDecimal</td>
+</tr>
+<tr>
+<td style="text-align:center">BOOLEAN</td>
+<td style="text-align:center">java.lang.Boolean</td>
+</tr>
+<tr>
+<td style="text-align:center">DATE</td>
+<td style="text-align:center">java.sql.Date</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+</tr>
+</tbody>
+</table>
+<h4 id="数据导入Hive中"><a href="#数据导入Hive中" class="headerlink" title="数据导入Hive中"></a>数据导入Hive中</h4><p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/Hive%E5%AF%BC%E5%85%A5.png" alt="数据导入hive"></p>
+<p>如果命令指定要新建HIVE Table，Sqoop会先生成HIVE table的定义语句，Hive table的column和数据库的column建立一一映射的关系，然后Sqoop会生成一个rawData语句，rawdata语句会在Hive MateStore中注册元数据，并进行数迁移。</p>
+<p>上面的Hive的建表语句和rawdata语句都会被写入到一个script脚本中，最后会sqoop启动.hive命令执行刚刚生成的script脚本，提交Hive任务，完成Hive导出。</p>
+<h2 id="Sqoop原理"><a href="#Sqoop原理" class="headerlink" title="Sqoop原理"></a>Sqoop原理</h2><blockquote>
+<p>这里将会讲解Sqoop是怎么尽量在MapReduce中均衡的切分数据的</p>
+</blockquote>
+<p>下面说的导入和导出都是针对HDFS来说，也即导入是指向HDFS到处数据，导出是指从HDFS导出数据。</p>
+<h3 id="数据导入"><a href="#数据导入" class="headerlink" title="数据导入"></a>数据导入</h3><p>现有一个Order表，需要将其数据导入到HDFS上，主键是id。如下图所示：</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/Sqoop%E5%AF%BC%E5%85%A5.png" alt="数据导入"></p>
+<p>Sqoop在解析完命令参数后会查找参数指定的分片字段的数据范围，假设用户指定的分片字段为id，通过jdbc接口可以找到id的最大值和最小值，分别是5000和1。</p>
+<p>数据范围除以map数量可以得到每个Map传输的数据id范围，假设map数是5个，那么每个map的范围就是5000/5=1000，如上图所示。每个map使用SQL语句进行筛选，筛选方法就是在SQL中添加where条件，比如第一个map的where条件就可以写为id &gt;= 1 and id &lt;= 1000。</p>
+<p>每个map都会在HDFS上生成一个对应的文件，存储向HDFS导入的数据。</p>
+<h3 id="数据导出"><a href="#数据导出" class="headerlink" title="数据导出"></a>数据导出</h3><p>数据导出跟导入正好相反，是把HDFS上的文件导出到数据库中，过程如下图所示：</p>
+<p><img src="https://github.com/jiaoqiyuan/163-bigdate-note/raw/master/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9ASqoop/img/Sqoop%E5%AF%BC%E5%87%BA.png" alt="数据导出"></p>
+<p>导出任务的数据划分完全依赖于HDFS的 FileInputFormat 的 split 划分，默认情况下会使用 CombineInputFormat ，尽量把同一个节点的数据使用同一个map来处理，这样可以众多小文件导致的创建map任务的开销，提高任务的执行效率。</p>
+<p>但是如果导出的数据文件是压缩格式，且这种压缩格式不能再分片，那么文件就会当以单个文件进行分片，每一个文件会生成一个map进行导出。</p>
+<p>导出任务的分片逻辑比较复杂，用户指定的并发参数往往不会生效。</p>
+<p><strong>Sqoop是基于MapReduce框架的数据同步工具，启用多个map进行数据的并发导入和导出。对于导入任务，数据的分片是基于数据中数据的范围和用户指定的并发数；对于导出任务，数据分片是依赖HDFS的 FileInputFormat 的分片策略。</strong></p>
+<h2 id="Sqoop安装与配置"><a href="#Sqoop安装与配置" class="headerlink" title="Sqoop安装与配置"></a>Sqoop安装与配置</h2><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>Sqoop依赖于Hadoop，在安装Sqoop之前需要安装Hadoop和JAVA环境。Hadoop的安装可以参考之前的文章，<a href="https://jiaoqiyuan.cn/2018/12/26/%E9%85%8D%E7%BD%AE%E6%9C%AC%E5%9C%B0Hadoop%E7%8E%AF%E5%A2%83/" target="_blank" rel="noopener">配置本地Hadoop环境</a>, <a href="https://jiaoqiyuan.cn/2019/01/08/Hive%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank" rel="noopener">Hive的使用</a>。</p>
+<h3 id="Sqoop包结构"><a href="#Sqoop包结构" class="headerlink" title="Sqoop包结构"></a>Sqoop包结构</h3><p>sqoop的安装包结构如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1015146591</span>@bigdata4 sqoop-<span class="number">1.4</span>.<span class="number">7</span><span class="selector-class">.bin__hadoop-2</span>.<span class="number">6.0</span>]$ tree -L <span class="number">1</span></span><br><span class="line">.</span><br><span class="line">├── bin                     - sqoop命令文件目录</span><br><span class="line">├── build<span class="selector-class">.xml</span>       </span><br><span class="line">├── CHANGELOG.txt</span><br><span class="line">├── COMPILING.txt</span><br><span class="line">├── conf                    - 配置文件路径</span><br><span class="line">├── docs</span><br><span class="line">├── ivy</span><br><span class="line">├── ivy.xml</span><br><span class="line">├── lib                     - jar包依赖目录</span><br><span class="line">├── LICENSE.txt</span><br><span class="line">├── NOTICE.txt</span><br><span class="line">├── pom-old.xml</span><br><span class="line">├── README.txt</span><br><span class="line">├── sqoop-<span class="number">1.4</span>.<span class="number">7</span><span class="selector-class">.jar</span>         - sqoop核心jar包</span><br><span class="line">├── sqoop-patch-review<span class="selector-class">.py</span>   - sqoop核心jar包</span><br><span class="line">├── sqoop-test-<span class="number">1.4</span>.<span class="number">7</span><span class="selector-class">.jar</span>    - sqoop核心jar包</span><br><span class="line">├── src</span><br><span class="line">└── testdata</span><br></pre></td></tr></table></figure>
+<h3 id="验证-Java-和-Hadoop-已经安装"><a href="#验证-Java-和-Hadoop-已经安装" class="headerlink" title="验证 Java 和 Hadoop 已经安装"></a>验证 Java 和 Hadoop 已经安装</h3><ol>
+<li>终端输入java命令查看返回值：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1015146591@bigdata4.novalocal:/mnt/home/1015146591 $ java -version</span><br><span class="line">openjdk version <span class="string">"1.8.0_171"</span></span><br><span class="line">OpenJDK Runtime Environment (build 1.8.0_171-b10)</span><br><span class="line">OpenJDK 64-Bit Server VM (build 25.171-b10, mixed mode)</span><br><span class="line">1015146591@bigdata4.novalocal:/mnt/home/1015146591 $</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>启动Hadoop自带MapReduce示例程序：</li>
+</ol>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples<span class="number">-2.7</span><span class="number">.6</span>.jar pi <span class="number">2</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>OK，都可以运行就好。</p>
+<h3 id="下载Sqoop安装包"><a href="#下载Sqoop安装包" class="headerlink" title="下载Sqoop安装包"></a>下载Sqoop安装包</h3><ol>
+<li><p>下载地址： <a href="https://mirrors.tuna.tsinghua.edu.cn/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz" target="_blank" rel="noopener">sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz</a>。</p>
+</li>
+<li><p>解压到本地目录，我在自己的home目录下创建了一个apps文件，用于存放需要安装的软件：</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar xzvf sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz -C ~/apps</span><br></pre></td></tr></table></figure>
+<h3 id="配置Sqoop"><a href="#配置Sqoop" class="headerlink" title="配置Sqoop"></a>配置Sqoop</h3><ol>
+<li><p>进入sqoop的配置目录conf，添加sqoop-env.sh，这里直接拷贝模板文件即可:</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp sqoop-env-template.sh sqoop-env.sh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改sqoop-env.sh文件，由于之前已经配置过HADOOP_HOME环境变量，而且加入到了系统环境变量中，所以可以直接使用HADOOP_HOME这个环境变量。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#Set path to where bin/hadoop is available</span><br><span class="line">export HADOOP_COMMON_HOME=$&#123;HADOOP_HOME&#125;</span><br><span class="line"></span><br><span class="line">#Set path to where hadoop-*-core.jar is available</span><br><span class="line">export HADOOP_MAPRED_HOME=$&#123;HADOOP_HOME&#125;</span><br><span class="line">export HADOOP_HDFS_HOME=$&#123;HADOOP_HOME&#125;</span><br><span class="line">export HIVE_HOME=/mnt/home/1015146591/apps/hive-1.2.2</span><br><span class="line">export HIVE_CONF_DIR=$HIVE_HOME/conf</span><br><span class="line">export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HIVE_HOME/lib</span><br><span class="line">export PATH=$HIVE_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+<p> 复制Hive的配置文件hive-site.xml到sqoop的conf目录下，否则可能会报 Hive 数据库没有建立的错误。</p>
+</li>
+<li><p>连接数据库(这是远端的MySQL数据库，可以自己搭建一个数据库进行测试)：</p>
+ <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -pGg/ru,.#<span class="number">5</span> -h <span class="number">10.173</span><span class="number">.32</span><span class="number">.6</span> -P3306 -Dsqoop</span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+<p> 查看数据库表：</p>
+ <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from sqoop<span class="emphasis">_test;</span></span><br><span class="line"><span class="emphasis">+------+-------+</span></span><br><span class="line"><span class="emphasis">| id   | name  |</span></span><br><span class="line"><span class="emphasis">+------+-------+</span></span><br><span class="line"><span class="emphasis">|    1 | allen |</span></span><br><span class="line"><span class="emphasis">|    2 | bob   |</span></span><br><span class="line"><span class="emphasis">+------+-------+</span></span><br><span class="line"><span class="emphasis">2 rows in set (0.00 sec)</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Sqoop语法分析"><a href="#Sqoop语法分析" class="headerlink" title="Sqoop语法分析"></a>Sqoop语法分析</h2><h3 id="数据导入-1"><a href="#数据导入-1" class="headerlink" title="数据导入"></a>数据导入</h3><p>以下面这个sqoop语法为例：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./sqoop</span> import <span class="params">--connect</span> <span class="string">"jdbc:mysql://*.*.*.*:protNum/DbName?characterEncoding=UTF-8&amp;useCursorFetch=true"</span> <span class="params">--username</span> *** <span class="params">--password</span> *** <span class="params">--query</span> <span class="string">"SELECT * FROM HIVE_JDBC_TEST2 WHERE id &gt; 2 AND \$CONDITIONS"</span> <span class="params">--split-by</span> id <span class="params">--target-dir</span> <span class="string">"/user/hadoop/HIVE_JDBC_TEST2_QUERY"</span> <span class="params">--delete-target-dir</span> <span class="params">--as-textfile</span></span><br></pre></td></tr></table></figure>
+<p>参数介绍：</p>
+<ul>
+<li><p>–connect：指定JDBC连接数据库所在的地址、端口、数据库名称、字符编码格式等信息</p>
+</li>
+<li><p>–username：数据库连接用户名</p>
+</li>
+<li><p>–password：数据库连接密码</p>
+</li>
+<li><p>–query：获取导入数据的查询语句</p>
+</li>
+<li><p>–split-by：指定分片字段，后续会使用改字段对数据进行换分，放到不同的map中执行，一般使用主键或者有索引的字段，可提高执行效率</p>
+</li>
+<li><p>–target-dir：指定HDFS上的目标路径，即导入数据的存储路径</p>
+</li>
+<li><p>–delete-target-dir：如果目标文件存在就先删除在导入</p>
+</li>
+<li><p>–as-textfile：指定导入数据到HDFS后的数据存储格式。</p>
+<ul>
+<li>支持有text、sequence、avro、parquet</li>
+</ul>
+</li>
+<li><p>–boudary-query：指定数据边界查找语句。sqoop默认使用select min(), max() from 来查找split的总边界。但是这种自动生成的查询语句执行效率并不高。</p>
+</li>
+<li><p>-m/–num-mappers指定Map个数。这个参数会显著影响程序的执行效率，太小的话并发数不够，程序执行效率低，太大的话任务的启动开销过大，任务执行也会受影响。</p>
+</li>
+<li><p>–table,column,where分别对应于Table，Column，Where限制条件。</p>
+</li>
+<li><p>–compress，–compression-codec：使用压缩</p>
+</li>
+<li><p>–map-column-java：指定Column在Sqoop对象中的数据类型，一般不需要手动添加。</p>
+</li>
+<li><p>增量导入（incremental）：指定关系数据库的某个Column和last value，下次导入的时候只导入比last value大的数据。增量导入分两种模式：</p>
+<ul>
+<li><p>append：把新数据追加到目标路径中</p>
+</li>
+<li><p>last modified：会将新数据和老数据进行合并，合并的话需要新老数据的对应关系，所以还需要添加参数merge key来指定主键，最后执行结果只保留最新数据。该模式下last value的值一定要是timestamp或者data。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Hive导入"><a href="#Hive导入" class="headerlink" title="Hive导入"></a>Hive导入</h3><p>实际使用中的具体命令如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./sqoop</span> import <span class="params">--connect</span> <span class="string">"jdbc:mysql://*.*.*.*:protNum/DbName?characterEncoding=UTF-8&amp;useCursorFetch=true"</span> <span class="params">--username</span> *** <span class="params">--password</span> *** <span class="params">--table</span> sqooptest <span class="params">--split-by</span> id <span class="params">--target-dir</span> <span class="string">"/user/hadoop/sqooptest"</span> <span class="params">--delete-target-dir</span> <span class="params">--hive-import</span> <span class="params">--hive-table</span> sqooptest map-column-hive id=INT,name=STRING</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>支持hive table的创建与覆盖：create-hive-table, hive-overwritess</p>
+</li>
+<li><p>支持hive分区：hive-partition-key,hive-partition-value</p>
+</li>
+<li><p>map-column-hive:指定hive column的数据类型。例如key=value。限制：Hive Column顺序需等同与sqoop导入的hdfs文件column顺序，否则会导入失败（可在-column或者-query中指定column顺序）</p>
+</li>
+<li><p>支持指定查询语句，解决多表关联插入。</p>
+  <figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">.</span><span class="comment">/sqoop</span> <span class="comment">import</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">connect</span> <span class="comment">"jdbc:mysql://10</span><span class="string">.</span><span class="comment">173</span><span class="string">.</span><span class="comment">32</span><span class="string">.</span><span class="comment">6:3306/sqoop?characterEncoding=UTF</span><span class="literal">-</span><span class="comment">8&amp;useCursorFetch=true"</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">username</span> <span class="comment">root</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">password</span> <span class="comment">Gg/ru</span><span class="string">,</span><span class="string">.</span><span class="comment">#5</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">table</span> <span class="comment">sqoop_test</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">delete</span><span class="literal">-</span><span class="comment">target</span><span class="literal">-</span><span class="comment">dir</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">target</span><span class="literal">-</span><span class="comment">dir</span> <span class="comment">/user/1015146591/sqoop_test</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">split</span><span class="literal">-</span><span class="comment">by</span> <span class="comment">id</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="数据导出-1"><a href="#数据导出-1" class="headerlink" title="数据导出"></a>数据导出</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqoop export <span class="params">--connet</span> jdbc<span class="function">:mysql</span>:<span class="string">//10.173.121.103</span><span class="function">:3306</span>/test?characterEncoding=UTF8 <span class="params">--username</span> mammoth_test <span class="params">--password</span> VwvV8r37ccrR <span class="params">--table</span> mysql_base_export -columns id,name <span class="params">--export-dir</span> <span class="string">/user/hadoop/mysql_base_no_meta</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>table, colums:指定导出rdms中的table，columns</p>
+</li>
+<li><p>支持sequence，avro，parquet导出。其中sequence，avro，parquet格式导出sqoop可自动识别</p>
+</li>
+<li><p>update-mode:分为updateonly(默认)和allowinsert两种类型。allowinsert可进行update insert操作</p>
+</li>
+<li><p>update-key:指定根据指定列完成update。</p>
+</li>
+</ul>
+<h3 id="RDMS工具"><a href="#RDMS工具" class="headerlink" title="RDMS工具"></a>RDMS工具</h3><p>在导入导出数据时，常常需要对数据库中的数据进行探测，看看数据库中表的结构是什么。sqoop内部提供了查询工具。</p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">sqoop </span><span class="built_in">list-databases</span> <span class="built_in">--connect</span> <span class="string">jdbc:mysql:</span>//*.*.*.*:<span class="string">3306/</span><span class="string">dbName?</span><span class="string">characterEncoding-UTF-</span>8 <span class="built_in">--username</span> *** <span class="built_in">--password</span> ***</span><br></pre></td></tr></table></figure>
+<p>rdms结构：</p>
+<ul>
+<li><p>list-databases:列出所有数据库</p>
+</li>
+<li><p>list-tables: 列出所有的表</p>
+</li>
+</ul>
+<p>查看数据表内数据：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqoop eval <span class="params">--connect</span> jdbc<span class="function">:mysql</span>:<span class="string">//</span>*.*.*.*<span class="function">:3306</span>/dbName?characterEncoding-UTF-8 <span class="params">--username</span> *** <span class="params">--password</span> *** -e <span class="string">"select * from ..."</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>-e,-query:添加要执行的SQL查询语句</li>
+</ul>
+<h2 id="Sqoop的使用"><a href="#Sqoop的使用" class="headerlink" title="Sqoop的使用"></a>Sqoop的使用</h2><h3 id="使用Sqoop导入数据到HDFS"><a href="#使用Sqoop导入数据到HDFS" class="headerlink" title="使用Sqoop导入数据到HDFS"></a>使用Sqoop导入数据到HDFS</h3><ol>
+<li><p>下载MySQL的JDBC驱动: <a href="https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.tar.gz" target="_blank" rel="noopener">mysql-connector-java-5.1.47.tar.gz</a>，我在官网只找到了5.1.47的版本，不知道能不能使用，也可以直接从老师的sqoop目录下拷贝：</p>
+ <figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /home/hadoop/sqoop-<span class="number">1.4</span>.<span class="number">7</span>.bin__hadoop-<span class="number">2.6</span>.<span class="number">0</span>/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span>-<span class="title">connector</span>-<span class="title">java</span>-5.1.46.<span class="title">jar</span> .</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行sqoop命令验证安装是否成功：</p>
+ <figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">.</span><span class="comment">/sqoop</span> <span class="comment">import</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">connect</span> <span class="comment">"jdbc:mysql://10</span><span class="string">.</span><span class="comment">173</span><span class="string">.</span><span class="comment">32</span><span class="string">.</span><span class="comment">6:3306/sqoop?characterEncoding=UTF</span><span class="literal">-</span><span class="comment">8&amp;useCursorFetch=true"</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">username</span> <span class="comment">root</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">password</span> <span class="comment">Gg/ru</span><span class="string">,</span><span class="string">.</span><span class="comment">#5</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">table</span> <span class="comment">sqoop_test</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">delete</span><span class="literal">-</span><span class="comment">target</span><span class="literal">-</span><span class="comment">dir</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">target</span><span class="literal">-</span><span class="comment">dir</span> <span class="comment">/user/1015146591/sqoop_test</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">split</span><span class="literal">-</span><span class="comment">by</span> <span class="comment">id</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在HDFS上查看导入的数据：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1015146591@bigdata4.novalocal:/mnt/home/1015146591/apps/sqoop-1.4.7.bin__hadoop-2.6.0/bin $ hadoop fs -ls /user/1015146591/sqoop_test</span><br><span class="line">Found 3 items</span><br><span class="line">-rw-r-----   3 1015146591 supergroup          0 2019-01-21 15:57 /user/1015146591/sqoop_test/_SUCCESS</span><br><span class="line">-rw-r-----   3 1015146591 supergroup          8 2019-01-21 15:57 /user/1015146591/sqoop_test/part-m-00000</span><br><span class="line">-rw-r-----   3 1015146591 supergroup          6 2019-01-21 15:57 /user/1015146591/sqoop_test/part-m-00001</span><br></pre></td></tr></table></figure>
+<p> 文件内的具体内容如下：</p>
+ <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1015146591</span><span class="meta">@bigdata</span>4.<span class="string">novalocal:</span><span class="regexp">/mnt/</span>home<span class="regexp">/1015146591/</span>apps<span class="regexp">/sqoop-1.4.7.bin__hadoop-2.6.0/</span>bin $ hadoop fs -text <span class="regexp">/user/</span><span class="number">1015146591</span><span class="regexp">/sqoop_test/</span>part-m<span class="number">-00000</span></span><br><span class="line"><span class="number">19</span><span class="regexp">/01/</span><span class="number">21</span> <span class="number">15</span>:<span class="number">59</span>:<span class="number">18</span> INFO lzo.<span class="string">GPLNativeCodeLoader:</span> Loaded native gpl library from the embedded binaries</span><br><span class="line"><span class="number">19</span><span class="regexp">/01/</span><span class="number">21</span> <span class="number">15</span>:<span class="number">59</span>:<span class="number">18</span> INFO lzo.<span class="string">LzoCodec:</span> Successfully loaded &amp; initialized native-lzo library [hadoop-lzo rev <span class="number">5e360</span>bdefd8923280b1a0234b845448050bf0caa]</span><br><span class="line"><span class="number">1</span>,allen</span><br><span class="line"><span class="number">1015146591</span><span class="meta">@bigdata</span>4.<span class="string">novalocal:</span><span class="regexp">/mnt/</span>home<span class="regexp">/1015146591/</span>apps<span class="regexp">/sqoop-1.4.7.bin__hadoop-2.6.0/</span>bin $ hadoop fs -text <span class="regexp">/user/</span><span class="number">1015146591</span><span class="regexp">/sqoop_test/</span>part-m<span class="number">-00001</span></span><br><span class="line"><span class="number">19</span><span class="regexp">/01/</span><span class="number">21</span> <span class="number">15</span>:<span class="number">59</span>:<span class="number">26</span> INFO lzo.<span class="string">GPLNativeCodeLoader:</span> Loaded native gpl library from the embedded binaries</span><br><span class="line"><span class="number">19</span><span class="regexp">/01/</span><span class="number">21</span> <span class="number">15</span>:<span class="number">59</span>:<span class="number">26</span> INFO lzo.<span class="string">LzoCodec:</span> Successfully loaded &amp; initialized native-lzo library [hadoop-lzo rev <span class="number">5e360</span>bdefd8923280b1a0234b845448050bf0caa]</span><br><span class="line"><span class="number">2</span>,bob</span><br><span class="line"><span class="number">1015146591</span><span class="meta">@bigdata</span>4.<span class="string">novalocal:</span><span class="regexp">/mnt/</span>home<span class="regexp">/1015146591/</span>apps<span class="regexp">/sqoop-1.4.7.bin__hadoop-2.6.0/</span>bin $</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="使用Sqoop导入数据到Hive"><a href="#使用Sqoop导入数据到Hive" class="headerlink" title="使用Sqoop导入数据到Hive"></a>使用Sqoop导入数据到Hive</h3><ol>
+<li><p>首选将hive安装目录下lib目录中的hive-common-1.1.0-cdh5.7.0.jar和hive-shims*拷贝到sqoop安装目录下的lib目录。然后执行：</p>
+ <figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">.</span><span class="comment">/sqoop</span> <span class="comment">import</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">connect</span> <span class="comment">"jdbc:mysql://10</span><span class="string">.</span><span class="comment">173</span><span class="string">.</span><span class="comment">32</span><span class="string">.</span><span class="comment">6:3306/sqoop?characterEncoding=UTF</span><span class="literal">-</span><span class="comment">8&amp;useCursorFetch=true"</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">username</span> <span class="comment">root</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">password</span> <span class="comment">Gg/ru</span><span class="string">,</span><span class="string">.</span><span class="comment">#5</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">table</span> <span class="comment">product</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">split</span><span class="literal">-</span><span class="comment">by</span> <span class="comment">price</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">target</span><span class="literal">-</span><span class="comment">dir</span> <span class="comment">"/user/1015146591/sqooptest"</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">delete</span><span class="literal">-</span><span class="comment">target</span><span class="literal">-</span><span class="comment">dir</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">hive</span><span class="literal">-</span><span class="comment">import</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">hive</span><span class="literal">-</span><span class="comment">table</span> <span class="comment">sqoophomework</span> <span class="comment">–hive</span><span class="literal">-</span><span class="comment">overwrite</span></span><br></pre></td></tr></table></figure>
+<p> 执行完成后查看( <strong>在sqoop的bin目录下启动hive</strong> )hive中default.sqoophomework中的数据：</p>
+ <figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">1015146591@bigdata4 bin</span>]$ hive</span><br><span class="line">hive&gt; <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">default</span>.sqoophomework limit <span class="number">10</span>;</span><br><span class="line">OK</span><br><span class="line"><span class="number">28</span>	<span class="number">1527235438751389</span>	商品<span class="number">3</span></span><br><span class="line"><span class="number">21</span>	<span class="number">1527235438751248</span>	商品<span class="number">4</span></span><br><span class="line"><span class="number">25</span>	<span class="number">1527235438751118</span>	商品<span class="number">5</span></span><br><span class="line"><span class="number">33</span>	<span class="number">1527235438750902</span>	商品<span class="number">6</span></span><br><span class="line"><span class="number">25</span>	<span class="number">1527235438750711</span>	商品<span class="number">8</span></span><br><span class="line"><span class="number">27</span>	<span class="number">1527235438750331</span>	商品<span class="number">11</span></span><br><span class="line"><span class="number">11</span>	<span class="number">1527235438750030</span>	商品<span class="number">17</span></span><br><span class="line"><span class="number">28</span>	<span class="number">1527235438749094</span>	商品<span class="number">24</span></span><br><span class="line"><span class="number">11</span>	<span class="number">1527235438748767</span>	商品<span class="number">26</span></span><br><span class="line"><span class="number">16</span>	<span class="number">1527235438748507</span>	商品<span class="number">28</span></span><br><span class="line">Time taken: <span class="number">1.755</span> seconds, Fetched: <span class="number">10</span> row(s)</span><br><span class="line">hive&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="2">
+<li><p>查询hive表product表中拥有多少个课程，执行查询语句：</p>
+ <figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">select</span> count(product_id) <span class="keyword">from</span> <span class="keyword">default</span>.sqoophomework;</span><br><span class="line">Query ID = <span class="number">1015146591</span>_20190129111455_3bc982ce-<span class="number">0295</span>-<span class="number">4050</span>-<span class="number">963</span>f-<span class="number">69</span>f081580f9d</span><br><span class="line">Total jobs = <span class="number">1</span></span><br><span class="line">Launching Job <span class="number">1</span> <span class="keyword">out</span> <span class="keyword">of</span> <span class="number">1</span></span><br><span class="line">Number <span class="keyword">of</span> reduce tasks determined at compile time: <span class="number">1</span></span><br><span class="line"><span class="keyword">In</span> <span class="keyword">order</span> <span class="keyword">to</span> change the average load <span class="keyword">for</span> a reducer (<span class="keyword">in</span> bytes):</span><br><span class="line">  <span class="keyword">set</span> hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line"><span class="keyword">In</span> <span class="keyword">order</span> <span class="keyword">to</span> limit the maximum number <span class="keyword">of</span> reducers:</span><br><span class="line">  <span class="keyword">set</span> hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line"><span class="keyword">In</span> <span class="keyword">order</span> <span class="keyword">to</span> <span class="keyword">set</span> a constant number <span class="keyword">of</span> reducers:</span><br><span class="line">  <span class="keyword">set</span> mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">Starting Job = job_1547603700477_1639, Tracking URL = http:<span class="comment">//bigdata0.novalocal:8088/proxy/application_1547603700477_1639/</span></span><br><span class="line">Kill Command = /home/hadoop/hadoop-current/bin/hadoop job  -kill job_1547603700477_1639</span><br><span class="line">Hadoop job information <span class="keyword">for</span> Stage-<span class="number">1</span>: number <span class="keyword">of</span> mappers: <span class="number">2</span>; number <span class="keyword">of</span> reducers: <span class="number">1</span></span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">29</span> <span class="number">11</span>:<span class="number">15</span>:<span class="number">04</span>,<span class="number">571</span> Stage-<span class="number">1</span> map = <span class="number">0</span>%,  reduce = <span class="number">0</span>%</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">29</span> <span class="number">11</span>:<span class="number">15</span>:<span class="number">10</span>,<span class="number">817</span> Stage-<span class="number">1</span> map = <span class="number">100</span>%,  reduce = <span class="number">0</span>%, Cumulative CPU <span class="number">3.29</span> sec</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">29</span> <span class="number">11</span>:<span class="number">15</span>:<span class="number">16</span>,<span class="number">086</span> Stage-<span class="number">1</span> map = <span class="number">100</span>%,  reduce = <span class="number">100</span>%, Cumulative CPU <span class="number">5.51</span> sec</span><br><span class="line">MapReduce Total cumulative CPU time: <span class="number">5</span> seconds <span class="number">510</span> msec</span><br><span class="line">Ended Job = job_1547603700477_1639</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-<span class="number">1</span>: Map: <span class="number">2</span>  Reduce: <span class="number">1</span>   Cumulative CPU: <span class="number">5.51</span> sec   HDFS <span class="keyword">Read</span>: <span class="number">13903</span> HDFS <span class="keyword">Write</span>: <span class="number">4</span> SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: <span class="number">5</span> seconds <span class="number">510</span> msec</span><br><span class="line">OK</span><br><span class="line"><span class="number">100</span></span><br><span class="line">Time taken: <span class="number">21.809</span> seconds, Fetched: <span class="number">1</span> row(s)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>假设有这样一张表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">order</th>
+<th style="text-align:center">order_id</th>
+<th style="text-align:center">item</th>
+<th style="text-align:center">user</th>
+<th style="text-align:center">description</th>
+<th style="text-align:center">create_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0001</td>
+<td style="text-align:center">hive课程</td>
+<td style="text-align:center">李磊</td>
+<td style="text-align:center">1学时</td>
+<td style="text-align:center">15833081600</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0002</td>
+<td style="text-align:center">spark课程</td>
+<td style="text-align:center">韩梅</td>
+<td style="text-align:center">1学时</td>
+<td style="text-align:center">15833081600</td>
+</tr>
+</tbody>
+</table>
+<h3 id="数据导入-2"><a href="#数据导入-2" class="headerlink" title="数据导入"></a>数据导入</h3><ol>
+<li><p>快照导入：</p>
+ <figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./sqoop</span> import <span class="params">--connect</span> <span class="string">"jdbc:mysql://*.*.*.*:protNum/DbName?characterEncoding=UTF-8"</span> <span class="params">--username</span> *** <span class="params">--password</span> *** <span class="params">--table</span> order <span class="params">--split-by</span> order_id <span class="params">--target-dir</span> <span class="string">"/user/hadoop/order_snapshot/2018-08-01"</span> <span class="params">--delete-target-dir</span> <span class="params">--as-parquet</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>增量导入，每天只导入增量的数据：</p>
+ <figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./sqoop</span> import <span class="params">--connect</span> <span class="string">"jdbc:mysql://*.*.*.*:protNum/DbName?characterEncoding=UTF-8"</span> <span class="params">--username</span> *** <span class="params">--password</span> *** <span class="params">--query</span> <span class="string">"SELECT * FROM order WHERE create_time &gt; 1533081600 and \$CONDITIONS"</span> <span class="params">--split-by</span> order_id <span class="params">--target-dir</span> <span class="string">"/user/hadoop/order_snapshot/2018-08-01"</span> <span class="params">--as-parquet</span></span><br></pre></td></tr></table></figure>
+<p> $CONDITIONS在这里是起到占位符的作用，在任务执行过程中会被数据划分生成的条件替代，一定要注意添加。</p>
+</li>
+</ol>
+<p>选择全量导入还是增量导入需根据ETL规范视情况而定。</p>
+<h3 id="数据导出-2"><a href="#数据导出-2" class="headerlink" title="数据导出"></a>数据导出</h3><p>数据导入HDFS后，业务程序关联各种数据后可能每天会生成一个收入报表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">order</th>
+<th style="text-align:center">catalog</th>
+<th style="text-align:center">income</th>
+<th style="text-align:center">order_num</th>
+<th style="text-align:center">description</th>
+<th style="text-align:center">create_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">hive课程</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">1000</td>
+<td style="text-align:center">1学时</td>
+<td style="text-align:center">15833081600</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">spark课程</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">1000</td>
+<td style="text-align:center">1学时</td>
+<td style="text-align:center">15833081600</td>
+</tr>
+</tbody>
+</table>
+<p>对于数据量较小的访问，HDFS的效率并不高，所以此时可以将每天的收入报表从HDFS导出到关系型数据库中来进行分析。</p>
+<p>导出任务</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./sqoop</span> export <span class="params">--connect</span> <span class="string">"jdbc:mysql://*.*.*.*:protNum/DbName?characterEncoding=UTF-8"</span> <span class="params">--username</span> *** <span class="params">--password</span> *** <span class="params">--table</span> income_report <span class="params">--columns</span> catalog,income,order_num,description,create_time <span class="params">--export-dir</span> <span class="string">"/user/hadoop/order_report/"</span></span><br></pre></td></tr></table></figure>
+<p>–export-dir:表示待导出数据在HDFS上的路径。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>为什么需要sqoop，是由于数据同步的需求。</p>
+</li>
+<li><p>sqoop是什么，sqoop是一个基于MapReduce框架的数据同步工具</p>
+</li>
+<li><p>Sqoop是怎么工作的，利用MapReduce并行进行数据导入工作。</p>
+</li>
+<li><p>sqoop的使用方法，详见上面介绍的导入导出方法。</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/大数据/" rel="tag"># 大数据</a>
+          
+            <a href="/tags/Sqoop/" rel="tag"># Sqoop</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/26/discussing-docker-pros-and-cons/" rel="next" title="Docker技术的优缺点">
+                <i class="fa fa-chevron-left"></i> Docker技术的优缺点
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/18/java-inter-thread-communication/" rel="prev" title="Java语言如何实现线程间通信">
+                Java语言如何实现线程间通信 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqoop出现的历史背景"><span class="nav-number">1.</span> <span class="nav-text">Sqoop出现的历史背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务数据系统"><span class="nav-number">1.1.</span> <span class="nav-text">业务数据系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据同步与传统数据仓库"><span class="nav-number">1.2.</span> <span class="nav-text">数据同步与传统数据仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqoop功能与架构"><span class="nav-number">2.</span> <span class="nav-text">Sqoop功能与架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sqoop介绍"><span class="nav-number">2.1.</span> <span class="nav-text">Sqoop介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sqoop功能"><span class="nav-number">2.2.</span> <span class="nav-text">Sqoop功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sqoop架构"><span class="nav-number">2.3.</span> <span class="nav-text">Sqoop架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sqoop任务执行流程"><span class="nav-number">2.4.</span> <span class="nav-text">Sqoop任务执行流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据对象生成"><span class="nav-number">2.4.1.</span> <span class="nav-text">数据对象生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据导入Hive中"><span class="nav-number">2.4.2.</span> <span class="nav-text">数据导入Hive中</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqoop原理"><span class="nav-number">3.</span> <span class="nav-text">Sqoop原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导入"><span class="nav-number">3.1.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导出"><span class="nav-number">3.2.</span> <span class="nav-text">数据导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqoop安装与配置"><span class="nav-number">4.</span> <span class="nav-text">Sqoop安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">4.1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sqoop包结构"><span class="nav-number">4.2.</span> <span class="nav-text">Sqoop包结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证-Java-和-Hadoop-已经安装"><span class="nav-number">4.3.</span> <span class="nav-text">验证 Java 和 Hadoop 已经安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载Sqoop安装包"><span class="nav-number">4.4.</span> <span class="nav-text">下载Sqoop安装包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Sqoop"><span class="nav-number">4.5.</span> <span class="nav-text">配置Sqoop</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqoop语法分析"><span class="nav-number">5.</span> <span class="nav-text">Sqoop语法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导入-1"><span class="nav-number">5.1.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive导入"><span class="nav-number">5.2.</span> <span class="nav-text">Hive导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导出-1"><span class="nav-number">5.3.</span> <span class="nav-text">数据导出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDMS工具"><span class="nav-number">5.4.</span> <span class="nav-text">RDMS工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqoop的使用"><span class="nav-number">6.</span> <span class="nav-text">Sqoop的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Sqoop导入数据到HDFS"><span class="nav-number">6.1.</span> <span class="nav-text">使用Sqoop导入数据到HDFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Sqoop导入数据到Hive"><span class="nav-number">6.2.</span> <span class="nav-text">使用Sqoop导入数据到Hive</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例"><span class="nav-number">7.</span> <span class="nav-text">案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导入-2"><span class="nav-number">7.1.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导出-2"><span class="nav-number">7.2.</span> <span class="nav-text">数据导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

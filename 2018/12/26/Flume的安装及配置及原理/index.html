@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Flume是一个高可用、高可靠、分布式的海量数据采集、聚合、传输的系统。 Flume作为一个日志收集工具，非常轻量级，基于一个个Flume Agent，能够构建一个复杂而强大的日志手机系统。运行在服务器上的进程将需要关注的日志文件采集到指定的存储服务，这个进程就叫Flume Agent。 本地环境 Hadoop版本:2.7.6   操作系统 : manjaro-64bit   内存 : 8GB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flume的安装及配置及原理">
+<meta property="og:url" content="http://yoursite.com/2018/12/26/Flume的安装及配置及原理/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="Flume是一个高可用、高可靠、分布式的海量数据采集、聚合、传输的系统。 Flume作为一个日志收集工具，非常轻量级，基于一个个Flume Agent，能够构建一个复杂而强大的日志手机系统。运行在服务器上的进程将需要关注的日志文件采集到指定的存储服务，这个进程就叫Flume Agent。 本地环境 Hadoop版本:2.7.6   操作系统 : manjaro-64bit   内存 : 8GB">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://stayrelevant.globant.com/wp-content/uploads/2012/06/apache-flume-1-728.jpg">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flume的安装及配置及原理">
+<meta name="twitter:description" content="Flume是一个高可用、高可靠、分布式的海量数据采集、聚合、传输的系统。 Flume作为一个日志收集工具，非常轻量级，基于一个个Flume Agent，能够构建一个复杂而强大的日志手机系统。运行在服务器上的进程将需要关注的日志文件采集到指定的存储服务，这个进程就叫Flume Agent。 本地环境 Hadoop版本:2.7.6   操作系统 : manjaro-64bit   内存 : 8GB">
+<meta name="twitter:image" content="https://stayrelevant.globant.com/wp-content/uploads/2012/06/apache-flume-1-728.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/26/Flume的安装及配置及原理/">
+
+
+
+
+
+  <title>Flume的安装及配置及原理 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Flume的安装及配置及原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Flume的安装及配置及原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T05:33:15+08:00">
+                2018-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/26/Flume的安装及配置及原理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/12/26/Flume的安装及配置及原理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://stayrelevant.globant.com/wp-content/uploads/2012/06/apache-flume-1-728.jpg" rel="gallery_ck9v4418b004g7ytttfj97sog" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://stayrelevant.globant.com/wp-content/uploads/2012/06/apache-flume-1-728.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <pre><code>Flume是一个高可用、高可靠、分布式的海量数据采集、聚合、传输的系统。
+</code></pre><p>Flume作为一个日志收集工具，非常轻量级，基于一个个Flume Agent，能够构建一个复杂而强大的日志手机系统。运行在服务器上的进程将需要关注的日志文件采集到指定的存储服务，这个进程就叫Flume Agent。</p>
+<h2 id="本地环境"><a href="#本地环境" class="headerlink" title="本地环境"></a>本地环境</h2><blockquote>
+<p>Hadoop版本:2.7.6</p>
+</blockquote>
+<blockquote>
+<p>操作系统 : manjaro-64bit</p>
+</blockquote>
+<blockquote>
+<p>内存 : 8GB</p>
+</blockquote>
+<blockquote>
+<p>CPU : i7-4770S</p>
+</blockquote>
+<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><blockquote>
+<p>Flume安装包：<a href="http://mirrors.tuna.tsinghua.edu.cn/apache/flume/1.8.0/apache-flume-1.8.0-bin.tar.gz" target="_blank" rel="noopener">下载链接</a> 。</p>
+</blockquote>
+<h2 id="Flume安装和配置"><a href="#Flume安装和配置" class="headerlink" title="Flume安装和配置"></a>Flume安装和配置</h2><ol>
+<li><p>解压Flume：</p>
+ <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar xzvf apache-flume-<span class="number">1.8</span>.<span class="number">0</span>-bin<span class="selector-class">.tar</span><span class="selector-class">.gz</span> ~/apps</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置环境变量，打开~/.bashrc(使用zsh的话打开~/.zshrc)，在文件末尾添加如下内容（FLUME_HOME的具体路径根据你自己解压的flume文件所在路径进行配置）：</p>
+ <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># FLUME</span></span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">FLUME_HOME</span>=/home/jony/apps/apache-flume-1.8.0-bin</span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">PATH</span>=<span class="variable">$FLUME_HOME</span>/bin:$PATH</span><br></pre></td></tr></table></figure>
+<p> 使环境变量生效</p>
+ <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">source</span> ~/.bashrc</span><br><span class="line"><span class="built_in">or</span></span><br><span class="line"><span class="keyword">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改Flume配置文件，将apache-flume-1.8.0-bin/conf/flume-env.sh.template重命名为flume-env.sh，打开flume-env.sh配置如下内容：</p>
+ <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里如果你在安装Hadoop那里已经配置过JAVA_HOME，这里就不需要配置JAVA_HOME啦</span></span><br><span class="line"><span class="comment"># export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span></span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">HADOOP_HOME</span>=/home/hadoop/hadoop-current</span><br><span class="line"><span class="attribute">FLUME_CLASSPATH</span>=<span class="string">"<span class="variable">$HADOOP_HOME</span>/bin:<span class="variable">$PATH</span>"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改apache-flume-1.8.0-bin/conf/flume-conf.properties.template为flume-conf.properties，测试Flume配置是否正确，测试命令如下：</p>
+ <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/flume-ng agent --<span class="keyword">conf</span> <span class="keyword">conf</span> --<span class="keyword">conf</span>-<span class="keyword">file</span> <span class="keyword">conf</span>/flume-<span class="keyword">conf</span>.properties --name agent</span><br></pre></td></tr></table></figure>
+<p> 打开log文件查看运行结果：</p>
+ <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">26 十二月 2018 14<span class="selector-pseudo">:08</span><span class="selector-pseudo">:56</span>,172 <span class="selector-tag">INFO</span>  <span class="selector-attr">[SinkRunner-PollingRunner-DefaultSinkProcessor]</span> (<span class="selector-tag">org</span><span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span><span class="selector-pseudo">:95)</span>  <span class="selector-tag">-</span> <span class="selector-tag">Event</span>: &#123; <span class="attribute">headers</span>:&#123;&#125; <span class="selector-tag">body</span>: 37 34 31 36 38                                  74168 &#125;</span><br><span class="line">26 十二月 2018 14<span class="selector-pseudo">:08</span><span class="selector-pseudo">:56</span>,172 <span class="selector-tag">INFO</span>  <span class="selector-attr">[SinkRunner-PollingRunner-DefaultSinkProcessor]</span> (<span class="selector-tag">org</span><span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span><span class="selector-pseudo">:95)</span>  <span class="selector-tag">-</span> <span class="selector-tag">Event</span>: &#123; <span class="attribute">headers</span>:&#123;&#125; <span class="selector-tag">body</span>: 37 34 31 36 39                                  74169 &#125;</span><br><span class="line">26 十二月 2018 14<span class="selector-pseudo">:08</span><span class="selector-pseudo">:56</span>,172 <span class="selector-tag">INFO</span>  <span class="selector-attr">[SinkRunner-PollingRunner-DefaultSinkProcessor]</span> (<span class="selector-tag">org</span><span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span><span class="selector-pseudo">:95)</span>  <span class="selector-tag">-</span> <span class="selector-tag">Event</span>: &#123; <span class="attribute">headers</span>:&#123;&#125; <span class="selector-tag">body</span>: 37 34 31 37 30                                  74170 &#125;</span><br><span class="line">26 十二月 2018 14<span class="selector-pseudo">:08</span><span class="selector-pseudo">:56</span>,172 <span class="selector-tag">INFO</span>  <span class="selector-attr">[SinkRunner-PollingRunner-DefaultSinkProcessor]</span> (<span class="selector-tag">org</span><span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span><span class="selector-pseudo">:95)</span>  <span class="selector-tag">-</span> <span class="selector-tag">Event</span>: &#123; <span class="attribute">headers</span>:&#123;&#125; <span class="selector-tag">body</span>: 37 34 31 37 31                                  74171 &#125;</span><br><span class="line">26 十二月 2018 14<span class="selector-pseudo">:08</span><span class="selector-pseudo">:56</span>,172 <span class="selector-tag">INFO</span>  <span class="selector-attr">[SinkRunner-PollingRunner-DefaultSinkProcessor]</span> (<span class="selector-tag">org</span><span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span><span class="selector-pseudo">:95)</span>  <span class="selector-tag">-</span> <span class="selector-tag">Event</span>: &#123; <span class="attribute">headers</span>:&#123;&#125; <span class="selector-tag">body</span>: 37 34 31 37 32                                  74172 &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Flume原理"><a href="#Flume原理" class="headerlink" title="Flume原理"></a>Flume原理</h2><h3 id="Flume-Agent"><a href="#Flume-Agent" class="headerlink" title="Flume Agent"></a>Flume Agent</h3><p>Flume是一个基于Flume Agent组建而成的复杂而强大的日志收集系统，而Flume Agent就是将运行在服务器上的进程的相关日志信息采集到指定存储的服务进程。</p>
+<h3 id="Flume-Agent的组成"><a href="#Flume-Agent的组成" class="headerlink" title="Flume Agent的组成"></a>Flume Agent的组成</h3><p><img src="https://camo.githubusercontent.com/eb46174526ec248c378fc656e55b77a8fc68e1bb/68747470733a2f2f666c756d652e6170616368652e6f72672f5f696d616765732f44657647756964655f696d61676530302e706e67" alt="agent"></p>
+<p>Flume Agent由三部分组成：Source、Channel、Sink。</p>
+<ul>
+<li><p>source：从数据接收器接收数据，并将数据一Flume的event格式传递给一个或多个Channel，Flume提供多种数据接收方式，比如taildir，Kafka等。</p>
+</li>
+<li><p>Channel：Channel是一种短暂的存储容器，它将从source接收到的event格式的数据缓存起来，知道它们被sink消费掉。它在source和sink间起着一种桥梁的作用。支持的类类型有：FileChannel，Memory Channel等。</p>
+</li>
+<li><p>Sink：sink将数据保存到存储器中，它从channel消费数据（event）并将其传递给目标地址，目标地可能是Hive，HDFS，Hbase等。</p>
+</li>
+</ul>
+<h3 id="Flume-Agent基本工作流程"><a href="#Flume-Agent基本工作流程" class="headerlink" title="Flume Agent基本工作流程"></a>Flume Agent基本工作流程</h3><p>Flume的核心是把数据从数据源(Source)收集过来，再将收集到的数据发送到指定的目的地(Sink)，为保证发送过程的正确性，在发生那个到目的地之前，会先缓存数据，用于缓存数据的通道我们就称之为Channel，待数据真正到达目的地Sink后，Flume再删除缓存的数据。</p>
+<h3 id="Flume-Event"><a href="#Flume-Event" class="headerlink" title="Flume Event"></a>Flume Event</h3><p>Flume Event是将传输数据进行封装的数据格式，是Flume进行数据传输的基本单位，如果是文本文件，通常是一行记录。</p>
+<p>Event从source流向channel，在到sink，其本身为字节数组，可携带header信息，比如：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FlumeEvent数据结构：</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FlumeEvent</span> <span class="keyword">implements</span> <span class="title">Event</span>, <span class="title">Writable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; headers;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] body;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Event示例：</span><br><span class="line">&#123; <span class="string">"headers"</span> : &#123;<span class="string">"mykey"</span> : <span class="string">"myvalue"</span>&#125;, <span class="string">"body"</span> : <span class="string">"real log msg"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>Event是事务的基本单位，代表一个数据的最小完成单元。</p>
+<h3 id="Flume的特性"><a href="#Flume的特性" class="headerlink" title="Flume的特性"></a>Flume的特性</h3><ul>
+<li><p><strong>模块化设计：</strong> source、channel、sink三者可以根据业务自由组合，构建相对复杂的日志管道流。</p>
+</li>
+<li><p><strong>可接入性：</strong> 支持多种主流系统和框架，如HDFS、HBase、Kafka、ES、Thrift、Avro等，都能很好地与Flume集成。</p>
+</li>
+<li><p><strong>容错性：</strong> Flume中的Event是具有事务性质的，这保证了数据在源端和目的端的一致性。</p>
+</li>
+<li><p><strong>可扩展性：</strong> 可以根据自己业务需要来定制实现某些组建，比如定制话的Source、Channle、Sink。</p>
+</li>
+</ul>
+<h2 id="Flume使用示例"><a href="#Flume使用示例" class="headerlink" title="Flume使用示例"></a>Flume使用示例</h2><h3 id="1-监听端口，输出到控制台"><a href="#1-监听端口，输出到控制台" class="headerlink" title="1. 监听端口，输出到控制台"></a>1. 监听端口，输出到控制台</h3><ol>
+<li><p>在flume的conf目录下编写配置文件flume-conf-netsrc.properties，文件配置内容如下：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">agent.sources = netSrc</span><br><span class="line">agent.channels = memoryChannel</span><br><span class="line">agent.sinks = loggerSink</span><br><span class="line"></span><br><span class="line"># For each one of the sources, the type is defined</span><br><span class="line">agent.sources.netSrc.type = netcat</span><br><span class="line">agent.sources.netSrc.bind = 0.0.0.0</span><br><span class="line">agent.sources.netSrc.port = 12345</span><br><span class="line"></span><br><span class="line"># The channel can be defined as follows.</span><br><span class="line">agent.sources.netSrc.channels = memoryChannel</span><br><span class="line"></span><br><span class="line"># Each sink&apos;s type must be defined</span><br><span class="line">agent.sinks.loggerSink.type = logger</span><br><span class="line"></span><br><span class="line">#Specify the channel the sink should use</span><br><span class="line">agent.sinks.loggerSink.channel = memoryChannel</span><br><span class="line"></span><br><span class="line"># Each channel&apos;s type is defined.</span><br><span class="line">agent.channels.memoryChannel.type = memory</span><br><span class="line"></span><br><span class="line"># Other config values specific to each type of channel(sink or source)</span><br><span class="line"># can be defined as well</span><br><span class="line"># In this case, it specifies the capacity of the memory channel</span><br><span class="line">agent.channels.memoryChannel.capacity = 100</span><br></pre></td></tr></table></figure>
+<p> sources类型配置为netcat，用于监听网络端口，这里bind为监听的ip地址，0.0.0.0表示监听本机。port为监听的端口。sink的类型设置为logger表示直接将监听到的信息打印到终端输出。channel选用memor类型，表示使用内存作为Channel。</p>
+</li>
+<li><p>启动flume：</p>
+ <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/flume-ng agent --<span class="keyword">conf</span> <span class="keyword">conf</span> --<span class="keyword">conf</span>-<span class="keyword">file</span> <span class="keyword">conf</span>/flume-<span class="keyword">conf</span>-netsrc.properties --name agent -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p> 启动命令最后添加的-Dflume.root.logger=INFO,console是为了将日志输出到控制台，所以直接修改logger，使用控制台作为输出，并且日志输出级别设置为INFO。</p>
+</li>
+<li><p>开启telnet，向flume发送数据：</p>
+ <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet localhost <span class="number">12345</span></span><br></pre></td></tr></table></figure>
+<p> 输入一些内容：</p>
+ <figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hello</span><br><span class="line"><span class="symbol">OK</span></span><br><span class="line">workd</span><br><span class="line"><span class="symbol">OK</span></span><br><span class="line">workd</span><br><span class="line"><span class="symbol">OK</span></span><br><span class="line">world</span><br><span class="line"><span class="symbol">OK</span></span><br></pre></td></tr></table></figure>
+<p> 在flume启动的终端下面查看输出：</p>
+ <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2018</span>-<span class="number">12</span>-<span class="number">17</span> <span class="number">15</span>:<span class="number">12</span>:<span class="number">02</span>,<span class="number">438</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org<span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span>(LoggerSink<span class="selector-class">.java</span>:<span class="number">95</span>)] Event: &#123; headers:&#123;&#125; <span class="selector-tag">body</span>: <span class="number">68</span> <span class="number">65</span> <span class="number">6</span>C <span class="number">6</span>C <span class="number">6</span>F <span class="number">0</span>D                               hello. &#125;</span><br><span class="line"><span class="number">2018</span>-<span class="number">12</span>-<span class="number">17</span> <span class="number">15</span>:<span class="number">12</span>:<span class="number">03</span>,<span class="number">616</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org<span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span>(LoggerSink<span class="selector-class">.java</span>:<span class="number">95</span>)] Event: &#123; headers:&#123;&#125; <span class="selector-tag">body</span>: <span class="number">77</span> <span class="number">6</span>F <span class="number">72</span> <span class="number">6</span>B <span class="number">64</span> <span class="number">0</span>D                               workd. &#125;</span><br><span class="line"><span class="number">2018</span>-<span class="number">12</span>-<span class="number">17</span> <span class="number">15</span>:<span class="number">12</span>:<span class="number">05</span>,<span class="number">047</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org<span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span>(LoggerSink<span class="selector-class">.java</span>:<span class="number">95</span>)] Event: &#123; headers:&#123;&#125; <span class="selector-tag">body</span>: <span class="number">77</span> <span class="number">6</span>F <span class="number">72</span> <span class="number">6</span>B <span class="number">64</span> <span class="number">0</span>D                               workd. &#125;</span><br><span class="line"><span class="number">2018</span>-<span class="number">12</span>-<span class="number">17</span> <span class="number">15</span>:<span class="number">12</span>:<span class="number">06</span>,<span class="number">454</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org<span class="selector-class">.apache</span><span class="selector-class">.flume</span><span class="selector-class">.sink</span><span class="selector-class">.LoggerSink</span><span class="selector-class">.process</span>(LoggerSink<span class="selector-class">.java</span>:<span class="number">95</span>)] Event: &#123; headers:&#123;&#125; <span class="selector-tag">body</span>: <span class="number">77</span> <span class="number">6</span>F <span class="number">72</span> <span class="number">6</span>C <span class="number">64</span> <span class="number">0</span>D                               world. &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="2-监听端口，输出到服务器文件"><a href="#2-监听端口，输出到服务器文件" class="headerlink" title="2. 监听端口，输出到服务器文件"></a>2. 监听端口，输出到服务器文件</h3><ol>
+<li><p>在flume的conf目录下编写配置文件flume-conf-netsrc2localfile.properties，文件配置内容如下：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">agent.sources = netSrc</span><br><span class="line">agent.channels = memoryChannel</span><br><span class="line">agent.sinks = fileSink</span><br><span class="line"></span><br><span class="line"># For each one of the sources, the type is defined</span><br><span class="line">agent.sources.netSrc.type = netcat</span><br><span class="line">agent.sources.netSrc.bind = 0.0.0.0</span><br><span class="line">agent.sources.netSrc.port = 12345</span><br><span class="line"></span><br><span class="line"># The channel can be defined as follows.</span><br><span class="line">agent.sources.netSrc.channels = memoryChannel</span><br><span class="line"></span><br><span class="line"># Each sink&apos;s type must be defined</span><br><span class="line">agent.sinks.fileSink.type = file_roll</span><br><span class="line">agent.sinks.fileSink.sink.directory=/home/jony/tmp/flume_workspace/file_roll/data</span><br><span class="line">agent.sinks.fileSink.sink.rollInterval = 60</span><br><span class="line"></span><br><span class="line">#Specify the channel the sink should use</span><br><span class="line">agent.sinks.fileSink.channel = memoryChannel</span><br><span class="line"></span><br><span class="line"># Each channel&apos;s type is defined.</span><br><span class="line">agent.channels.memoryChannel.type = memory</span><br><span class="line"></span><br><span class="line"># Other config values specific to each type of channel(sink or source)</span><br><span class="line"># can be defined as well</span><br><span class="line"># In this case, it specifies the capacity of the memory channel</span><br><span class="line">agent.channels.memoryChannel.capacity = 100</span><br></pre></td></tr></table></figure>
+<p> 这里sink的类型使用的是file_roll，表示要将最终结果输出到本地文件中，directory配置的是输出的文件路径，需要注意的是这个目录需要被提前创建，否则执行会出错。</p>
+</li>
+<li><p>启动flume</p>
+ <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/flume-ng agent --<span class="keyword">conf</span> <span class="keyword">conf</span> --<span class="keyword">conf</span>-<span class="keyword">file</span> <span class="keyword">conf</span>/flume-<span class="keyword">conf</span>-netsrc2localfile.properties --name agent -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用telnet往对应端口发送数据：</p>
+ <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet localhost <span class="number">12345</span></span><br></pre></td></tr></table></figure>
+<p> 发送数据：</p>
+ <figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hello</span><br><span class="line"><span class="symbol">OK</span></span><br><span class="line">world</span><br><span class="line"><span class="symbol">OK</span></span><br><span class="line">flume</span><br><span class="line"><span class="symbol">OK</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在指定目录下（这里是/home/jony/tmp/flume_workspace/file_roll/data）查看相关文件：</p>
+   <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat <span class="number">1545031636278</span><span class="number">-1</span> </span><br><span class="line">hello</span><br><span class="line">world</span><br><span class="line">flume</span><br></pre></td></tr></table></figure>
+<p> 60秒后，该目录下又生成了一个文件1545031636278-2.</p>
+</li>
+</ol>
+<h3 id="3-监听服务器文件，输出到HDFS（memoryChannel）"><a href="#3-监听服务器文件，输出到HDFS（memoryChannel）" class="headerlink" title="3. 监听服务器文件，输出到HDFS（memoryChannel）"></a>3. 监听服务器文件，输出到HDFS（memoryChannel）</h3><ol>
+<li><p>修改flume的conf目录下的flume-conf-taildir2hdfs.properties，文件配置内容如下：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">agent.sources = fileSrc</span><br><span class="line">agent.channels = memoryChannel</span><br><span class="line">agent.sinks = hdfsSink</span><br><span class="line"></span><br><span class="line"># For each one of the sources, the type is defined</span><br><span class="line">agent.sources.fileSrc.type = taildir</span><br><span class="line">agent.sources.fileSrc.positionFile = /home/jony/tmp/flume_workspace/mem_ch/positionFile</span><br><span class="line">agent.sources.fileSrc.filegroups = f1</span><br><span class="line">agent.sources.fileSrc.filegroups.f1 = /home/jony/tmp/log/.*.log</span><br><span class="line"></span><br><span class="line"># The channel can be defined as follows.</span><br><span class="line">agent.sources.fileSrc.channels = memoryChannel</span><br><span class="line"></span><br><span class="line"># Each sink&apos;s type must be defined</span><br><span class="line">agent.sinks.hdfsSink.type = hdfs</span><br><span class="line">agent.sinks.hdfsSink.hdfs.path = /user/jony/flume_data/mem_ch/%Y-%m-%d</span><br><span class="line">agent.sinks.hdfsSink.hdfs.useLocalTimeStamp = true</span><br><span class="line">agent.sinks.hdfsSink.hdfs.fileType = DataStream</span><br><span class="line">agent.sinks.hdfsSink.hdfs.rollSize = 0</span><br><span class="line">agent.sinks.hdfsSink.hdfs.rollCount = 0</span><br><span class="line">agent.sinks.hdfsSink.hdfs.rollInterval = 60</span><br><span class="line"></span><br><span class="line">#Specify the channel the sink should use</span><br><span class="line">agent.sinks.hdfsSink.channel = memoryChannel</span><br><span class="line"></span><br><span class="line"># Each channel&apos;s type is defined.</span><br><span class="line">agent.channels.memoryChannel.type = memory</span><br><span class="line"></span><br><span class="line"># Other config values specific to each type of channel(sink or source)</span><br><span class="line"># can be defined as well</span><br><span class="line"># In this case, it specifies the capacity of the memory channel</span><br><span class="line">agent.channels.memoryChannel.capacity = 100</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改conf/flume-env.sh，添加Hadoop的路径，Hadoop的配置可以参考我的另一篇文章：<a href="https://jiaoqiyuan.cn/2018/12/26/%E9%85%8D%E7%BD%AE%E6%9C%AC%E5%9C%B0Hadoop%E7%8E%AF%E5%A2%83/" target="_blank" rel="noopener">配置本地Hadoop环境</a> 。如果你已经配置了Hadoop，这里是不用在flume-env.sh中配置任何东西的:</p>
+ <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">HADOOP_HOME</span>=/home/jony/apps/hadoop-2.7.6</span><br><span class="line"><span class="attribute">FLUME_CLASSPATH</span>=<span class="string">"<span class="variable">$HADOOP_HOME</span>/bin:<span class="variable">$PATH</span>"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动flume：</p>
+ <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/flume-ng agent --<span class="keyword">conf</span> <span class="keyword">conf</span> --<span class="keyword">conf</span>-<span class="keyword">file</span> <span class="keyword">conf</span>/flume-<span class="keyword">conf</span>-taildir2hdfs.properties --name agent</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看HDFS上是否已经写入数据：</p>
+ <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hadoop fs -ls <span class="regexp">/user/</span>jony<span class="regexp">/flume_data/m</span>em_ch</span><br><span class="line">Found <span class="number">1</span> items</span><br><span class="line">drwxr-xr-x   - jony supergroup          <span class="number">0</span> <span class="number">2018</span>-<span class="number">12</span>-<span class="number">26</span> <span class="number">15</span>:<span class="number">53</span> <span class="regexp">/user/</span>jony<span class="regexp">/flume_data/m</span>em_ch<span class="regexp">/2018-12-26</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="4-监听服务器文件，输出到HDFS（fileChannel）"><a href="#4-监听服务器文件，输出到HDFS（fileChannel）" class="headerlink" title="4. 监听服务器文件，输出到HDFS（fileChannel）"></a>4. 监听服务器文件，输出到HDFS（fileChannel）</h3><ol>
+<li><p>修改flume的conf目录下的flume-conf-taildir2hdfs.properties，文件配置内容如下：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">agent.sources = fileSrc</span><br><span class="line">agent.channels = fileChannel</span><br><span class="line">agent.sinks = hdfsSink</span><br><span class="line"></span><br><span class="line"># For each one of the sources, the type is defined</span><br><span class="line">agent.sources.fileSrc.type = taildir</span><br><span class="line">agent.sources.fileSrc.positionFile = /home/jony/tmp/flume_workspace/hdfs_sink/file_ch/positionFile</span><br><span class="line">agent.sources.fileSrc.filegroups = f1</span><br><span class="line">agent.sources.fileSrc.filegroups.f1 = /home/jony/tmp/log/.*.log</span><br><span class="line"></span><br><span class="line"># The channel can be defined as follows.</span><br><span class="line">agent.sources.fileSrc.channels = fileChannel</span><br><span class="line"></span><br><span class="line"># Each sink&apos;s type must be defined</span><br><span class="line">agent.sinks.hdfsSink.type = hdfs</span><br><span class="line">agent.sinks.hdfsSink.hdfs.path = /user/jony/flume_data/file_ch/%Y-%m-%d</span><br><span class="line">agent.sinks.hdfsSink.hdfs.useLocalTimeStamp = true</span><br><span class="line">agent.sinks.hdfsSink.hdfs.fileType = DataStream</span><br><span class="line">agent.sinks.hdfsSink.hdfs.rollSize = 0</span><br><span class="line">agent.sinks.hdfsSink.hdfs.rollCount = 0</span><br><span class="line">agent.sinks.hdfsSink.hdfs.rollInterval = 60</span><br><span class="line"></span><br><span class="line">#Specify the channel the sink should use</span><br><span class="line">agent.sinks.hdfsSink.channel = fileChannel</span><br><span class="line"></span><br><span class="line"># Each channel&apos;s type is defined.</span><br><span class="line">agent.channels.fileChannel.type = file</span><br><span class="line">agent.channels.fileChannel.checkpointDir = /home/jony/tmp/flume_workspace/hdfs_sink/file_ch/checkpoint</span><br><span class="line">agent.channels.fileChannel.checkpointInterval = 60000</span><br><span class="line">agent.channels.fileChannel.dataDirs = /home/jony/tmp/flume_workspace/hdfs_sink/file_ch/data</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动flume：</p>
+ <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/flume-ng agent --<span class="keyword">conf</span> <span class="keyword">conf</span> --<span class="keyword">conf</span>-<span class="keyword">file</span> <span class="keyword">conf</span>/flume-<span class="keyword">conf</span>-taildir2hdfs-filech.properties --name agent</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看本地checkpoint和positionFile文件:</p>
+ <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">hdfs_sink</span><br><span class="line">└── file_ch</span><br><span class="line">    ├── checkpoint</span><br><span class="line">    │   ├── checkpoint</span><br><span class="line">    │   ├── checkpoint.meta</span><br><span class="line">    │   ├── inflightputs</span><br><span class="line">    │   ├── inflighttakes</span><br><span class="line">    │   └── queueset</span><br><span class="line">    ├── data</span><br><span class="line">    │   ├── log-<span class="number">2</span></span><br><span class="line">    │   ├── log-<span class="number">2</span>.meta</span><br><span class="line">    │   ├── log-<span class="number">3</span></span><br><span class="line">    │   ├── log-<span class="number">3</span>.meta</span><br><span class="line">    │   ├── log-<span class="number">4</span></span><br><span class="line">    │   ├── log-<span class="number">4</span><span class="selector-class">.meta</span><span class="selector-class">.tmp</span></span><br><span class="line">    │   ├── log-<span class="number">5</span></span><br><span class="line">    │   └── log-<span class="number">5</span>.meta</span><br><span class="line">    └── positionFile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看HDFS上的日志文件</p>
+ <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -ls /user/jony/flume_data/file_ch/<span class="number">2018</span><span class="number">-12</span><span class="number">-26</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Flume高级配置"><a href="#Flume高级配置" class="headerlink" title="Flume高级配置"></a>Flume高级配置</h2><h3 id="多个FLume串联"><a href="#多个FLume串联" class="headerlink" title="多个FLume串联"></a>多个FLume串联</h3><p>比如下面这种情况：</p>
+<p><img src="https://camo.githubusercontent.com/6a9dc2fc391d189441318f97e6351a1e7927c41d/68747470733a2f2f666c756d652e6170616368652e6f72672f5f696d616765732f5573657247756964655f696d61676530332e706e67" alt="agents"></p>
+<p>Flume串联需要满足前一个agent的sink和后一个agent的source以avro的方式连接起来即可。</p>
+<p>大型客户端生成日志，存储系统处理能力不足的情况下，可以将flume配置成层级结构：</p>
+<p><img src="https://camo.githubusercontent.com/db574688edbd6169991f004e9019193ac18b1828/68747470733a2f2f666c756d652e6170616368652e6f72672f5f696d616765732f5573657247756964655f696d61676530322e706e67" alt="agents"></p>
+<p>可以在每台服务器上配置一个flume agent，然后将这些agent再串联一个公用的agent进行日志收集，这个共用的agent将收集到的日志写到hdfs上。</p>
+<p><strong>这里会存在一个隐患，如果公用的agent挂了，那么日志系统整个就崩溃了.</strong></p>
+<p>针对这种情况，可以使用flume的负载均衡模式，配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#load-balance</span><br><span class="line">agent1.sources=r1</span><br><span class="line">agent1.channels=c1</span><br><span class="line">agent1.sinks=k1 k2  #配置多个sink，分别指向第二级的agent</span><br><span class="line"></span><br><span class="line">agent1.sinkgroups = g1</span><br><span class="line">agent1.sinkgroups.g1.sinks = k1 k2</span><br><span class="line">agent1.sinkgroups.g1.processor.type = load_balance</span><br><span class="line"></span><br><span class="line">agent1.sources.r1.channels = c1</span><br><span class="line">agent1.sinks.k1.channel = c1</span><br><span class="line">agent1.sinks.k2.channel = c1</span><br></pre></td></tr></table></figure>
+<h3 id="具体场景"><a href="#具体场景" class="headerlink" title="具体场景"></a>具体场景</h3><p><strong>需求:</strong> 采集客户端的不同服务生成的日志，根据类型发送到不同的存储服务。</p>
+<p><img src="https://camo.githubusercontent.com/dad295cbfdbd0952ecbe8f99536770792f2a13c8/68747470733a2f2f666c756d652e6170616368652e6f72672f5f696d616765732f5573657247756964655f696d61676530312e706e67" alt="agents"></p>
+<p>针对这种情况，明显是要一个source对应多个sink，可以采用flume的扇出模式，扇出有两种方式：复制和多路复用，支持同一份source发送到不同的sink。</p>
+<ul>
+<li><p>复制：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">agent_foo.sources = r1</span><br><span class="line">agent_foo.channels = c1 c2 c3</span><br><span class="line">agent_foo.sinks = k1 k2 k3</span><br><span class="line"></span><br><span class="line">agent_foo.sources.r1.channels = c1 c2 c3</span><br><span class="line">agent_foo.sinks.k1.channel = c1</span><br><span class="line">agent_foo.sinks.k2.channel = c2</span><br><span class="line">agent_foo.sinks.k3.channel = c3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>多路复用：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">agent_foo.sources = r1</span><br><span class="line">agent_foo.channels = c1 c2 c3</span><br><span class="line">agent_foo.sinks = k1 k2 k3</span><br><span class="line"></span><br><span class="line">agent_foo.sources.r1.channels = c1 c2 c3</span><br><span class="line">agent_foo.sinks.k1.channel = c1</span><br><span class="line">agent_foo.sinks.k2.channel = c2</span><br><span class="line">agent_foo.sinks.k3.channel = c3</span><br><span class="line"></span><br><span class="line">agent_foo.sources.r1.selector.type = multiplexing</span><br><span class="line">agent_foo.sources.r1.selector.header = state</span><br><span class="line">agent_foo.sources.r1.selector.mapping.CZ = c1</span><br><span class="line">agent_foo.sources.r1.selector.mapping.US = c2</span><br><span class="line">agent_foo.sources.r1.selector.default = c3</span><br></pre></td></tr></table></figure>
+<p>  假如event内的数据格式如下：</p>
+  <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"headers"</span> : &#123;<span class="attr">"state"</span> : <span class="string">"CZ"</span>&#125;, <span class="attr">"body"</span> : <span class="string">"msg1"</span>&#125;</span><br><span class="line">&#123;<span class="attr">"headers"</span> : &#123;<span class="attr">"state"</span> : <span class="string">"US"</span>&#125;, <span class="attr">"body"</span> : <span class="string">"msg2"</span>&#125;</span><br><span class="line">&#123;<span class="attr">"headers"</span> : &#123;<span class="attr">"state"</span> : <span class="string">"XX"</span>&#125;, <span class="attr">"body"</span> : <span class="string">"msg3"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>  那么msg1将分配到c1,msg2将分配到c2,msg3将分配到c3。</p>
+<p>  headers怎么设置呢？flume有内置方法：拦截器。</p>
+</li>
+</ul>
+<h3 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h3><p>拦截器的存在使用户可以向event中添加自己想要的内容。拦截器分一下几种：</p>
+<ul>
+<li><p>Timestamp Interceptor：在event中插入当前时间戳</p>
+</li>
+<li><p>Host Interceptor：插入主机名</p>
+</li>
+<li><p>Static Interceptor：插入固定内容</p>
+</li>
+<li><p>Regex Filetering Interceptor：插入正则表达式匹配的内容</p>
+</li>
+</ul>
+<p><strong>举个栗子</strong></p>
+<p><strong>需求：</strong> 根据日志内的时间进行分类。</p>
+<p><strong>分析：</strong> 要根据日志内容进行分类，可以采用拦截器，在根据每条日志内的时间，添加event的header，这样在sink输出时就能根据header的不同进行不同的存储处理。</p>
+<p><strong>实现：</strong> </p>
+<ol>
+<li><p>拦截器配置flume-conf-taildir2hdfs-interceptor.properties：</p>
+ <figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">agent.<span class="attr">sources</span> = fileSrc</span><br><span class="line">agent.<span class="attr">channels</span> = memoryChannel</span><br><span class="line">agent.<span class="attr">sinks</span> = hdfsSink</span><br><span class="line"></span><br><span class="line"><span class="comment"># For each one of the sources, the type is defined</span></span><br><span class="line">agent.sources.fileSrc.<span class="attr">type</span> = taildir</span><br><span class="line">agent.sources.fileSrc.<span class="attr">positionFile</span> = /home/jony/tmp/flume_workspace/hdfs_sink/interceptor/positionFile</span><br><span class="line">agent.sources.fileSrc.<span class="attr">filegroups</span> = f1</span><br><span class="line">agent.sources.fileSrc.filegroups.<span class="attr">f1</span> = /home/jony/tmp/log/.*.log</span><br><span class="line"></span><br><span class="line">agent.sources.fileSrc.<span class="attr">interceptors</span> = i1</span><br><span class="line">agent.sources.fileSrc.interceptors.i1.<span class="attr">type</span> = regex_extractor</span><br><span class="line">agent.sources.fileSrc.interceptors.i1.<span class="attr">regex</span> = (\\d\\d\\d\\d-\\d\\d-\\d\\d)</span><br><span class="line">agent.sources.fileSrc.interceptors.i1.<span class="attr">serializers</span> = s1</span><br><span class="line">agent.sources.fileSrc.interceptors.i1.serializers.s1.<span class="attr">name</span> = date</span><br><span class="line"></span><br><span class="line"><span class="comment"># The channel can be defined as follows.</span></span><br><span class="line">agent.sources.fileSrc.<span class="attr">channels</span> = memoryChannel</span><br><span class="line"></span><br><span class="line"><span class="comment"># Each sink's type must be defined</span></span><br><span class="line">agent.sinks.hdfsSink.<span class="attr">type</span> = hdfs</span><br><span class="line">agent.sinks.hdfsSink.hdfs.<span class="attr">path</span> = /user/jony/flume_data/interceptor/%&#123;date&#125;</span><br><span class="line">agent.sinks.hdfsSink.hdfs.<span class="attr">fileType</span> = DataStream</span><br><span class="line">agent.sinks.hdfsSink.hdfs.<span class="attr">rollSize</span> = <span class="number">0</span></span><br><span class="line">agent.sinks.hdfsSink.hdfs.<span class="attr">rollCount</span> = <span class="number">0</span></span><br><span class="line">agent.sinks.hdfsSink.hdfs.<span class="attr">rollInterval</span> = <span class="number">60</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Specify the channel the sink should use</span></span><br><span class="line">agent.sinks.hdfsSink.<span class="attr">channel</span> = memoryChannel</span><br><span class="line"></span><br><span class="line"><span class="comment"># Each channel's type is defined.</span></span><br><span class="line">agent.channels.memoryChannel.<span class="attr">type</span> = memory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Other config values specific to each type of channel(sink or source)</span></span><br><span class="line"><span class="comment"># can be defined as well</span></span><br><span class="line"><span class="comment"># In this case, it specifies the capacity of the memory channel</span></span><br><span class="line">agent.channels.memoryChannel.<span class="attr">capacity</span> = <span class="number">100</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Flume;</p>
+ <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/flume-ng agent --<span class="keyword">conf</span> <span class="keyword">conf</span> --<span class="keyword">conf</span>-<span class="keyword">file</span> <span class="keyword">conf</span>/flume-<span class="keyword">conf</span>-taildir2hdfs-interceptor.properties --name agent</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看hdfs上文件：</p>
+ <figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">jony@jony-manjaro  ~/apps/hadoop<span class="string">-2</span>.7.6  hadoop fs -ls /user/jony/flume_data/interceptor</span><br><span class="line">Found 5 items</span><br><span class="line">drwxr-xr-x   - jony supergroup          0 2018<span class="string">-12</span><span class="string">-26</span> 19:13 /user/jony/flume_data/interceptor/2018<span class="string">-05</span><span class="string">-29</span></span><br><span class="line">drwxr-xr-x   - jony supergroup          0 2018<span class="string">-12</span><span class="string">-26</span> 19:14 /user/jony/flume_data/interceptor/2018<span class="string">-05</span><span class="string">-30</span></span><br><span class="line">drwxr-xr-x   - jony supergroup          0 2018<span class="string">-12</span><span class="string">-26</span> 19:14 /user/jony/flume_data/interceptor/2018<span class="string">-05</span><span class="string">-31</span></span><br><span class="line">drwxr-xr-x   - jony supergroup          0 2018<span class="string">-12</span><span class="string">-26</span> 19:14 /user/jony/flume_data/interceptor/2018<span class="string">-06</span><span class="string">-01</span></span><br><span class="line">drwxr-xr-x   - jony supergroup          0 2018<span class="string">-12</span><span class="string">-26</span> 19:14 /user/jony/flume_data/interceptor/2018<span class="string">-06</span><span class="string">-02</span></span><br></pre></td></tr></table></figure>
+<p> 查看本地的positionFile：</p>
+ <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/home/</span>jony<span class="regexp">/tmp/</span>flume_workspace<span class="regexp">/hdfs_sink/i</span>nterceptor</span><br><span class="line">└── positionFile</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>大功告成！</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在之前配置的Hadoop的基础上，我们安装了Flume日志收集工具，并通过四个例子，简单了解了flume的基本用法，其实在实际应用中flume的配置是比较复杂的，一般都会多级连接，并及进行负载均衡配置，将多个采集节点上的数据安全可靠地收集起来，汇聚到一个节点，然后对数据进行处理！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/26/配置本地Hadoop环境/" rel="next" title="配置本地Hadoop环境">
+                <i class="fa fa-chevron-left"></i> 配置本地Hadoop环境
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/27/YARN的原理/" rel="prev" title="YARN的原理">
+                YARN的原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地环境"><span class="nav-number">1.</span> <span class="nav-text">本地环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前期准备"><span class="nav-number">2.</span> <span class="nav-text">前期准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flume安装和配置"><span class="nav-number">3.</span> <span class="nav-text">Flume安装和配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flume原理"><span class="nav-number">4.</span> <span class="nav-text">Flume原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Flume-Agent"><span class="nav-number">4.1.</span> <span class="nav-text">Flume Agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flume-Agent的组成"><span class="nav-number">4.2.</span> <span class="nav-text">Flume Agent的组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flume-Agent基本工作流程"><span class="nav-number">4.3.</span> <span class="nav-text">Flume Agent基本工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flume-Event"><span class="nav-number">4.4.</span> <span class="nav-text">Flume Event</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flume的特性"><span class="nav-number">4.5.</span> <span class="nav-text">Flume的特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flume使用示例"><span class="nav-number">5.</span> <span class="nav-text">Flume使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-监听端口，输出到控制台"><span class="nav-number">5.1.</span> <span class="nav-text">1. 监听端口，输出到控制台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-监听端口，输出到服务器文件"><span class="nav-number">5.2.</span> <span class="nav-text">2. 监听端口，输出到服务器文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-监听服务器文件，输出到HDFS（memoryChannel）"><span class="nav-number">5.3.</span> <span class="nav-text">3. 监听服务器文件，输出到HDFS（memoryChannel）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-监听服务器文件，输出到HDFS（fileChannel）"><span class="nav-number">5.4.</span> <span class="nav-text">4. 监听服务器文件，输出到HDFS（fileChannel）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flume高级配置"><span class="nav-number">6.</span> <span class="nav-text">Flume高级配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多个FLume串联"><span class="nav-number">6.1.</span> <span class="nav-text">多个FLume串联</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体场景"><span class="nav-number">6.2.</span> <span class="nav-text">具体场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拦截器"><span class="nav-number">6.3.</span> <span class="nav-text">拦截器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

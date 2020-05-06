@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="还是最近项目中遇到的问题，是关于动态库的，这里做个总结。 linux的库文件我们在某个程序文件中写了一段通用性比较浅的代码，比如某个算法，或者某个操作，通常会在其他的项目或者文件中使用到这部分功能，我们当然可以在当前项目中再次实现一次，但是这种方式未免太麻烦了，而且代码会变得比较冗长，不利于管理和维护。另外如果我们写的程序需要知识产权保护，那么也不能直接将源码公布出来给其他人使用。所以库文件出现了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux下的静态库、动态链接库、动态加载库">
+<meta property="og:url" content="http://yoursite.com/2018/06/05/linux下的静态库、动态链接库、动态加载库/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="还是最近项目中遇到的问题，是关于动态库的，这里做个总结。 linux的库文件我们在某个程序文件中写了一段通用性比较浅的代码，比如某个算法，或者某个操作，通常会在其他的项目或者文件中使用到这部分功能，我们当然可以在当前项目中再次实现一次，但是这种方式未免太麻烦了，而且代码会变得比较冗长，不利于管理和维护。另外如果我们写的程序需要知识产权保护，那么也不能直接将源码公布出来给其他人使用。所以库文件出现了">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://teddysun.com/wp-content/uploads/2014/Linux.jpg">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux下的静态库、动态链接库、动态加载库">
+<meta name="twitter:description" content="还是最近项目中遇到的问题，是关于动态库的，这里做个总结。 linux的库文件我们在某个程序文件中写了一段通用性比较浅的代码，比如某个算法，或者某个操作，通常会在其他的项目或者文件中使用到这部分功能，我们当然可以在当前项目中再次实现一次，但是这种方式未免太麻烦了，而且代码会变得比较冗长，不利于管理和维护。另外如果我们写的程序需要知识产权保护，那么也不能直接将源码公布出来给其他人使用。所以库文件出现了">
+<meta name="twitter:image" content="https://teddysun.com/wp-content/uploads/2014/Linux.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/05/linux下的静态库、动态链接库、动态加载库/">
+
+
+
+
+
+  <title>linux下的静态库、动态链接库、动态加载库 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/05/linux下的静态库、动态链接库、动态加载库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux下的静态库、动态链接库、动态加载库</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-05T07:34:08+08:00">
+                2018-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/05/linux下的静态库、动态链接库、动态加载库/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/05/linux下的静态库、动态链接库、动态加载库/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://teddysun.com/wp-content/uploads/2014/Linux.jpg" rel="gallery_ck9v4416m00377yttjiyhhxl3" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://teddysun.com/wp-content/uploads/2014/Linux.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <pre><code>还是最近项目中遇到的问题，是关于动态库的，这里做个总结。
+</code></pre><h2 id="linux的库文件"><a href="#linux的库文件" class="headerlink" title="linux的库文件"></a>linux的库文件</h2><p>我们在某个程序文件中写了一段通用性比较浅的代码，比如某个算法，或者某个操作，通常会在其他的项目或者文件中使用到这部分功能，我们当然可以在当前项目中再次实现一次，但是这种方式未免太麻烦了，而且代码会变得比较冗长，不利于管理和维护。另外如果我们写的程序需要知识产权保护，那么也不能直接将源码公布出来给其他人使用。所以库文件出现了！</p>
+<p>通常库文件有两种：静态库和动态库，<del>而动态库又可以分为动态链接库和动态加载库</del>，动态库就是动态库，没有分动态链接库和动态加载库，应该说是动态库的加载方式有两种：动态链接和动态加载。</p>
+<p>库文件是为了程序的复用，以及隐藏部分程序实现细节，从而让程序开发变得简单，我们不必知道库文件中接口的具体实现方法，只需要知道接口的使用方法即可，这也有利于开发人员之间的协作。</p>
+<p>下面具体说明一下各种库的编译手段和使用方法。</p>
+<p>以下的讲解都是以这个简单的例子为基础：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">*******main.c*********************************</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">print_hello</span><span class="params">()</span></span>;    <span class="comment">//这里声明为exter变量是说明print_hello这个函数是在别处实现的，</span></span><br><span class="line">                              <span class="comment">//我们也可以去掉extern关键字，用头文件的形式将print_hello包含其中，</span></span><br><span class="line">                              <span class="comment">//然后将头文件包含进main文件即可</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        print_hello();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">*******hello.c*********************************</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">print_hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Hello world!\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="静态库"><a href="#静态库" class="headerlink" title="静态库"></a>静态库</h2><p>静态库是一个或多个编译生成的.o文件打包，组合成一个.a文件，供其他程序在链接时使用。</p>
+<p>静态库的创建方法：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -c hello.c</span><br><span class="line">ar -rcs libhello<span class="selector-class">.a</span> hello.o</span><br></pre></td></tr></table></figure>
+<p>这样就创建了一个静态链接库。</p>
+<p>静态库的使用方法：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">gcc</span> <span class="selector-tag">-o</span> <span class="selector-tag">main</span> <span class="selector-tag">main</span><span class="selector-class">.c</span> <span class="selector-tag">libhello</span><span class="selector-class">.a</span></span><br></pre></td></tr></table></figure>
+<p>直接在编译最后加上静态库的名字就可以编译出包含该静态库的二进制可执行文件，这里有一个需要注意的地方就是静态库的路径，如果静态库在当前目录下，可以直接按上面的方法编译程序，如果静态库在其他路径下，需要在编译的时候加上静态库的路径（绝对路径和相对路径都可以）：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">gcc</span> <span class="selector-tag">-o</span> <span class="selector-tag">main</span> <span class="selector-tag">main</span><span class="selector-class">.c</span> <span class="selector-tag">libhello</span><span class="selector-class">.a</span></span><br></pre></td></tr></table></figure>
+<p>或者<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o main main<span class="selector-class">.c</span> -L./ -lhello</span><br></pre></td></tr></table></figure></p>
+<p>第一中方式适用于静态库在当前目录下，第二种方式可以任意指定静态库的存放位置。</p>
+<p>执行程序：</p>
+<figure class="highlight erlang-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./main</span><br><span class="line"></span><br><span class="line">Hello world!</span><br></pre></td></tr></table></figure>
+<h2 id="动态链接库"><a href="#动态链接库" class="headerlink" title="动态链接库"></a>动态链接库</h2><p>动态库链接库是程序运行时加载的库，在程序启动的时候立刻加载，库中函数和变量的地址是相对地址，不是绝对地址，其真实地址在调用动态库的程序加载时形成。</p>
+<p>动态链接库创建方法：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">gcc</span> <span class="selector-tag">-fPIC</span> <span class="selector-tag">-shared</span> <span class="selector-tag">-o</span> <span class="selector-tag">libhelloso</span><span class="selector-class">.so</span> <span class="selector-tag">hello</span><span class="selector-class">.c</span></span><br></pre></td></tr></table></figure>
+<p>使用-shared指定创建的库为动态链接库。如果不指定-shared，则创建的是动态加载库，下面再介绍动态加载库，这里先看动态链接库怎么使用。</p>
+<p>动态链接库使用犯法如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o mainso main.c -L./ -lhelloso -Wl,<span class="attribute">-rpath</span>=.</span><br></pre></td></tr></table></figure>
+<p>动态链接库使用时必须加上编译路径和执行时的路径，这两个是不一样的，如果不加路径可能导致找不到该动态链接库。</p>
+<p>这里我把动态链接库放到了与main.c相同的目录，所以指用-L指定编译路径为当前目录，用-Wl,-rpath=指定运行路径也是当前目录，这样main.c在编译和运行时都会在当前目录寻找libhelloso.so。</p>
+<p>运行一下mainso：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  library git:(<span class="literal">master</span>) ✗ ./mainso</span><br><span class="line">Hello world!</span><br></pre></td></tr></table></figure>
+<p>使用ldd查看可执行程序加载的动态库文件：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜  library git:(master) ✗ ldd mainso</span><br><span class="line">        linux-vdso<span class="selector-class">.so</span>.<span class="number">1</span> =&gt;  (<span class="number">0</span>x00007ffcbadfd000)</span><br><span class="line">        libhelloso<span class="selector-class">.so</span> =&gt; ./libhelloso<span class="selector-class">.so</span> (<span class="number">0</span>x00007f173700c000)</span><br><span class="line">        libc<span class="selector-class">.so</span>.<span class="number">6</span> =&gt; /lib/x86_64-linux-gnu/libc<span class="selector-class">.so</span>.<span class="number">6</span> (<span class="number">0</span>x00007f1736c42000)</span><br><span class="line">        /lib64/ld-linux-x86-<span class="number">64</span><span class="selector-class">.so</span>.<span class="number">2</span> (<span class="number">0</span>x00007f173720e000)</span><br></pre></td></tr></table></figure>
+<p>可以看到，我们编译的libhelloso.so库文件是在程序运行时就加载进来的，注意这个细节，跟我们下面使用的动态加载库的方法是不一样的。</p>
+<p>动态加载库是在程序用到的时候由程序员手动加载的，所有用ldd命令是看不到的。</p>
+<h2 id="动态加载库"><a href="#动态加载库" class="headerlink" title="动态加载库"></a>动态加载库</h2><p>讲到动态加载库就不得不与动态链接库对比一下了，动态加载库顾名思义就是程序在用到的时候才会加载，而动态链接库是在程序启动时就加载。</p>
+<p>动态加载库需要使用到dlopen、dlclose、dlsys等动态库函数来控制。</p>
+<p>动态加载库的创建方法和动态链接库一样，其实这里不是说动态库分动态加载库和动态链接库，准确地说应该是加载库的方法分为动态链接和动态加载，两种方法的主要区别就是加载动态库的时机。</p>
+<p>这里main.c需要修改一下了，重新创建一个文件叫maindl.c，内容如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">print_hello</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">void</span> (*printhello)();</span><br><span class="line">        <span class="keyword">void</span> *fb = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">char</span> *err = <span class="literal">NULL</span>;</span><br><span class="line">        fb = dlopen(<span class="string">"./libhelloso.so"</span>, RTLD_LAZY);</span><br><span class="line">        <span class="keyword">if</span>(!fb)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Failed load library!\n"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        err = dlerror();</span><br><span class="line">        <span class="keyword">if</span>(err != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, err);</span><br><span class="line">                <span class="keyword">return</span> (<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        printhello = dlsym(fb, <span class="string">"print_hello"</span>);</span><br><span class="line">        err = dlerror();</span><br><span class="line">        <span class="keyword">if</span>(err != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, err);</span><br><span class="line">                <span class="keyword">return</span> (<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        (*printhello)();</span><br><span class="line"></span><br><span class="line">        dlclose(fb);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>动态加载库的方法是首先使用dlopen打开动态库，从这里就可以看出来使用动态加载库的方法是比较灵活的，我们可以让开发人员来控制动态库的加载时机，而不是程序一开始运行就把动态库都加载进来。</p>
+<p>dlopen打开动态库后使用dlsym将动态库内的函数地址加载到我们定义的函数指针printhello，这样我们使用printhello的时候就等于是在调用动态库内的print_hello函数了。</p>
+<p>动态加载库的使用方法：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o mainsoso maindl<span class="selector-class">.c</span> -ldl</span><br></pre></td></tr></table></figure>
+<p>这里注意最后的-ldn，这是动态加载库必须要加的选项，加上-ldl编译器才知道这个库是需要动态加载的而不是动态链接的。</p>
+<p>执行mainsoso：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  library git:(<span class="literal">master</span>) ✗ ./mainsoso</span><br><span class="line">Hello world!</span><br></pre></td></tr></table></figure>
+<p>使用ldd命令查看mainsoso的动态库加载情况：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜  library git:(master) ✗ ldd mainsoso</span><br><span class="line">        linux-vdso<span class="selector-class">.so</span>.<span class="number">1</span> =&gt;  (<span class="number">0</span>x00007fff92580000)</span><br><span class="line">        libdl<span class="selector-class">.so</span>.<span class="number">2</span> =&gt; /lib/x86_64-linux-gnu/libdl<span class="selector-class">.so</span>.<span class="number">2</span> (<span class="number">0</span>x00007fab8aee3000)</span><br><span class="line">        libc<span class="selector-class">.so</span>.<span class="number">6</span> =&gt; /lib/x86_64-linux-gnu/libc<span class="selector-class">.so</span>.<span class="number">6</span> (<span class="number">0</span>x00007fab8ab19000)</span><br><span class="line">        /lib64/ld-linux-x86-<span class="number">64</span><span class="selector-class">.so</span>.<span class="number">2</span> (<span class="number">0</span>x00007fab8b0e7000)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到没有libhelloso.so这个动态库文件，也就是说这个动态库文件没有在程序运行的时候就加载进来，而是在程序执行过程中需要它的时候才被手动加载进来。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>使用静态库编译出来的程序即使删除静态库程序也能正常执行，因为静态库内的函数和变量信息已经加载到可执行文件中，所以有没有静态库都不影响程序的执行，只会影响程序的编译过程。</p>
+<p>使用动态库编译程序时没有把动态库的内容加入可执行文件中，而是在程序执行的时候才开始加载动态库内的函数和变量，所以如果把动态库删除后程序就不能正确加载动态库信息，导致程序出错。</p>
+<p>动态库的加载方式有两种，动态链接和动态加载。动态链接是在程序启动的时候就加载进程序内存空间的，而动态链接是在程序运行过程中被加载进程序内存空间的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/03/经验教训-先明确需求/" rel="next" title="经验教训-先明确需求">
+                <i class="fa fa-chevron-left"></i> 经验教训-先明确需求
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/06/指针数组、数组指针和指针函数、函数指针/" rel="prev" title="指针数组、数组指针和指针函数、函数指针">
+                指针数组、数组指针和指针函数、函数指针 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#linux的库文件"><span class="nav-number">1.</span> <span class="nav-text">linux的库文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态库"><span class="nav-number">2.</span> <span class="nav-text">静态库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态链接库"><span class="nav-number">3.</span> <span class="nav-text">动态链接库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态加载库"><span class="nav-number">4.</span> <span class="nav-text">动态加载库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Everything You Need To Know About Networking On AWSDisclaimer: I’m not a network engineer and never have been - a tame network engineer has been consulted to ensure factual and terminological accuracy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS网络介绍(译)">
+<meta property="og:url" content="http://yoursite.com/2018/11/30/AWS网络介绍(译)/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="Everything You Need To Know About Networking On AWSDisclaimer: I’m not a network engineer and never have been - a tame network engineer has been consulted to ensure factual and terminological accuracy">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AWS网络介绍(译)">
+<meta name="twitter:description" content="Everything You Need To Know About Networking On AWSDisclaimer: I’m not a network engineer and never have been - a tame network engineer has been consulted to ensure factual and terminological accuracy">
+<meta name="twitter:image" content="https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/30/AWS网络介绍(译)/">
+
+
+
+
+
+  <title>AWS网络介绍(译) | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/30/AWS网络介绍(译)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">AWS网络介绍(译)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-30T10:32:21+08:00">
+                2018-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/30/AWS网络介绍(译)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/11/30/AWS网络介绍(译)/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png" rel="gallery_ck9v4418a004f7ytt4g6sesid" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h1 id="Everything-You-Need-To-Know-About-Networking-On-AWS"><a href="#Everything-You-Need-To-Know-About-Networking-On-AWS" class="headerlink" title="Everything You Need To Know About Networking On AWS"></a>Everything You Need To Know About Networking On AWS</h1><p>Disclaimer: I’m not a network engineer and never have been - a tame network engineer has been consulted to ensure factual and terminological accuracy. The following is an in-exhaustive run down of everything I’ve learnt from building and using network infrastructure on Amazon Web Services. If you find you have no reference point for this information then have a poke around the “VPC” section of the AWS control panel (or get in touch to tell me I’m talking nonsense).</p>
+<p>免责声明：我不是一个网络工程师，而且也从来没做过 - 已经向一位专业网络工程师咨询过确保相关术语和所描述的情况的准确性。以下是我在使用亚马逊网络服务过程中学习到的所有知识的详细说明。如果你不能从这篇文章中找到任何可参考的内容，那就在AWS的控制面板的“VPC“那里操作一下（或者直接告诉我我在说些废话）。</p>
+<h1 id="Parts-of-a-Network-You-Should-Know-About"><a href="#Parts-of-a-Network-You-Should-Know-About" class="headerlink" title="Parts of a Network You Should Know About"></a>Parts of a Network You Should Know About</h1><h1 id="关于网络你需要你知道的一些内容"><a href="#关于网络你需要你知道的一些内容" class="headerlink" title="关于网络你需要你知道的一些内容"></a>关于网络你需要你知道的一些内容</h1><p>If you’re running infrastructure and applications on AWS then you will encounter all of these things. They’re not the only parts of a network setup but they are, in my experience, the most important ones.</p>
+<p>如果你在AWS上运行基础架构和应用程序，那么你就会遇到下面说的所有事情。它们不是网络设置中的所有，但是根据我的经验，他们是最重要的那些部分。</p>
+<h2 id="VPC"><a href="#VPC" class="headerlink" title="VPC"></a>VPC</h2><p>A virtual private cloud - VPC - is a private network space in which you can run your infrastructure. It has an address space (CIDR range) which you choose e.g. 10.0.0.0/16. This determines how many IP addresses you can assign within the VPC. Each server you create inside the VPC will need an IP address so this address space defines the limit of how many resources you can have within the network. The 10.0.0.0/16 address space can use the addresses from 10.0.0.0 to 10.0.255.255, which is 65,536 IP addresses.</p>
+<p>一个虚拟私有云（virtual private cloud）- VPC - 指的是你可以运行你自己的基础架构的私有网络空间。它有一你自己选择的地址空间（CIDR空间），例如：10.0.0.0/16.这决定了你有多少个VPC可以分配的IP地址。你在VPC中启动的每一个服务都需要一个IP地址，所以这个地址空间限制了你在网络中拥有的资源。10.0.0.0/16这个地址空间可以分配10.0.0.0到10.0.255.255的地址，也就是有65536个IP可以分配。</p>
+<p>The VPC is the basis of your network on AWS and all new accounts include a default VPC with a subnets in each availability zone.</p>
+<p>VPC是AWS网络以及所有新账户的基础，这些新账户包含每个可用区域中都有子网的VPC。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|<span class="string">     VPC       </span>|<span class="string">     The Internet</span></span><br><span class="line">|<span class="string">               </span>|</span><br><span class="line">|<span class="string">               </span>|</span><br><span class="line">|<span class="string">  10.0.0.0/16  </span>|</span><br><span class="line">|<span class="string">               </span>|</span><br><span class="line">|<span class="string">               </span>|</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
+<h2 id="Subnets-子网"><a href="#Subnets-子网" class="headerlink" title="Subnets 子网"></a>Subnets 子网</h2><p>A subnet is a section of your VPC, with its own CIDR range and rules on how traffic can flow. Its CIDR range has to be a subset of the VPC’s, for example 10.0.1.0/24 which would allow for IPs from 10.0.1.0 to 10.0.1.255 giving 256 possible IP addresses.</p>
+<p>子网就是你VPC中的一部分，它有自己的CIDR范围和流量流量传输规则。子网的CIDR范围必须是VPC的一个子网，比如0.0.1.0/24，它可以分配从10.0.1.0到10.0.1.255之间的IP地址，提供了256个可用IP地址空间。</p>
+<p>Subnets are often denominated as ‘public’ or ‘private’ depending on whether traffic can reach them from outside the VPC (the Internet). This visibility is controlled by the traffic routing rules and each subnet can have its own rules.</p>
+<p>子网通常可以分为”公有“和”私有“，具体取决于流量是否可以从VPC外部（Internet）到达子网。能不能访问取决于流量控制规则，每个子网都有自己的流量控制规则。</p>
+<p>A subnet has to be in a specific availability zone within a region so it’s good practice to have a subnet in each zone. If you plan to have public and private subnets then there should be one of each per availability zone.</p>
+<p>子网必须位于区域内的特定可用区域中，因此最好在每个区域中都有一个子网。如果你计划拥有公有和私有子网，那么每个可用区域都应该有一个子网。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+---------------------------+</span><br><span class="line">|<span class="string">            VPC            </span>|</span><br><span class="line">|<span class="string">                           </span>|</span><br><span class="line">+------------+ +------------+</span><br><span class="line">||<span class="string">  Subnet 1 </span>|<span class="string"> </span>|<span class="string">  Subnet 2 </span>||</span><br><span class="line">||<span class="string">10.0.1.0/24</span>|<span class="string"> </span>|<span class="string">10.0.2.0/24</span>||</span><br><span class="line">||<span class="string">           </span>|<span class="string"> </span>|<span class="string">           </span>||</span><br><span class="line">|<span class="string">------------+ +------------</span>|</span><br><span class="line">+---------------------------+</span><br></pre></td></tr></table></figure>
+<h2 id="Availability-Zones-可用区域"><a href="#Availability-Zones-可用区域" class="headerlink" title="Availability Zones 可用区域"></a>Availability Zones 可用区域</h2><p>We’ve said that there should be subnets per availability zone, but what does that actually mean?</p>
+<p>我们说过每个区域都应该有子网，但是这到底是什么意思？</p>
+<p>Each AWS region is divided into 2 or more different zones which, between them, aim to guarantee a very high level of availability for that region. Essentially, at least one zone should be able to operate, even if others suffer outages (:fire:).</p>
+<p>每个AWS区域都被分成2个或则更多不同的区域，主要是为了保证这些区域之间的高可用性。事实上，即使其他区域遭到损坏（比如火灾），至少也要有一个区域能够正常运行。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+----------+          +----------+</span><br><span class="line">|<span class="string">us-ea)t-1a</span>|<span class="string">          </span>|<span class="string">us-east-1b</span>|</span><br><span class="line">|<span class="string">_____(____</span>|<span class="string">          </span>|<span class="string">__________</span>|</span><br><span class="line">|<span class="string">     )    </span>|<span class="string">          </span>|<span class="string">          </span>|</span><br><span class="line">|<span class="string">   ( &amp;()  </span>|<span class="string">          </span>|<span class="string">    ✔     </span>|</span><br><span class="line">|<span class="string">  ) () &amp;( </span>|<span class="string">          </span>|<span class="string">    8-)   </span>|</span><br><span class="line">+----------+          +----------+</span><br></pre></td></tr></table></figure>
+<h2 id="Routing-Tables-路由表"><a href="#Routing-Tables-路由表" class="headerlink" title="Routing Tables 路由表"></a>Routing Tables 路由表</h2><p>A routing table contains rules about how IP packets in the subnets can travel to different IP addresses. There is always a default route table which will only allow traffic to travel locally, within the VPC. If a subnet has no routing table associated with it then it uses the default one. These would be ‘private’ subnets.</p>
+<p>一个路由表包含指导子网内的IP包发送到不同IP地址的规则。通常会有一个只允许路由到本地的默认路由表。如果子网没有与之关联的子网，则它使用默认路由表，这个子网就会变为私有子网。</p>
+<p>If you want external traffic to be able to get to a subnet then you need to create a routing table with a rule explicitly allowing this. Subnets associated to that routing table would be ‘public’.</p>
+<p>如果你想要外部流量能够访问到子网，那么你需要创建一个包含这种规则的路由表，此时与路由表关联的子网称为公有子网。</p>
+<p>All of the subnets in the default VPCs are associated with a route table which makes them public.</p>
+<p>默认VPC中的所有子网都会关联一个路由表来使他们成为公有子网。</p>
+<h2 id="Internet-Gateways-Internet网关"><a href="#Internet-Gateways-Internet网关" class="headerlink" title="Internet Gateways Internet网关"></a>Internet Gateways Internet网关</h2><p>The routing table which makes a subnet public needs to reference an Internet gateway to allow the flow of external IP packets into and out of the VPC. You create your Internet gateway and then create a rule which says that packets to 0.0.0.0/0 - all IP addresses - need to go to there.</p>
+<p>使子网变成公有子网的路由表需要引用因特网网关以允许外部IP包流入和流出VPC。创建你的因特网网关，然后创建一个允许所有IP地址都可访问的规则。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">          Route table</span><br><span class="line">         +-------------------+</span><br><span class="line">         |<span class="string"> 10.0.0.0/8: local </span>|<span class="string"> Requests within the VPC go over local connections.</span></span><br><span class="line"><span class="string">      +--+ 0.0.0.0/0: ig-123 </span>|<span class="string"> Requests to any other IPs go via the Internet Gateway.</span></span><br><span class="line"><span class="string">      </span>|<span class="string">  </span>|<span class="string">                   </span>|</span><br><span class="line">      |<span class="string">  +-------------------+</span></span><br><span class="line"><span class="string">      </span>|</span><br><span class="line">      |</span><br><span class="line"><span class="string">+-----+-------+          +-------------+</span></span><br><span class="line">|<span class="string">  Subnet 1   </span>|<span class="string">          </span>|<span class="string">  Subnet 2   </span>|</span><br><span class="line">|<span class="string"> 10.0.1.0/24 </span>|<span class="string">          </span>|<span class="string"> 10.0.2.0/24 </span>|</span><br><span class="line">|<span class="string">             </span>|<span class="string">          </span>|<span class="string">             </span>|</span><br><span class="line">|<span class="string">             </span>|<span class="string"> 10.0.2.9 </span>|<span class="string">             </span>|</span><br><span class="line">|<span class="string">             +---------&gt;</span>|<span class="string">             </span>|</span><br><span class="line">|<span class="string">             </span>|<span class="string">          </span>|<span class="string">             </span>|</span><br><span class="line">+-------+-----+          +-------------+</span><br><span class="line">        |<span class="string"> 8.8.4.4</span></span><br><span class="line"><span class="string">        </span>|</span><br><span class="line">        |<span class="string">   +--------+</span></span><br><span class="line"><span class="string">        +--&gt;</span>|<span class="string"> ig-123 </span>|</span><br><span class="line">            |<span class="string">        +-----&gt; The Internet</span></span><br><span class="line"><span class="string">            +--------+</span></span><br></pre></td></tr></table></figure>
+<h2 id="NAT-Gateways-NAT网关"><a href="#NAT-Gateways-NAT网关" class="headerlink" title="NAT Gateways NAT网关"></a>NAT Gateways NAT网关</h2><p>If you have an EC2 instance in a private subnet - one which doesn’t allow traffic from the Internet to reach it - then there’s also no way for IP packets to reach the Internet. We need a mechanism for sending those packets out, and then routing the replies correctly. This is called network address translation and is very likely done in your house by your wifi router.</p>
+<p>如果私有子网中有EC2实例，该子网是不允许来自互联网的访问的，同样，子网内的IP数据包也是不能流向因特网的。我们需要一个能够将这些网络包发送出去并且正确获取它们返回值的机制。上面这个过程称为网络地址转换，很像你家里的wifi路由器做的事。</p>
+<p>A NAT gateway is a device which sits in the public subnets, accepts any IP packets bound for the Internet coming from the private subnets, sends those packets on to their destination and then sends the returning packets back to the source.</p>
+<p>NAT网关是位公共子网中的设备，接收来自私有子网的所有Internet请求IP数据包，然后将这些数据包转发到相应目标，最后将返回的数据包正确返回给发送方。</p>
+<p>It’s not necessary to have NAT gateways if you don’t intend instances in your private subnets to talk outside if your VPC but if you do need to do that e.g. using an external API, SaaS database etc. then you can simply set up an EC2 instance (might be cheaper, depending on your traffic), configured appropriately, or use an AWS managed NAT gateway resource (will be easier to manage because you won’t be doing it).</p>
+<p>如果你不打算私有子网和外部Internet进行通信，那么就没必要拥有NAT网关。你可以简单地设置EC2实例（可能更便宜，具体取决于你的流量），配置得当，或者使用AWS管理的NAT网关资源（跟容易管理，因为你不会亲自做这些事）。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">+---------------------+</span><br><span class="line">|<span class="string">   Public Subnet     </span>|</span><br><span class="line">|<span class="string">   10.0.1.0/24       </span>|</span><br><span class="line">|<span class="string">                     </span>|</span><br><span class="line">|<span class="string">    +------------+   </span>|</span><br><span class="line">|<span class="string">    </span>|<span class="string">            +-----------&gt;   The Internet</span></span><br><span class="line">|<span class="string">    </span>|<span class="string">  nat-123   </span>|<span class="string">   </span>|</span><br><span class="line">|<span class="string">    </span>|<span class="string">            </span>|<span class="string">   </span>|</span><br><span class="line">|<span class="string">    +-------^----+   </span>|</span><br><span class="line">|<span class="string">            </span>|<span class="string">        </span>|</span><br><span class="line">+------------|<span class="string">--------+</span></span><br><span class="line"><span class="string">             </span>|</span><br><span class="line">             |<span class="string"> 8.8.4.4</span></span><br><span class="line"><span class="string">             </span>|<span class="string">                       Route table</span></span><br><span class="line"><span class="string">+------------+---------+    +---------------------+</span></span><br><span class="line">|<span class="string">  Private Subnet      +----+  10.0.0.0/16: local </span>|</span><br><span class="line">|<span class="string">  10.0.20.0/24        </span>|<span class="string">    </span>|<span class="string">  0.0.0.0/0: nat-123 </span>|</span><br><span class="line">|<span class="string">                      </span>|<span class="string">    +---------------------+</span></span><br><span class="line"><span class="string">+----------------------+</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>The public subnet contains the NAT gateway</li>
+<li><p>公有子网包含NAT网关</p>
+</li>
+<li><p>A request is made from the private subnet to an IP address somewhere on the Internet</p>
+</li>
+<li><p>请求从私有子网到Internet上某处IP地址</p>
+</li>
+<li><p>The route table says that it needs to go to the NAT gateway</p>
+</li>
+<li><p>路由表说他需要转发到NAT网关</p>
+</li>
+<li><p>The NAT gateway sends it on</p>
+</li>
+<li>NAT网关发送它</li>
+</ul>
+<h2 id="Security-Groups-安全组"><a href="#Security-Groups-安全组" class="headerlink" title="Security Groups 安全组"></a>Security Groups 安全组</h2><p>VPC network Security groups denote what traffic can flow to (and from) EC2 instances within your VPC. A security groups can specify ingress (inbound) and egress (outbound) traffic rules, limiting them to certain sources (inbound) and destinations (outbound). They are associated with EC2 instances rather than subnets.</p>
+<p>VPC网络安全组表示哪些流量可以流入（或者流出）VPC中的EC2实例。安全组可以指定流量规则的入口和出口，将他们限制为某些源和目的地址可以流过，他们与EC2实例相关联，而不是子网。</p>
+<p>By default all traffic is allowed out, but no traffic is allowed in. Inbound rules can specify a source address - either a CIDR block or another security group - and a port range. When the source is another security group then that must be within the same VPC. For example, a VPC is created with a default security group which allows traffic from anything which has that same security group. Assigning the group to everything created in the VPC (not necessarily the most secure practice) means that all those resources can talk to each another.</p>
+<p>默认情况下所有流量都可以流出，但是任何流量都无法流入。入口规则可以指定源地址和端口范围。当源地址是另一个安全组时，这必须是在同一个VPC中发生。比如使用默认安全组创建VPC，改安全组允许来自具有相同安全组的任何流量。将组分配给VPC中创建的所有内容意味着所有这些资可以互相通信。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                   +---------------+</span><br><span class="line">                   |<span class="string"> sg-abcde      </span>|</span><br><span class="line">                   |<span class="string"> ALLOW TCP 443 </span>|</span><br><span class="line">                   +----+----------+</span><br><span class="line">                         |</span><br><span class="line"><span class="string">                    +----+------+</span></span><br><span class="line"><span class="string">                    </span>|<span class="string">  i-67890  </span>|</span><br><span class="line"> 10.0.1.123:22      |<span class="string">           </span>|<span class="string"> 10.0.1.123:443</span></span><br><span class="line"><span class="string">------------------&gt;X</span>|<span class="string">           &lt;----------------</span></span><br><span class="line"><span class="string">                    </span>|<span class="string">           </span>|</span><br><span class="line">                    +-----------+</span><br></pre></td></tr></table></figure>
+<ul>
+<li>An instance (i-67890) has a security group (sg-abcde) which allows TCP traffic on port 443</li>
+<li>实例（i-67890）具有安全组（sg-abcde），其允许端口443上的TCP流量</li>
+<li>A request is made to its IP address (10.0.1.123) on port 22 which doesn’t get through</li>
+<li>请求端口22上的IP地址（10.0.1.123）无法通过</li>
+<li>A request is made to port 443 on the instance and the traffic is allowed</li>
+<li>向实例上的端口443发出请求，并允许通信</li>
+</ul>
+<h1 id="Putting-it-All-Together-合到一起"><a href="#Putting-it-All-Together-合到一起" class="headerlink" title="Putting it All Together 合到一起"></a>Putting it All Together 合到一起</h1><p>The complete picture of your virtual private network looks something like the picture below, with public and private subnets spread across availability zones, network address translation sitting in the public subnets and route tables to specify how packets are routed. EC2 instances are run in any subnet and have security groups attached to them.</p>
+<p>你的虚拟私有云网络的完整图片如下所示，公共和私有子网分布在可用区域中，网络地址转换位于公共子网和路由表中以指定数据包的路由方式。EC2实例在所有子网中运行，并附加到安全组。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">                                        +-------+                                  </span><br><span class="line">                                        |<span class="string"> ig-1  </span>|<span class="string">                                  </span></span><br><span class="line"><span class="string">                                        </span>|<span class="string">       </span>|<span class="string">                                  </span></span><br><span class="line"><span class="string">        vpc-123: 10.0.0.0/16  </span>|<span class="string">         </span>|<span class="string">       </span>|<span class="string">        </span>|<span class="string">                         </span></span><br><span class="line"><span class="string">       +----------------------+---------+-------+--------+---------------------+</span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">  +-----+             </span>|<span class="string">  +-----+                 </span>|<span class="string">  +-----+            </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">  </span>|<span class="string"> NAT </span>|<span class="string">             </span>|<span class="string">  </span>|<span class="string"> NAT </span>|<span class="string">                 </span>|<span class="string">  </span>|<span class="string"> NAT </span>|<span class="string">            </span>|<span class="string">   </span></span><br><span class="line"><span class="string">public </span>|<span class="string">  </span>|<span class="string">     </span>|<span class="string">             </span>|<span class="string">  </span>|<span class="string">     </span>|<span class="string">                 </span>|<span class="string">  </span>|<span class="string">     </span>|<span class="string">            </span>|<span class="string">   </span></span><br><span class="line"><span class="string">subnets</span>|<span class="string">  +-----+             </span>|<span class="string">  +-----+                 </span>|<span class="string">  +-----+            </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">              +-------+                  +-------+             +-------+</span></span><br><span class="line"><span class="string">       </span>|<span class="string">              </span>|<span class="string"> rt-1a </span>|<span class="string">                  </span>|<span class="string"> rt-1b </span>|<span class="string">             </span>|<span class="string"> rt-1c </span>|</span><br><span class="line">       |<span class="string"> 10.0.1.0/24  </span>|<span class="string">       </span>|<span class="string"> 10.0.2.0/24      </span>|<span class="string">       </span>|<span class="string"> 10.0.3.0/24 </span>|<span class="string">       </span>|<span class="string">   </span></span><br><span class="line"><span class="string">-------+-----------------------------------------------------------------------+</span></span><br><span class="line"><span class="string">       </span>|<span class="string"> 10.0.4.0/24  </span>|<span class="string"> rt-2a </span>|<span class="string"> 10.0.5.0/24      </span>|<span class="string"> rt-2b </span>|<span class="string"> 10.0.6.0/24 </span>|<span class="string"> rt-2c </span>|</span><br><span class="line">       |<span class="string">              </span>|<span class="string">       </span>|<span class="string">                  </span>|<span class="string">       </span>|<span class="string">             </span>|<span class="string">       </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">              +-------+                  +-------+             +-------+</span></span><br><span class="line"><span class="string">private</span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">subnets</span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       </span>|<span class="string">                      </span>|<span class="string">                          </span>|<span class="string">                     </span>|<span class="string">   </span></span><br><span class="line"><span class="string">       +----------------------+--------------------------+---------------------+</span></span><br><span class="line"><span class="string">       </span>|<span class="string">         AZ 1         </span>|<span class="string">          AZ 2            </span>|<span class="string">        AZ 3         </span>|</span><br></pre></td></tr></table></figure>
+<p>翻译得很水，凑合看吧，主要看图！</p>
+<p>2018-12-3 北京 雾霾</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/30/Python的数据序列化(译)/" rel="next" title="Python的数据序列化(译)">
+                <i class="fa fa-chevron-left"></i> Python的数据序列化(译)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/07/如何学习数据结构与算法/" rel="prev" title="如何学习数据结构与算法">
+                如何学习数据结构与算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Everything-You-Need-To-Know-About-Networking-On-AWS"><span class="nav-number">1.</span> <span class="nav-text">Everything You Need To Know About Networking On AWS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Parts-of-a-Network-You-Should-Know-About"><span class="nav-number">2.</span> <span class="nav-text">Parts of a Network You Should Know About</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于网络你需要你知道的一些内容"><span class="nav-number">3.</span> <span class="nav-text">关于网络你需要你知道的一些内容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VPC"><span class="nav-number">3.1.</span> <span class="nav-text">VPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subnets-子网"><span class="nav-number">3.2.</span> <span class="nav-text">Subnets 子网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Availability-Zones-可用区域"><span class="nav-number">3.3.</span> <span class="nav-text">Availability Zones 可用区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Routing-Tables-路由表"><span class="nav-number">3.4.</span> <span class="nav-text">Routing Tables 路由表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Internet-Gateways-Internet网关"><span class="nav-number">3.5.</span> <span class="nav-text">Internet Gateways Internet网关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAT-Gateways-NAT网关"><span class="nav-number">3.6.</span> <span class="nav-text">NAT Gateways NAT网关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Security-Groups-安全组"><span class="nav-number">3.7.</span> <span class="nav-text">Security Groups 安全组</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Putting-it-All-Together-合到一起"><span class="nav-number">4.</span> <span class="nav-text">Putting it All Together 合到一起</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

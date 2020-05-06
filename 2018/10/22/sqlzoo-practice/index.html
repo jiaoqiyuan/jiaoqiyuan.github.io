@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="sqlzoo是一个SQL语句练习网站。 SELECT from Nobel  更改查詢以顯示1950年諾貝爾獎的獎項資料。123SELECT *  FROM nobelwhere yr=1950     顯示誰贏得了1962年文學獎(Literature)。1234SELECT winner  FROM nobel WHERE yr = 1962   AND subject = &apos;Literatu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sqlzoo-practice">
+<meta property="og:url" content="http://yoursite.com/2018/10/22/sqlzoo-practice/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="sqlzoo是一个SQL语句练习网站。 SELECT from Nobel  更改查詢以顯示1950年諾貝爾獎的獎項資料。123SELECT *  FROM nobelwhere yr=1950     顯示誰贏得了1962年文學獎(Literature)。1234SELECT winner  FROM nobel WHERE yr = 1962   AND subject = &apos;Literatu">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://zhidao91.oss-cn-shanghai.aliyuncs.com/wp-content/uploads/2015/11/databaseDevelopment.jpg">
+<meta property="og:updated_time" content="2020-04-27T03:00:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sqlzoo-practice">
+<meta name="twitter:description" content="sqlzoo是一个SQL语句练习网站。 SELECT from Nobel  更改查詢以顯示1950年諾貝爾獎的獎項資料。123SELECT *  FROM nobelwhere yr=1950     顯示誰贏得了1962年文學獎(Literature)。1234SELECT winner  FROM nobel WHERE yr = 1962   AND subject = &apos;Literatu">
+<meta name="twitter:image" content="https://zhidao91.oss-cn-shanghai.aliyuncs.com/wp-content/uploads/2015/11/databaseDevelopment.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/22/sqlzoo-practice/">
+
+
+
+
+
+  <title>sqlzoo-practice | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/sqlzoo-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">sqlzoo-practice</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-22T16:17:14+08:00">
+                2018-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/22/sqlzoo-practice/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/10/22/sqlzoo-practice/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  21
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://zhidao91.oss-cn-shanghai.aliyuncs.com/wp-content/uploads/2015/11/databaseDevelopment.jpg" rel="gallery_ck9v4418j004w7yttdu43oc6g" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://zhidao91.oss-cn-shanghai.aliyuncs.com/wp-content/uploads/2015/11/databaseDevelopment.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <p>sqlzoo是一个<a href="https://zh.sqlzoo.net" target="_blank" rel="noopener">SQL语句练习网站</a>。</p>
+<h1 id="SELECT-from-Nobel"><a href="#SELECT-from-Nobel" class="headerlink" title="SELECT from Nobel"></a>SELECT from Nobel</h1><ul>
+<li><ol>
+<li>更改查詢以顯示1950年諾貝爾獎的獎項資料。<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line">  <span class="keyword">FROM</span> nobel</span><br><span class="line"><span class="keyword">where</span> yr=<span class="number">1950</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>顯示誰贏得了1962年文學獎(Literature)。<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> winner</span><br><span class="line">  <span class="keyword">FROM</span> nobel</span><br><span class="line"> <span class="keyword">WHERE</span> yr = <span class="number">1962</span></span><br><span class="line">   <span class="keyword">AND</span> subject = <span class="string">'Literature'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>顯示“愛因斯坦”(‘Albert Einstein’) 的獲獎年份和獎項。<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> yr, subject</span><br><span class="line">  <span class="keyword">FROM</span> nobel</span><br><span class="line"> <span class="keyword">WHERE</span> winner=<span class="string">'Albert Einstein'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>顯示2000年及以後的和平獎(‘Peace’)得獎者。<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> winner</span><br><span class="line">  <span class="keyword">FROM</span> nobel</span><br><span class="line"> <span class="keyword">WHERE</span> yr&gt;<span class="number">1999</span></span><br><span class="line">  <span class="keyword">AND</span> subject=<span class="string">'Peace'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>顯示1980年至1989年(包含首尾)的文學獎(Literature)獲獎者所有細節（年，主題，獲獎者）。<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line"><span class="keyword">where</span> yr &gt;=<span class="number">1980</span> <span class="keyword">and</span> yr &lt;= <span class="number">1989</span></span><br><span class="line"><span class="keyword">and</span> subject=<span class="string">'Literature'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="6">
+<li><p>顯示總統獲勝者的所有細節：</p>
+<ul>
+<li>西奧多•羅斯福 Theodore Roosevelt</li>
+<li>伍德羅•威爾遜 Woodrow Wilson</li>
+<li>吉米•卡特 Jimmy Carter<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> nobel</span><br><span class="line"> <span class="keyword">WHERE</span> winner <span class="keyword">IN</span> (<span class="string">'Theodore Roosevelt'</span>,</span><br><span class="line">                  <span class="string">'Woodrow Wilson'</span>,</span><br><span class="line">                  <span class="string">'Jimmy Carter'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>顯示名字為John 的得獎者。 (注意:外國人名字(First name)在前，姓氏(Last name)在後)<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> winner</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line"><span class="keyword">where</span> winner <span class="keyword">like</span> <span class="string">'John%'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>顯示1980年物理學(physics)獲獎者，及1984年化學獎(chemistry)獲得者。<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select *</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line">where (<span class="attribute">yr</span>=1980 <span class="keyword">and</span> <span class="attribute">subject</span>=<span class="string">'physics'</span>) <span class="keyword">or</span> (<span class="attribute">yr</span>=1984 <span class="keyword">and</span> <span class="attribute">subject</span>=<span class="string">'chemistry'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>查看1980年獲獎者，但不包括化學獎(Chemistry)和醫學獎(Medicine)。<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line"><span class="keyword">where</span> subject <span class="keyword">not</span> <span class="keyword">in</span> (<span class="string">'chemistry'</span>, <span class="string">'medicine'</span>) <span class="keyword">and</span> yr=<span class="number">1980</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>顯示早期的醫學獎(Medicine)得獎者（1910之前，不包括1910），及近年文學獎(Literature)得獎者（2004年以後，包括2004年）。<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select *</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line">where (yr&lt;1910 <span class="keyword">and</span> <span class="attribute">subject</span>=<span class="string">'Medicine'</span>)</span><br><span class="line"><span class="keyword">or</span> (yr &gt;= 2004 <span class="keyword">and</span> <span class="attribute">subject</span>=<span class="string">'Literature'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="11">
+<li>Find all details of the prize won by PETER GRÜNBERG<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line"><span class="keyword">where</span> winner=<span class="string">'PETER GRÜNBERG'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="12">
+<li>查找尤金•奧尼爾EUGENE O’NEILL得獎的所有細節 Find all details of the prize won by EUGENE O’NEILL<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line"><span class="keyword">where</span> winner=<span class="string">'EUGENE O\'NEILL'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="13">
+<li>騎士列隊 Knights in order<ul>
+<li>列出爵士的獲獎者、年份、獎頁(爵士的名字以Sir開始)。先顯示最新獲獎者，然後同年再按名稱順序排列。<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> winner, yr, subject</span><br><span class="line"><span class="keyword">from</span> nobel</span><br><span class="line"><span class="keyword">where</span> winner <span class="keyword">like</span> <span class="string">'Sir%'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> yr <span class="keyword">DESC</span>, winner</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><ol start="14">
+<li><p>The expression subject IN (‘Chemistry’,’Physics’) can be used as a value - it will be 0 or 1.</p>
+<ul>
+<li>Show the 1984 winners and subject ordered by subject and winner name; but list Chemistry and Physics last.<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> winner, subject</span><br><span class="line"><span class="keyword">FROM</span> nobel</span><br><span class="line">	<span class="keyword">WHERE</span> yr=<span class="number">1984</span></span><br><span class="line">	<span class="keyword">ORDER</span> <span class="keyword">BY</span> subject <span class="keyword">in</span> (<span class="string">'Physics'</span>, <span class="string">'Chemistry'</span>), subject, winner</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="SELECT-IN-SELECT"><a href="#SELECT-IN-SELECT" class="headerlink" title="SELECT IN SELECT"></a>SELECT IN SELECT</h1><ul>
+<li><ol>
+<li>List each country name where the population is larger than that of ‘Russia’.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span> <span class="keyword">FROM</span> world</span><br><span class="line"><span class="keyword">WHERE</span> population &gt;</span><br><span class="line">	(<span class="keyword">SELECT</span> population <span class="keyword">FROM</span> world</span><br><span class="line">	<span class="keyword">WHERE</span> <span class="keyword">name</span>=<span class="string">'Russia'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>Show the countries in Europe with a per capita GDP greater than ‘United Kingdom’.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span></span><br><span class="line"><span class="keyword">from</span> world</span><br><span class="line"><span class="keyword">where</span> continent = <span class="string">'Europe'</span> </span><br><span class="line"><span class="keyword">and</span> gdp/population &gt; (<span class="keyword">select</span> gdp/population <span class="keyword">from</span> world <span class="keyword">where</span> <span class="keyword">name</span> = <span class="string">'United Kingdom'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>List the name and continent of countries in the continents containing either Argentina or Australia. Order by name of the country.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span>, continent </span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line"><span class="keyword">WHERE</span> continent <span class="keyword">IN</span> </span><br><span class="line">(<span class="keyword">SELECT</span> continent <span class="keyword">FROM</span> world <span class="keyword">WHERE</span> <span class="keyword">name</span> <span class="keyword">IN</span> (<span class="string">'Argentina'</span>, <span class="string">'Australia'</span>)) </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="keyword">name</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>Which country has a population that is more than Canada but less than Poland? Show the name and the population.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span>, population</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line"><span class="keyword">WHERE</span> population &gt; (<span class="keyword">SELECT</span> population <span class="keyword">FROM</span> world <span class="keyword">WHERE</span> <span class="keyword">name</span> = <span class="string">'Canada'</span>) </span><br><span class="line"><span class="keyword">AND</span> population &lt; (<span class="keyword">select</span> population <span class="keyword">FROM</span> world <span class="keyword">WHERE</span> <span class="keyword">name</span>=<span class="string">'Poland'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>Germany (population 80 million) has the largest population of the countries in Europe. Austria (population 8.5 million) has 11% of the population of Germany.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span>, <span class="keyword">CONCAT</span>(<span class="keyword">ROUND</span>(population*<span class="number">100</span>/(<span class="keyword">SELECT</span> population <span class="keyword">FROM</span> world <span class="keyword">WHERE</span> <span class="keyword">name</span> = <span class="string">'Germany'</span>), <span class="number">0</span>), <span class="string">'%'</span>)</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line"><span class="keyword">WHERE</span> continent = <span class="string">'Europe'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>Which countries have a GDP greater than every country in Europe? [Give the name only.] (Some countries may have NULL gdp values)<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span> </span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line"><span class="keyword">WHERE</span> gdp &gt; (</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">MAX</span>(gdp) <span class="keyword">FROM</span> world <span class="keyword">WHERE</span> continent=<span class="string">'Europe'</span></span><br><span class="line"><span class="keyword">AND</span> gdp <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>Find the largest country (by area) in each continent, show the continent, the name and the area:<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT continent, name,<span class="built_in"> area </span><span class="keyword">FROM</span> world x</span><br><span class="line">WHERE area&gt;= ALL</span><br><span class="line">   (SELECT<span class="built_in"> area </span><span class="keyword">FROM</span> world y</span><br><span class="line">WHERE y.<span class="attribute">continent</span>=x.continent</span><br><span class="line">	<span class="keyword">AND</span> area&gt;0)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li><p>List each continent and the name of the country that comes first alphabetically.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> continent, <span class="keyword">name</span></span><br><span class="line"><span class="keyword">FROM</span> world x</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">name</span> &lt;= ALL (</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span> <span class="keyword">FROM</span> world y <span class="keyword">WHERE</span> x.continent=y.continent)</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> continent, <span class="keyword">name</span></span><br><span class="line"><span class="keyword">FROM</span> world x</span><br><span class="line"><span class="keyword">WHERE</span> x.name = (</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span> <span class="keyword">FROM</span> world y <span class="keyword">WHERE</span> x.continent=y.continent </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="keyword">name</span> </span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>Find the continents where all countries have a population &lt;= 25000000. Then find the names of the countries associated with these continents. Show name, continent and population.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> name, continent, population</span><br><span class="line"><span class="keyword">FROM</span> world x</span><br><span class="line"><span class="keyword">WHERE</span> <span class="number">25000000</span> &gt;= <span class="keyword">ALL</span> (</span><br><span class="line"><span class="keyword">SELECT</span> y.population <span class="keyword">FROM</span> world y <span class="keyword">WHERE</span> x.continent=y.continent</span><br><span class="line"><span class="keyword">AND</span> y.population &gt;=<span class="number">0</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>Some countries have populations more than three times that of any of their neighbours (in the same continent). Give the countries and continents.<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span>, continent</span><br><span class="line">FROM world x</span><br><span class="line"><span class="keyword">WHERE</span> x.population/<span class="number">3</span> &gt;= <span class="built_in">ALL</span> (</span><br><span class="line"><span class="keyword">SELECT</span> population FROM world y <span class="keyword">WHERE</span> x.continent=y.continent AND y.<span class="keyword">name</span> &lt;&gt; x.<span class="keyword">name</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="SUM-and-COUNT"><a href="#SUM-and-COUNT" class="headerlink" title="SUM and COUNT"></a>SUM and COUNT</h1><pre><code>This tutorial is about aggregate functions such as COUNT, SUM and AVG. An aggregate function takes many values and delivers just one value. For example the function SUM would aggregate the values 2, 4 and 5 to deliver the single value 11.
+</code></pre><ul>
+<li><ol>
+<li>Show the total population of the world.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">SUM</span>(population)</span><br><span class="line"><span class="keyword">FROM</span> world</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>List all the continents - just once each.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> continent</span><br><span class="line"><span class="keyword">FROM</span> world</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>Give the total GDP of Africa<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">SUM</span>(gdp)</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line"><span class="keyword">WHERE</span> continent=<span class="string">'Africa'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>How many countries have an area of at least 1000000<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(name)</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line">WHERE<span class="built_in"> area </span>&gt;= 1000000</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>What is the total population of (‘Estonia’, ‘Latvia’, ‘Lithuania’)<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">SUM</span>(population)</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">name</span> <span class="keyword">in</span> (<span class="string">'Estonia'</span>, <span class="string">'Latvia'</span>, <span class="string">'Lithuania'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>For each continent show the continent and number of countries.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT continent, COUNT(name)</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line">GROUP BY continent</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>For each continent show the continent and number of countries with populations of at least 10 million.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT continent, COUNT(name)</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line">WHERE population &gt;= 10000000</span><br><span class="line">GROUP BY continent</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>List the continents that have a total population of at least 100 million.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT continent</span><br><span class="line"><span class="keyword">FROM</span> world</span><br><span class="line">GROUP BY continent</span><br><span class="line">HAVING SUM(population) &gt;= 100000000</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="SUM-and-COUNT-Quiz"><a href="#SUM-and-COUNT-Quiz" class="headerlink" title="SUM and COUNT Quiz"></a>SUM and COUNT Quiz</h2><p>选择题答案：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Q\A</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+</tr>
+</tbody>
+</table>
+<h1 id="JOIN"><a href="#JOIN" class="headerlink" title="JOIN"></a>JOIN</h1><ul>
+<li><ol>
+<li>The first example shows the goal scored by a player with the last name ‘Bender’. The * says to list all the columns in the table - a shorter way of saying matchid, teamid, player, gtime</li>
+</ol>
+</li>
+</ul>
+<p>Modify it to show the matchid and player name for all goals scored by Germany. To identify German players, check for: teamid = ‘GER’<br>    <figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> matchid, player <span class="keyword">FROM</span> goal</span><br><span class="line"><span class="keyword">WHERE</span> teamid=<span class="string">'GER'</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="2">
+<li>From the previous query you can see that Lars Bender’s scored a goal in game 1012. Now we want to know what teams were playing in that match.</li>
+</ol>
+</li>
+</ul>
+<p>Notice in the that the column matchid in the goal table corresponds to the id column in the game table. We can look up information about game 1012 by finding that row in the game table.</p>
+<p>Show id, stadium, team1, team2 for just game 1012<br>    <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">id</span>,stadium,team1,team2</span><br><span class="line"><span class="keyword">FROM</span> game ga </span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">id</span>=<span class="number">1012</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>3.You can combine the two steps into a single query with a JOIN.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line">  <span class="keyword">FROM</span> game <span class="keyword">JOIN</span> goal <span class="keyword">ON</span> (<span class="keyword">id</span>=matchid)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>The FROM clause says to merge data from the goal table with that from the game table. The ON says how to figure out which rows in game go with which rows in goal - the id from goal must match matchid from game. (If we wanted to be more clear/specific we could say<br>ON (game.id=goal.matchid)</p>
+<p>The code below shows the player (from the goal) and stadium name (from the game table) for every goal scored.</p>
+<p>Modify it to show the player, teamid, stadium and mdate for every German goal.<br>    <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT player, teamid, stadium, mdate</span><br><span class="line"><span class="keyword">FROM</span> game JOIN goal ON (game.<span class="attribute">id</span>=goal.matchid <span class="keyword">and</span> goal.<span class="attribute">teamid</span>=<span class="string">'GER'</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="4">
+<li>Use the same JOIN as in the previous question.</li>
+</ol>
+</li>
+</ul>
+<p>Show the team1, team2 and player for every goal scored by a player called Mario player LIKE ‘Mario%’<br>    <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> team1, team2, player</span><br><span class="line"><span class="keyword">FROM</span> game <span class="keyword">JOIN</span> goal</span><br><span class="line"><span class="keyword">ON</span> (<span class="keyword">id</span>=matchid <span class="keyword">AND</span> player <span class="keyword">LIKE</span> <span class="string">'Mario%'</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="5">
+<li>The table eteam gives details of every national team including the coach. You can JOIN goal to eteam using the phrase goal JOIN eteam on teamid=id</li>
+</ol>
+</li>
+</ul>
+<p>Show player, teamid, coach, gtime for all goals scored in the first 10 minutes gtime&lt;=10<br>    <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> player, teamid, coach, gtime</span><br><span class="line"><span class="keyword">FROM</span> goal <span class="keyword">JOIN</span> eteam</span><br><span class="line"><span class="keyword">ON</span> (teamid=<span class="keyword">id</span> <span class="keyword">AND</span> gtime&lt;=<span class="number">10</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="6">
+<li>To JOIN game with eteam you could use either<br>game JOIN eteam ON (team1=eteam.id) or game JOIN eteam ON (team2=eteam.id)</li>
+</ol>
+</li>
+</ul>
+<p>Notice that because id is a column name in both game and eteam you must specify eteam.id instead of just id</p>
+<p>List the the dates of the matches and the name of the team in which ‘Fernando Santos’ was the team1 coach.<br>    <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT mdate, teamname</span><br><span class="line"><span class="keyword">FROM</span> game JOIN eteam</span><br><span class="line">ON (<span class="attribute">team1</span>=eteam.id <span class="keyword">AND</span> <span class="attribute">coach</span>=<span class="string">'Fernando Santos'</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="7">
+<li>List the player for every goal scored in a game where the stadium was ‘National Stadium, Warsaw’<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> player</span><br><span class="line"><span class="keyword">FROM</span> goal <span class="keyword">JOIN</span> game</span><br><span class="line"><span class="keyword">ON</span> (matchid = <span class="keyword">id</span> <span class="keyword">AND</span> stadium=<span class="string">'National Stadium, Warsaw'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>The example query shows all goals scored in the Germany-Greece quarterfinal.<br>Instead show the name of all players who scored a goal against Germany.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> player</span><br><span class="line"><span class="keyword">FROM</span> goal <span class="keyword">JOIN</span> game</span><br><span class="line">   <span class="keyword">ON</span> matchid=<span class="keyword">id</span> <span class="keyword">AND</span> teamid &lt;&gt; <span class="string">'GER'</span> <span class="keyword">AND</span> (team1=<span class="string">'GER'</span> <span class="keyword">OR</span> team2=<span class="string">'GER'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>Show teamname and the total number of goals scored.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT teamname, COUNT(gtime)</span><br><span class="line"><span class="keyword">FROM</span> eteam JOIN goal ON <span class="attribute">id</span>=teamid</span><br><span class="line">GROUP BY teamname</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>Show the stadium and the number of goals scored in each stadium.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT stadium, COUNT(*) as goals</span><br><span class="line"><span class="keyword">FROM</span> game JOIN goal</span><br><span class="line">ON <span class="attribute">id</span>=matchid <span class="keyword">AND</span> (<span class="attribute">team1</span>=teamid <span class="keyword">OR</span> <span class="attribute">team2</span>=teamid)</span><br><span class="line">GROUP BY stadium</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="11">
+<li>For every match involving ‘POL’, show the matchid, date and the number of goals scored.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> matchid, mdate, <span class="keyword">COUNT</span>(*)</span><br><span class="line"><span class="keyword">FROM</span> game <span class="keyword">JOIN</span> goal</span><br><span class="line"><span class="keyword">ON</span> <span class="keyword">id</span>=matchid <span class="keyword">AND</span> (team1 = <span class="string">'POL'</span> <span class="keyword">OR</span> team2=<span class="string">'POL'</span>)</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> matchid, mdate</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="12">
+<li>For every match where ‘GER’ scored, show matchid, match date and the number of goals scored by ‘GER’<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT matchid, mdate, COUNT(*)</span><br><span class="line"><span class="keyword">FROM</span> game JOIN goal</span><br><span class="line">ON <span class="attribute">id</span>=matchid <span class="keyword">AND</span>(<span class="attribute">teamid</span>=<span class="string">'GER'</span>)</span><br><span class="line">GROUP BY matchid, mdate</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="13">
+<li>List every match with the goals scored by each team as shown. This will use “CASE WHEN” which has not been explained in any previous exercises.</li>
+</ol>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">mdate</th>
+<th style="text-align:center">team1</th>
+<th style="text-align:center">score1</th>
+<th style="text-align:center">team2</th>
+<th style="text-align:center">score2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">July</td>
+<td style="text-align:center">2012</td>
+<td style="text-align:center">ESP    4</td>
+<td style="text-align:center">ITA    0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">June</td>
+<td style="text-align:center">2012</td>
+<td style="text-align:center">ESP    1</td>
+<td style="text-align:center">ITA    1</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">June</td>
+<td style="text-align:center">2012</td>
+<td style="text-align:center">IRL    1</td>
+<td style="text-align:center">CRO    3</td>
+</tr>
+</tbody>
+</table>
+<p>Notice in the query given every goal is listed. If it was a team1 goal then a 1 appears in score1, otherwise there is a 0. You could SUM this column to get a count of the goals scored by team1. Sort your result by mdate, matchid, team1 and team2.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> mdate, team1,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">CASE</span> <span class="keyword">WHEN</span> teamid=team1 <span class="keyword">THEN</span> <span class="number">1</span> <span class="keyword">ELSE</span> <span class="number">0</span> <span class="keyword">END</span>) <span class="keyword">AS</span> score1,</span><br><span class="line">team2, </span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">CASE</span> <span class="keyword">WHEN</span> teamid=team2 <span class="keyword">THEN</span> <span class="number">1</span> <span class="keyword">ELSE</span> <span class="number">0</span> <span class="keyword">END</span> ) <span class="keyword">AS</span> score2</span><br><span class="line"><span class="keyword">FROM</span> game <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> goal <span class="keyword">ON</span> matchid = <span class="keyword">id</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> mdate, team1, team2</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> mdate, matchid, team1, team2</span><br></pre></td></tr></table></figure>
+<h1 id="JOIN-Quiz"><a href="#JOIN-Quiz" class="headerlink" title="JOIN_Quiz"></a>JOIN_Quiz</h1><p>选择题答案：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Q\A</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h1 id="More-JOIN"><a href="#More-JOIN" class="headerlink" title="More JOIN"></a>More JOIN</h1><ul>
+<li><ol>
+<li>List the films where the yr is 1962 [Show id, title]<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> id, <span class="built_in">title</span></span><br><span class="line"> <span class="keyword">FROM</span> movie</span><br><span class="line"> <span class="keyword">WHERE</span> yr=<span class="number">1962</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>Give year of ‘Citizen Kane’.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> yr</span><br><span class="line">  <span class="keyword">FROM</span> movie</span><br><span class="line">  <span class="keyword">WHERE</span> <span class="built_in">title</span>=<span class="string">'Citizen Kane'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>List all of the Star Trek movies, include the id, title and yr (all of these movies include the words Star Trek in the title). Order results by year.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> id, <span class="built_in">title</span>, yr</span><br><span class="line"> <span class="keyword">FROM</span> movie</span><br><span class="line"> <span class="keyword">WHERE</span> <span class="built_in">title</span> <span class="keyword">LIKE</span> <span class="string">'%Star Trek%'</span></span><br><span class="line"> <span class="keyword">ORDER</span> <span class="keyword">BY</span> yr</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>What id number does the actor ‘Glenn Close’ have?<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">id</span></span><br><span class="line"> <span class="keyword">FROM</span> actor</span><br><span class="line"> <span class="keyword">WHERE</span> <span class="keyword">name</span>=<span class="string">'Glenn Close'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>What is the id of the film ‘Casablanca’<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">id</span></span><br><span class="line"> <span class="keyword">FROM</span> movie</span><br><span class="line"> <span class="keyword">WHERE</span> title=<span class="string">'Casablanca'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>6.Obtain the cast list for ‘Casablanca’.</p>
+</li>
+</ul>
+<p>what is a cast list?<br>The cast list is the names of the actors who were in the movie.</p>
+<p>Use movieid=11768, (or whatever value you got from the previous question)<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span></span><br><span class="line"> <span class="keyword">FROM</span> actor <span class="keyword">JOIN</span> casting <span class="keyword">ON</span> actorid=<span class="keyword">id</span></span><br><span class="line"> <span class="keyword">WHERE</span> movieid=<span class="number">11768</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="7">
+<li>Obtain the cast list for the film ‘Alien’<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> <span class="keyword">name</span> </span><br><span class="line"> <span class="keyword">FROM</span> actor a <span class="keyword">JOIN</span> casting c <span class="keyword">ON</span> c.actorid=a.id</span><br><span class="line"> <span class="keyword">WHERE</span> c.movieid=(</span><br><span class="line">  <span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> movie <span class="keyword">WHERE</span> title=<span class="string">'Alien'</span></span><br><span class="line"> )</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>List the films in which ‘Harrison Ford’ has appeared<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> title</span><br><span class="line"> <span class="keyword">FROM</span> movie m <span class="keyword">JOIN</span> casting c <span class="keyword">ON</span> m.id=c.movieid</span><br><span class="line"> <span class="keyword">WHERE</span> c.actorid=(</span><br><span class="line">  <span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> actor <span class="keyword">WHERE</span> <span class="keyword">name</span>=<span class="string">'Harrison Ford'</span></span><br><span class="line"> )</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>List the films where ‘Harrison Ford’ has appeared - but not in the starring role. [Note: the ord field of casting gives the position of the actor. If ord=1 then this actor is in the starring role]<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> title</span><br><span class="line"> <span class="keyword">FROM</span> movie m <span class="keyword">JOIN</span> casting c <span class="keyword">ON</span> m.id=c.movieid</span><br><span class="line"> <span class="keyword">WHERE</span> c.actorid=(</span><br><span class="line">  <span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> actor <span class="keyword">WHERE</span> <span class="keyword">name</span>=<span class="string">'Harrison Ford'</span></span><br><span class="line"> ) <span class="keyword">AND</span> c.ord &lt;&gt; <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>List the films together with the leading star for all 1962 films.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT title, name</span><br><span class="line"><span class="keyword">FROM</span> ( movie m JOIN casting c ON m.<span class="attribute">id</span>=c.movieid) JOIN actor a ON c.<span class="attribute">actorid</span>=a.id</span><br><span class="line">WHERE c.<span class="attribute">ord</span>=1 <span class="keyword">AND</span> m.<span class="attribute">yr</span>=1962</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="11">
+<li>Which were the busiest years for ‘John Travolta’, show the year and the number of movies he made each year for any year in which he made more than 2 movies.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SELECT yr,COUNT(title) <span class="keyword">FROM</span></span><br><span class="line">  movie JOIN casting ON movie.<span class="attribute">id</span>=movieid</span><br><span class="line">         JOIN actor   ON <span class="attribute">actorid</span>=actor.id</span><br><span class="line">where <span class="attribute">name</span>=<span class="string">'John Travolta'</span></span><br><span class="line">GROUP BY yr</span><br><span class="line">HAVING COUNT(title)=(SELECT MAX(c) <span class="keyword">FROM</span></span><br><span class="line">(SELECT yr,COUNT(title) AS c <span class="keyword">FROM</span></span><br><span class="line">   movie JOIN casting ON movie.<span class="attribute">id</span>=movieid</span><br><span class="line">         JOIN actor   ON <span class="attribute">actorid</span>=actor.id</span><br><span class="line"> where <span class="attribute">name</span>=<span class="string">'John Travolta'</span></span><br><span class="line"><span class="built_in"> GROUP </span>BY yr) as t</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="12">
+<li>12.<br>List the film title and the leading actor for all of the films ‘Julie Andrews’ played in.</li>
+</ol>
+</li>
+</ul>
+<p>Did you get “Little Miss Marker twice”?<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> title, <span class="keyword">name</span></span><br><span class="line"> <span class="keyword">FROM</span> movie m </span><br><span class="line"> <span class="keyword">JOIN</span> casting c <span class="keyword">ON</span> m.id=c.movieid</span><br><span class="line"> <span class="keyword">JOIN</span> actor a <span class="keyword">ON</span> c.actorid=a.id</span><br><span class="line"> <span class="keyword">WHERE</span> <span class="keyword">ord</span>=<span class="number">1</span> <span class="keyword">AND</span> movieid <span class="keyword">IN</span> (</span><br><span class="line">  <span class="keyword">SELECT</span> movieid </span><br><span class="line">  <span class="keyword">FROM</span> casting <span class="keyword">JOIN</span> actor </span><br><span class="line">  <span class="keyword">ON</span> actorid=<span class="keyword">id</span> <span class="keyword">AND</span> <span class="keyword">name</span>=<span class="string">'Julie Andrews'</span></span><br><span class="line"> )</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="13">
+<li>Obtain a list, in alphabetical order, of actors who’ve had at least 30 starring roles.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span></span><br><span class="line"><span class="keyword">FROM</span> actor</span><br><span class="line">  <span class="keyword">JOIN</span> casting <span class="keyword">ON</span> <span class="keyword">id</span> = actorid </span><br><span class="line">  <span class="keyword">AND</span> (<span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">ord</span>) <span class="keyword">FROM</span> casting <span class="keyword">WHERE</span> actorid = actor.id <span class="keyword">AND</span> <span class="keyword">ord</span>=<span class="number">1</span>)&gt;=<span class="number">30</span></span><br><span class="line">  <span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">name</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="14">
+<li>List the films released in the year 1978 ordered by the number of actors in the cast, then by title.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">title</span>, <span class="built_in">COUNT</span>(actorid) <span class="keyword">as</span> <span class="keyword">cast</span></span><br><span class="line"><span class="keyword">FROM</span> movie <span class="keyword">JOIN</span> casting <span class="keyword">on</span> id=movieid</span><br><span class="line"><span class="keyword">WHERE</span> yr = <span class="number">1978</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="built_in">title</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="keyword">cast</span> <span class="keyword">DESC</span>, <span class="built_in">title</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="15">
+<li>List all the people who have worked with ‘Art Garfunkel’.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span></span><br><span class="line"><span class="keyword">FROM</span> actor <span class="keyword">JOIN</span> casting <span class="keyword">ON</span> actor.id=casting.actorid</span><br><span class="line"><span class="keyword">WHERE</span> movieid <span class="keyword">IN</span> (</span><br><span class="line"> <span class="keyword">SELECT</span> movieid <span class="keyword">FROM</span> casting <span class="keyword">JOIN</span> actor <span class="keyword">ON</span> casting.actorid=actor.id <span class="keyword">AND</span> actor.name=<span class="string">'Art Garfunkel'</span></span><br><span class="line">) <span class="keyword">AND</span> <span class="keyword">name</span> &lt;&gt; <span class="string">'Art Garfunkel'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="Quiz-MORE-JOIN"><a href="#Quiz-MORE-JOIN" class="headerlink" title="Quiz MORE JOIN"></a>Quiz MORE JOIN</h1><p>选择题答案：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Q\A</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h1 id="USING-NULL"><a href="#USING-NULL" class="headerlink" title="USING NULL"></a>USING NULL</h1><ul>
+<li><ol>
+<li>List the teachers who have NULL for their department.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">name</span> </span><br><span class="line"><span class="keyword">FROM</span> teacher </span><br><span class="line"><span class="keyword">WHERE</span> dept <span class="keyword">is</span> <span class="literal">NULL</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>Note the INNER JOIN misses the teachers with no department and the departments with no teacher.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> teacher.name, dept.name</span><br><span class="line"><span class="keyword">FROM</span> teacher <span class="keyword">INNER</span> <span class="keyword">JOIN</span> dept</span><br><span class="line"><span class="keyword">ON</span> (teacher.dept=dept.id)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>Use a different JOIN so that all teachers are listed.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> teacher.name, dept.name</span><br><span class="line"><span class="keyword">FROM</span> teacher </span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> dept <span class="keyword">ON</span> (teacher.dept=dept.id)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>Use a different JOIN so that all departments are listed.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> teacher.name, dept.name</span><br><span class="line"><span class="keyword">FROM</span> dept </span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> teacher <span class="keyword">ON</span> (dept.id=teacher.dept)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>Use COALESCE to print the mobile number. Use the number ‘07986 444 2266’ if there is no number given. Show teacher name and mobile number or ‘07986 444 2266’<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">SELECT</span> teacher.<span class="built_in">name</span>, COALESCE(mobile, <span class="string">'07986 444 2266'</span>)</span><br><span class="line"><span class="keyword">FROM</span> teacher</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>Use the COALESCE function and a LEFT JOIN to print the teacher name and department name. Use the string ‘None’ where there is no department.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> teacher.name, <span class="keyword">COALESCE</span>(dept.name, <span class="string">'None'</span>)</span><br><span class="line"><span class="keyword">FROM</span> teacher </span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> dept <span class="keyword">ON</span> (teacher.dept = dept.id)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>Use COUNT to show the number of teachers and the number of mobile phones.<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">SELECT</span> <span class="built_in">COUNT</span>(<span class="built_in">name</span>), <span class="built_in">COUNT</span>(mobile)</span><br><span class="line"><span class="keyword">FROM</span> teacher</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>Use COUNT and GROUP BY dept.name to show each department and the number of staff. Use a RIGHT JOIN to ensure that the Engineering department is listed.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT dept.name, COUNT(teacher.name)</span><br><span class="line"><span class="keyword">FROM</span> teacher</span><br><span class="line">RIGHT JOIN dept ON (dept.id = teacher.dept)</span><br><span class="line">GROUP BY dept.name</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>Use CASE to show the name of each teacher followed by ‘Sci’ if the teacher is in dept 1 or 2 and ‘Art’ otherwise.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> teacher.name, </span><br><span class="line"><span class="keyword">CASE</span> <span class="keyword">WHEN</span> (teacher.dept = <span class="number">1</span> <span class="keyword">or</span> teacher.dept = <span class="number">2</span>) <span class="keyword">THEN</span> <span class="string">'Sci'</span></span><br><span class="line"><span class="keyword">ELSE</span> <span class="string">'Art'</span> <span class="keyword">END</span></span><br><span class="line"><span class="keyword">FROM</span> teacher</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>Use CASE to show the name of each teacher followed by ‘Sci’ if the teacher is in dept 1 or 2, show ‘Art’ if the teacher’s dept is 3 and ‘None’ otherwise.<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> teacher.name, </span><br><span class="line"><span class="keyword">CASE</span> </span><br><span class="line"><span class="keyword">WHEN</span> (teacher.dept=<span class="number">1</span> <span class="keyword">OR</span> teacher.dept=<span class="number">2</span>) <span class="keyword">THEN</span> <span class="string">'Sci'</span></span><br><span class="line"><span class="keyword">WHEN</span> teacher.dept=<span class="number">3</span> <span class="keyword">THEN</span> <span class="string">'Art'</span></span><br><span class="line"><span class="keyword">ELSE</span> <span class="string">'None'</span> <span class="keyword">END</span></span><br><span class="line"><span class="keyword">FROM</span> teacher</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="Using-Null-Quiz"><a href="#Using-Null-Quiz" class="headerlink" title="Using Null Quiz"></a>Using Null Quiz</h1><p>选择题答案：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Q\A</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h1 id="Self-join"><a href="#Self-join" class="headerlink" title="Self join"></a>Self join</h1><p>这个有点难，从第5题开始我是参考别人的答案写的，我还不太理解，so bad！</p>
+<ul>
+<li><ol>
+<li>How many stops are in the database.<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECt</span> <span class="built_in">COUNT</span>(*) <span class="keyword">from</span> stops</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>Find the id value for the stop ‘Craiglockhart’<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">id</span></span><br><span class="line"><span class="keyword">FROM</span> stops</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">name</span>=<span class="string">'Craiglockhart'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>Give the id and the name for the stops on the ‘4’ ‘LRT’ service.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT id, name</span><br><span class="line"><span class="keyword">FROM</span> stops JOIN<span class="built_in"> route </span>ON <span class="attribute">id</span>=stop WHERE <span class="attribute">company</span>=<span class="string">'LRT'</span> <span class="keyword">AND</span> <span class="attribute">num</span>=4</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>The query shown gives the number of routes that visit either London Road (149) or Craiglockhart (53). Run the query and notice the two services that link these stops have a count of 2. Add a HAVING clause to restrict the output to these two routes.<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT company, num, COUNT(*)</span><br><span class="line"><span class="keyword">FROM</span><span class="built_in"> route </span>WHERE <span class="attribute">stop</span>=149 <span class="keyword">OR</span> <span class="attribute">stop</span>=53</span><br><span class="line">GROUP BY company, num</span><br><span class="line">HAVING COUNT(*) = 2</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>Execute the self join shown and observe that b.stop gives all the places you can get to from Craiglockhart, without changing routes. Change the query so that it shows the services from Craiglockhart to London Road.<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT <span class="selector-tag">a</span><span class="selector-class">.company</span>, <span class="selector-tag">a</span><span class="selector-class">.num</span>, <span class="selector-tag">a</span><span class="selector-class">.stop</span>, <span class="selector-tag">b</span>.stop</span><br><span class="line">FROM route <span class="selector-tag">a</span> JOIN route <span class="selector-tag">b</span> ON</span><br><span class="line">  (<span class="selector-tag">a</span>.company=<span class="selector-tag">b</span><span class="selector-class">.company</span> AND <span class="selector-tag">a</span>.num=<span class="selector-tag">b</span>.num)</span><br><span class="line">WHERE <span class="selector-tag">a</span>.stop=<span class="number">53</span> AND <span class="selector-tag">b</span>.stop=<span class="number">149</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>The query shown is similar to the previous one, however by joining two copies of the stops table we can refer to stops by name rather than by number. Change the query so that the services between ‘Craiglockhart’ and ‘London Road’ are shown. If you are tired of these places try ‘Fairmilehead’ against ‘Tollcross’<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT a.company, a.num, stopa.name, stopb.name</span><br><span class="line"><span class="keyword">FROM</span><span class="built_in"> route </span>a JOIN<span class="built_in"> route </span>b ON</span><br><span class="line">  (a.<span class="attribute">company</span>=b.company <span class="keyword">AND</span> a.<span class="attribute">num</span>=b.num)</span><br><span class="line">  JOIN stops stopa ON (a.<span class="attribute">stop</span>=stopa.id)</span><br><span class="line">  JOIN stops stopb ON (b.<span class="attribute">stop</span>=stopb.id)</span><br><span class="line">WHERE stopa.<span class="attribute">name</span>=<span class="string">'Craiglockhart'</span> <span class="keyword">AND</span> stopb.<span class="attribute">name</span>=<span class="string">'London Road'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>Give a list of all the services which connect stops 115 and 137 (‘Haymarket’ and ‘Leith’)<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT DISTINCT a.company, a.num</span><br><span class="line"><span class="keyword">FROM</span><span class="built_in"> route </span>a JOIN<span class="built_in"> route </span>b ON</span><br><span class="line">  (a.company =b.company <span class="keyword">AND</span> a.<span class="attribute">num</span>=b.num)</span><br><span class="line">  JOIN stops stopa ON (a.<span class="attribute">stop</span>=stopa.id)</span><br><span class="line">  JOIN stops stopb ON (b.<span class="attribute">stop</span>=stopb.id)</span><br><span class="line">WHERE stopa.<span class="attribute">name</span>=<span class="string">'Haymarket'</span> <span class="keyword">AND</span> stopb.<span class="attribute">name</span>=<span class="string">'Leith'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>Give a list of the services which connect the stops ‘Craiglockhart’ and ‘Tollcross’<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT a.company, a.num</span><br><span class="line"><span class="keyword">FROM</span><span class="built_in"> route </span>a JOIN<span class="built_in"> route </span>b ON</span><br><span class="line">a.<span class="attribute">company</span>=b.company <span class="keyword">and</span> a.<span class="attribute">num</span>=b.num</span><br><span class="line">JOIN stops stopa ON a.<span class="attribute">stop</span>=stopa.id</span><br><span class="line">JOIN stops stopb ON b.<span class="attribute">stop</span>=stopb.id</span><br><span class="line">WHERE stopa.<span class="attribute">name</span>=<span class="string">'Craiglockhart'</span> <span class="keyword">AND</span> stopb.<span class="attribute">name</span>=<span class="string">'Tollcross'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>Give a distinct list of the stops which may be reached from ‘Craiglockhart’ by taking one bus, including ‘Craiglockhart’ itself, offered by the LRT company. Include the company and bus no. of the relevant services.<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT stopa<span class="selector-class">.name</span>, <span class="selector-tag">a</span><span class="selector-class">.company</span>, <span class="selector-tag">a</span>.num</span><br><span class="line">FROM route a</span><br><span class="line">  JOIN route <span class="selector-tag">b</span> ON (<span class="selector-tag">a</span>.num=<span class="selector-tag">b</span><span class="selector-class">.num</span> AND <span class="selector-tag">a</span>.company=<span class="selector-tag">b</span>.company)</span><br><span class="line">  JOIN stops stopa ON (<span class="selector-tag">a</span>.stop=stopa.id)</span><br><span class="line">  JOIN stops stopb ON (<span class="selector-tag">b</span>.stop=stopb.id)</span><br><span class="line">WHERE stopb<span class="selector-class">.name</span> = <span class="string">'Craiglockhart'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>Find the routes involving two buses that can go from Craiglockhart to Sighthill.<br>Show the bus no. and company for the first bus, the name of the stop for the transfer,<br>and the bus no. and company for the second bus.<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SELECT DISTINCT bus1<span class="selector-class">.num</span>, bus1<span class="selector-class">.company</span>, name, bus2<span class="selector-class">.num</span>, bus2<span class="selector-class">.company</span> FROM (</span><br><span class="line">SELECT start1<span class="selector-class">.num</span>, start1<span class="selector-class">.company</span>, stop1<span class="selector-class">.stop</span> FROM route AS start1 JOIN route AS stop1 </span><br><span class="line">ON start1<span class="selector-class">.num</span> = stop1<span class="selector-class">.num</span> </span><br><span class="line">AND start1<span class="selector-class">.company</span> = stop1<span class="selector-class">.company</span> AND start1<span class="selector-class">.stop</span> != stop1<span class="selector-class">.stop</span> WHERE start1<span class="selector-class">.stop</span> = </span><br><span class="line">(SELECT id FROM stops WHERE name = <span class="string">'Craiglockhart'</span>)) AS bus1</span><br><span class="line">JOIN (SELECT start2<span class="selector-class">.num</span>, start2<span class="selector-class">.company</span>, start2<span class="selector-class">.stop</span> FROM route AS start2 </span><br><span class="line">JOIN route AS stop2 ON start2<span class="selector-class">.num</span> = stop2<span class="selector-class">.num</span> </span><br><span class="line">AND start2<span class="selector-class">.company</span> = stop2<span class="selector-class">.company</span> </span><br><span class="line">AND start2<span class="selector-class">.stop</span> != stop2<span class="selector-class">.stop</span> </span><br><span class="line">WHERE stop2<span class="selector-class">.stop</span> = </span><br><span class="line">(SELECT id FROM stops WHERE name = <span class="string">'Sighthill'</span>)) AS bus2 </span><br><span class="line">ON bus1<span class="selector-class">.stop</span> = bus2<span class="selector-class">.stop</span> JOIN stops ON bus1<span class="selector-class">.stop</span> = stops.id</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="Self-join-Quiz"><a href="#Self-join-Quiz" class="headerlink" title="Self join Quiz"></a>Self join Quiz</h1><p>选择题答案：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Q\A</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">√</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/19/大数据学习笔记-sql/" rel="next" title="大数据学习笔记-sql">
+                <i class="fa fa-chevron-left"></i> 大数据学习笔记-sql
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/01/排序算法总结/" rel="prev" title="冒泡插入和选择排序的比较">
+                冒泡插入和选择排序的比较 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SELECT-from-Nobel"><span class="nav-number">1.</span> <span class="nav-text">SELECT from Nobel</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SELECT-IN-SELECT"><span class="nav-number">2.</span> <span class="nav-text">SELECT IN SELECT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SUM-and-COUNT"><span class="nav-number">3.</span> <span class="nav-text">SUM and COUNT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SUM-and-COUNT-Quiz"><span class="nav-number">3.1.</span> <span class="nav-text">SUM and COUNT Quiz</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JOIN"><span class="nav-number">4.</span> <span class="nav-text">JOIN</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JOIN-Quiz"><span class="nav-number">5.</span> <span class="nav-text">JOIN_Quiz</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#More-JOIN"><span class="nav-number">6.</span> <span class="nav-text">More JOIN</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Quiz-MORE-JOIN"><span class="nav-number">7.</span> <span class="nav-text">Quiz MORE JOIN</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#USING-NULL"><span class="nav-number">8.</span> <span class="nav-text">USING NULL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Using-Null-Quiz"><span class="nav-number">9.</span> <span class="nav-text">Using Null Quiz</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Self-join"><span class="nav-number">10.</span> <span class="nav-text">Self join</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Self-join-Quiz"><span class="nav-number">11.</span> <span class="nav-text">Self join Quiz</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'n2HspM41RbogfYToohbhdzcF-gzGzoHsz',
+        appKey: 'BmbN7noqgmLyN99xJLQfDwYv',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
