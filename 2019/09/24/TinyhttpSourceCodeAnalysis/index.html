@@ -88,7 +88,7 @@
 <meta property="og:description" content="TinyHttpd 是一个用 C 语言写的及其简洁的 HTTP 服务程序，一共只有 500 行左右代码，非常适合拿来学习 HTTP。  这篇博客也是自己一边学习一遍记录的学习笔记。 2020-4-18">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://jiaoqiyuan.coding.net/p/pics/d/pics/git/raw/master/blog/tinyhttpd/tinyhttpd.png">
-<meta property="og:updated_time" content="2020-11-25T01:39:54.836Z">
+<meta property="og:updated_time" content="2020-11-25T01:42:19.952Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tinyhttpd源码解析">
 <meta name="twitter:description" content="TinyHttpd 是一个用 C 语言写的及其简洁的 HTTP 服务程序，一共只有 500 行左右代码，非常适合拿来学习 HTTP。  这篇博客也是自己一边学习一遍记录的学习笔记。 2020-4-18">
@@ -431,12 +431,12 @@
 <li><p>编译并运行 Tinyhttpd：</p>
  <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">make</span></span><br><span class="line">./httpd</span><br></pre></td></tr></table></figure>
 <p> 执行结果：</p>
- <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> 🐠 jony@deepin # ./httpd </span><br><span class="line">httpd running on<span class="built_in"> port </span>4000</span><br></pre></td></tr></table></figure>
+ <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">🐠 jony@deepin # ./httpd </span><br><span class="line">httpd running on<span class="built_in"> port </span>4000</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>在浏览器输入 <code>localhost:4000</code>，进入测试页面：</p>
-<p> <img src="https://github.com/jiaoqiyuan/pics/raw/master/blog/tinyhttpd/index.png" alt="index"></p>
+<p> <img src="https://jiaoqiyuan.coding.net/p/pics/d/pics/git/raw/master/blog/tinyhttpd/index.png" alt="index"></p>
 <p> 输入 <code>blue</code>，点击提交。</p>
-<p> <img src="https://github.com/jiaoqiyuan/pics/raw/master/blog/tinyhttpd/color-cgi.png" alt="color"></p>
+<p> <img src="https://jiaoqiyuan.coding.net/p/pics/d/pics/git/raw/master/blog/tinyhttpd/color-cgi.png" alt="color"></p>
 </li>
 </ol>
 <h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><p>TinyHttpd 源码在 github上有，这里也贴出来吧，反正也只有500行左右。</p>
@@ -522,10 +522,10 @@ TCP的服务器端socket基本流程socket-&gt;bind-&gt;listen-&gt;accept-&gt;se
 <p><img src="https://camo.githubusercontent.com/ddc3e769843c534bcecf8b9c191f4d923c5190a3/687474703a2f2f696d672e626c6f672e6373646e2e6e65742f32303134313232363136313131393938313f77617465726d61726b2f322f746578742f6148523063446f764c324a736232637559334e6b626935755a585176616d4e71597a6b784f413d3d2f666f6e742f3561364c354c32542f666f6e7473697a652f3430302f66696c6c2f49304a42516b46434d413d3d2f646973736f6c76652f37302f677261766974792f43656e746572" alt="pipe2"></p>
 <p>图片直观地显示了 GET 和 POST 请求通过管道将数据发送到客户端浏览器的过程。</p>
 <p>还有一张图片描述了 execute_cgi 的整个流程：</p>
-<p><img src="https://github.com/jiaoqiyuan/pics/raw/master/blog/tinyhttpd/execute_cgi.png" alt="execute_cgi"></p>
+<p><img src="https://jiaoqiyuan.coding.net/p/pics/d/pics/git/raw/master/blog/tinyhttpd/execute_cgi.png" alt="execute_cgi"></p>
 <p>这里重点关注一下管道的概念和使用方式。</p>
 <h2 id="网络抓包"><a href="#网络抓包" class="headerlink" title="网络抓包"></a>网络抓包</h2><p>在运行 httpd 服务端后打开 wireshark 抓包看一下具体的数据信息；在输入颜色提交后，可以抓取到如下数据：</p>
-<p><img src="https://github.com/jiaoqiyuan/pics/raw/master/blog/tinyhttpd/httpwireshark.png" alt="wireshark"></p>
+<p><img src="https://jiaoqiyuan.coding.net/p/pics/d/pics/git/raw/master/blog/tinyhttpd/httpwireshark.png" alt="wireshark"></p>
 <p>执行提交后客户端向浏览器发送了一个 POST 请求，附带有颜色信息。</p>
 <p>其实向前倒还能看到建立连接的三次握手信息，以及服务端返回的 200 OK 的成功信息。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到这里源码就分析完了，整个过程涉及到网络的连接建立，网络数据的收发，cgi 程序的运行，浏览器页面的展示等内容；有一些字符串的处理，管道的使用，非常短小精悍，值得好好学习一些。</p>
