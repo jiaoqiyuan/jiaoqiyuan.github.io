@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Before There Were Trees 在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working o">
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.">
 <meta name="keywords" content="git">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git WorkTrees：你从未听说过的 Git 最佳特性 - 译">
 <meta property="og:url" content="http://yoursite.com/2020/05/06/git-worktrees/index.html">
 <meta property="og:site_name" content="My Love">
-<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Before There Were Trees 在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working o">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://git-scm.com/images/branching-illustration@2x.png">
-<meta property="og:updated_time" content="2020-05-06T09:10:17.000Z">
+<meta property="og:updated_time" content="2020-11-25T02:33:56.203Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git WorkTrees：你从未听说过的 Git 最佳特性 - 译">
-<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.  Before There Were Trees 在有 worktree 之前When I first started using git professionally, one habit I had was to frequently stash code. I’d be working o">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：Discussing Docker. Pros and Cons.">
 <meta name="twitter:image" content="https://git-scm.com/images/branching-illustration@2x.png">
 
 
@@ -417,6 +417,7 @@
         <p>信息来源：<a href="https://github.com/ruanyf/weekly/blob/master/docs/issue-105.md" target="_blank" rel="noopener">阮一峰每周分享</a></p>
 <p>文章来源：<a href="https://levelup.gitconnected.com/git-worktrees-the-best-git-feature-youve-never-heard-of-9cd21df67baf" target="_blank" rel="noopener">Discussing Docker. Pros and Cons.</a></p>
 <hr>
+<a id="more"></a>
 <h3 id="Before-There-Were-Trees-在有-worktree-之前"><a href="#Before-There-Were-Trees-在有-worktree-之前" class="headerlink" title="Before There Were Trees 在有 worktree 之前"></a>Before There Were Trees 在有 worktree 之前</h3><p>When I first started using git professionally, one habit I had was to frequently stash code. I’d be working on a particular feature and I’d see a Hipchat alert (yes, this was before Slack) about an error being thrown in production. I’d take a look at the stacktrace in Sentry, and find the offending section of code. From there I’d return to my terminal, stash my changes, open a new bugfix branch off master, and begin trying to reproduce the error locally.</p>
 <p>我最初使用 git 时，有一个习惯就是经常使用 <code>stash</code> (暂存) 代码。我正在开发一个特定功能，并且会看到有关在生产中引发错误的 Hipchat 警报（对，这是在 Slack 之前）。<strong><em>这里的 Hipchat 和 Slack 是两个聊天工具，就想象成我们熟悉的微信或者 QQ 也行。</em></strong> 我需要看一眼哨兵中的堆栈信息，找到有问题的那部分代码。在这之后我需要回到终端，暂存我的修改，在 master 分支上打开一个新的 bugfix 分支，然后尝试在本地尝试复现这个错误。</p>
 <p>Usually this process would happen without too much pain. If there were untracked files in my working tree, I’d just add them and stash everything. After I’d pushed a bugfix branch up to Github, I’d unstash my changes and unstage any of the original untracked files I had added. Occasionally I’d make a mistake and do something awful like accidentally trashing my untracked files, or uncommitted changes.</p>
