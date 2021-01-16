@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近突然又接触了 生产者和消费者 问题，用到了多线程编程，这里总结一下。 在多处理器体系结构中，线程可用来实现并行性，对于 Unix 系统，IEEE POSIX 1003.1c 标准已指定了标准化的 C 语言线程编程接口，遵守该标准的实现成为 POSIX 线程或 Pthread。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pthread-programing-1">
+<meta property="og:url" content="http://yoursite.com/2021/01/16/pthread-programing-1/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="最近突然又接触了 生产者和消费者 问题，用到了多线程编程，这里总结一下。 在多处理器体系结构中，线程可用来实现并行性，对于 Unix 系统，IEEE POSIX 1003.1c 标准已指定了标准化的 C 语言线程编程接口，遵守该标准的实现成为 POSIX 线程或 Pthread。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/pthread-programing/pthread-programing-1.png">
+<meta property="og:updated_time" content="2021-01-16T09:41:50.148Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pthread-programing-1">
+<meta name="twitter:description" content="最近突然又接触了 生产者和消费者 问题，用到了多线程编程，这里总结一下。 在多处理器体系结构中，线程可用来实现并行性，对于 Unix 系统，IEEE POSIX 1003.1c 标准已指定了标准化的 C 语言线程编程接口，遵守该标准的实现成为 POSIX 线程或 Pthread。">
+<meta name="twitter:image" content="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/pthread-programing/pthread-programing-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/01/16/pthread-programing-1/">
+
+
+
+
+
+  <title>pthread-programing-1 | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/16/pthread-programing-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pthread-programing-1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-16T17:16:55+08:00">
+                2021-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/01/16/pthread-programing-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2021/01/16/pthread-programing-1/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/pthread-programing/pthread-programing-1.png" rel="gallery_ckjziufvm004ygtttiv9w3alk" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/pthread-programing/pthread-programing-1.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <p>最近突然又接触了 <code>生产者和消费者</code> 问题，用到了多线程编程，这里总结一下。</p>
+<p>在多处理器体系结构中，线程可用来实现并行性，对于 <code>Unix</code> 系统，<code>IEEE POSIX 1003.1c</code> 标准已指定了标准化的 C 语言线程编程接口，遵守该标准的实现成为 <code>POSIX</code> 线程或 <code>Pthread</code>。</p>
+<a id="more"></a>
+<p>接下来主要介绍一下：</p>
+<ul>
+<li>Pthreads 的使用以及注意事项</li>
+<li>线程管理，互斥变量，条件变量</li>
+</ul>
+<h2 id="Pthreads-概念"><a href="#Pthreads-概念" class="headerlink" title="Pthreads 概念"></a>Pthreads 概念</h2><h3 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h3><p>从技术上讲，线程是被定义为独立的指令流，可以被操作系统调度，按照指定顺序原样执行。通俗来讲就是独立于主程序运行的 <strong>过程</strong>。</p>
+<p>理解线程之前，有必要了解一下 <code>Unix</code> 的进程。进程由操作系统创建，包含一些程序资源和执行状态信息，包括：</p>
+<ul>
+<li>进程 ID，进程组 ID，用户 ID 和组 ID</li>
+<li>上下文环境 Environment</li>
+<li>工作目录 Working directory</li>
+<li>程序说明 Program instructions</li>
+<li>寄存器 Registers</li>
+<li>栈 Stack</li>
+<li>堆 Heap</li>
+<li>文件描述符 File descriptors</li>
+<li>信号动作 Signal actions</li>
+<li>共享库 Shared libraries</li>
+<li>进程间通信工具（如消息队列，管道，信号量，共享内存）</li>
+</ul>
+<p><img src="https://computing.llnl.gov/tutorials/pthreads/images/process.gif" alt></p>
+<p><img src="https://computing.llnl.gov/tutorials/pthreads/images/thread.gif" alt></p>
+<p>线程在这些进程资源中使用和存在，但是能够由操作系统进行调度并作为独立实体运行，这在很大程度上是因为线程仅复制使他们需要的基本资源。</p>
+<p>线程之所以能够实现这种流程控制，是因为线程维护着自己的：</p>
+<ul>
+<li>堆栈指针</li>
+<li>寄存器</li>
+<li>调度属性，如策略优先级</li>
+<li>挂起和阻塞信号</li>
+<li>线程特定数据</li>
+</ul>
+<p>在 Unix 环境中，线程：</p>
+<ul>
+<li>存在于进程中并使用进程资源</li>
+<li>只要该线程的父进程存在且在运行，线程便拥有自己的独立控制流</li>
+<li>仅复制需要独立运行的必要资源</li>
+<li>可以与其他独立或非独立的线程共享进程资源</li>
+<li>父进程结束，子进程也结束</li>
+<li>是 <code>轻量级</code> 的，因为大多数开销已经通过创建进程的时候完成</li>
+</ul>
+<p>因为同一进程中的线程共享进程资源：</p>
+<ul>
+<li>一个线程对共享系统资源所作的改变，其他线程都可以看到</li>
+<li>具有相同值得指针指向相同的数据</li>
+<li>可以读写相同内存的数据，因此需要开发人员进行显式同步</li>
+</ul>
+<h3 id="什么是-Pthreads"><a href="#什么是-Pthreads" class="headerlink" title="什么是 Pthreads"></a>什么是 Pthreads</h3><p>从历史上看，硬件供应商已经实现了自己专有的线程版本，这些实现方式各不相同，使得开发人员难以移植。为了充分利用线程功能，需要标准化编程接口：</p>
+<ul>
+<li>对于 Unix 系统，此接口已由 <code>IEEE POSIX 1003.1c</code> 标准指定</li>
+<li>遵守该标准的实现成为 POSIX 线程或 Pthead</li>
+<li>现在大多数硬件开发商除了提供自己专有的线程接口外还提供有 Pthread</li>
+</ul>
+<p>Pthread 被定义为一组 C 语言编程类型和过程调用，通过 <code>pthread.h</code> 头文件和线程库实现，在有些视线中该库可能是另一个库的一部分（比如 libc）。</p>
+<h2 id="为什么要使用-Pthreads"><a href="#为什么要使用-Pthreads" class="headerlink" title="为什么要使用 Pthreads"></a>为什么要使用 Pthreads</h2><ul>
+<li><p>轻量级: 与创建和管理进程的成本相比，可以以更少的操作系统开销创建线程。管理线程比管理进程需要更少的系统资源。</p>
+</li>
+<li><p>高效: Pthread 创建的线程之间共用主进程的地址空间，不需要内存的复制操作，因此效率更高。</p>
+</li>
+<li><p>其他原因</p>
+</li>
+</ul>
+<h2 id="设计线程程序"><a href="#设计线程程序" class="headerlink" title="设计线程程序"></a>设计线程程序</h2><h4 id="并行编程"><a href="#并行编程" class="headerlink" title="并行编程"></a>并行编程</h4><p>现代操作系统非常适合并行编程，设计并行编程需要注意一些事项：</p>
+<ul>
+<li><p>使用哪种类型的并行编程模型</p>
+</li>
+<li><p>问题分区</p>
+</li>
+<li><p>负载均衡</p>
+</li>
+<li><p>通信技术</p>
+</li>
+<li><p>数据依存关系</p>
+</li>
+<li><p>同步和竞争条件</p>
+</li>
+<li><p>内存问题</p>
+</li>
+<li><p>IO 问题</p>
+</li>
+<li><p>程序复杂度</p>
+</li>
+<li><p>工作量/工作时间</p>
+</li>
+</ul>
+<p>有兴趣的话可以参考 <a href="https://computing.llnl.gov/tutorials/parallel_comp" target="_blank" rel="noopener">并行计算简介</a> 快速了解。</p>
+<p>如果进程 1 和进程 2 可以实时互换、交错或重叠，那么他们就可以使用多线程进行处理。</p>
+<p><img src="https://computing.llnl.gov/tutorials/pthreads/images/concurrent.gif" alt="two_process"></p>
+<p>总得来说，具有一些特征的程序比较适合多线程：</p>
+<ul>
+<li><p>需要同时执行多个任务</p>
+</li>
+<li><p>可能存在很长的 IO 等待</p>
+</li>
+<li><p>某些地方使用 CPU 较多，但其他地方使用 CPU 较少</p>
+</li>
+<li><p>必须要响应异步事件</p>
+</li>
+<li><p>存在优先级（一些工作比其他工作重要）</p>
+</li>
+</ul>
+<p>常见的几种多线程模型：</p>
+<ul>
+<li><p>Manager/worker: 一个线程，Manager 将工作分配给其他线程，也就是工人。一般包含两种形式的 manager/worker 模型：静态 worker 池和动态 worker 池。</p>
+</li>
+<li><p>Pipeline：任务被分成一系列子操作，每个子操作都由一个不同的线程串行处理，但同时进行。</p>
+</li>
+<li><p>Peer：与 manager/worker 模型类似，但是在主线程创建其他线程后，主线程也参与到了工作中。</p>
+</li>
+</ul>
+<h4 id="共享内存模型"><a href="#共享内存模型" class="headerlink" title="共享内存模型"></a>共享内存模型</h4><p>所有线程都可以访问相同的共享内存</p>
+<p>线程也有自己的私有数据</p>
+<p>Programer 负责同步访问（保护）全局共享数据。</p>
+<p><img src="https://computing.llnl.gov/tutorials/pthreads/images/sharedMemoryModel.gif" alt="shared_mem"></p>
+<h4 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h4><p>线程安全简而言之就是同时执行多个线程而不会破环共享数据或创建竞争条件的能力，比如创建了多个线程，每个线程都调用一个公共的库：</p>
+<ul>
+<li><p>公共库中的函数会访问或修改内存中的全局结构或位置</p>
+</li>
+<li><p>由于每个线程调用公共库中的函数时可能会同时修改全局结构体或内存的数据。</p>
+</li>
+<li><p>如果调用过程没有同步一下调用顺序来避免冲突，那就是不安全的。</p>
+</li>
+</ul>
+<p><img src="https://computing.llnl.gov/tutorials/pthreads/images/threadUnsafe.gif" alt="thread_safe"></p>
+<p>外部库对用户的影响是：如果你不是百分百确定是线程安全的，那么你肯定能遇到线程安全问题，如果不能保证应用程序是线程安全的，就假设他们是线程不安全的，然后通过相关手段保证应用程序是线程安全的。</p>
+<h4 id="线程限制"><a href="#线程限制" class="headerlink" title="线程限制"></a>线程限制</h4><p>尽管 Pthread 是 ANSI/IEEE 标准，但是它的实现通常是以非标准话的形式，因此一个平台上运行良好的程序可能在两一个平台上无法运行。</p>
+<p>设计程序时要考虑两个重要的限制是允许最大线程数和默认的线程堆栈大小。</p>
+<h2 id="Pthreads-API"><a href="#Pthreads-API" class="headerlink" title="Pthreads API"></a>Pthreads API</h2><p>Pthreads API 可以分为四个组：</p>
+<ol>
+<li>线程管理</li>
+<li>互斥体</li>
+<li>条件变量</li>
+<li>同步</li>
+</ol>
+<p>命名约定都是以 <code>pthread_</code> 开头，一些示例：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">前缀</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">pthread_</td>
+<td>线程本身和其他线程</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_attr_</td>
+<td>线程属性</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_mutex_</td>
+<td>互斥体</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_mutexattr_</td>
+<td>互斥对象属性</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_cond_</td>
+<td>条件变量</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_condattr_</td>
+<td>条件变量属性</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_key_</td>
+<td>特定于线程的数据键</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_rwlock_</td>
+<td>读写锁</td>
+</tr>
+<tr>
+<td style="text-align:left">pthread_barrier_</td>
+<td>栅栏同步</td>
+</tr>
+</tbody>
+</table>
+<h2 id="线程管理"><a href="#线程管理" class="headerlink" title="线程管理"></a>线程管理</h2><h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><p>创建线程使用到的 api 有：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pthread_craete(thread, attr, start_routine, arg)</span><br><span class="line">pthread_exit(status)</span><br><span class="line">pthraed_cancle(thread)</span><br><span class="line">pthread_attr_init(attr)</span><br><span class="line">pthread_attr_destroy(attr)</span><br></pre></td></tr></table></figure>
+<p>程序中的 main 函数包含一个默认线程，其他所有线程必须手动创建。<code>pthread_create</code> 创建一个新线程并执行，可以多次调用来创建多个线程，他的参数：</p>
+<ul>
+<li>thread：子线程返回的唯一标识符</li>
+<li>attr：用于设置线程属性，可以指定线程属性对象或者指定为NULL</li>
+<li>start_routine: 创建线程后执行的函数</li>
+<li>arg：传递给 <code>start_routine</code> 的参数，必须以 <code>void *</code> 类型的指针传递进去，如果不传任何参数可以使用 NULL</li>
+</ul>
+<p>进程可以创建线程的最大数量取决于系统配置，Linux 查询和显示系统限制的方法如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">╭─jqy<span class="meta">@DESKTOP</span>-JSHG4MO <span class="regexp">~/githubs/</span>Tests/vim ‹master›  [<span class="number">20</span><span class="number">-12</span><span class="number">-07</span> <span class="number">15</span>:<span class="number">53</span>]</span><br><span class="line">╰─$ ulimit -a</span><br><span class="line">-<span class="string">t:</span> cpu time (seconds)              unlimited</span><br><span class="line">-<span class="string">f:</span> file size (blocks)              unlimited</span><br><span class="line">-<span class="string">d:</span> data seg size (kbytes)          unlimited</span><br><span class="line">-<span class="string">s:</span> stack size (kbytes)             <span class="number">8192</span></span><br><span class="line">-<span class="string">c:</span> core file size (blocks)         <span class="number">0</span></span><br><span class="line">-<span class="string">m:</span> resident set size (kbytes)      unlimited</span><br><span class="line">-<span class="string">u:</span> processes                       <span class="number">50805</span></span><br><span class="line">-<span class="string">n:</span> file descriptors                <span class="number">1024</span></span><br><span class="line">-<span class="string">l:</span> locked-<span class="keyword">in</span>-memory size (kbytes)  <span class="number">64</span></span><br><span class="line">-<span class="string">v:</span> address space (kbytes)          unlimited</span><br><span class="line">-<span class="string">x:</span> file locks                      unlimited</span><br><span class="line">-<span class="string">i:</span> pending signals                 <span class="number">50805</span></span><br><span class="line">-<span class="string">q:</span> bytes <span class="keyword">in</span> POSIX msg queues       <span class="number">819200</span></span><br><span class="line">-<span class="string">e:</span> max nice                        <span class="number">0</span></span><br><span class="line">-<span class="string">r:</span> max rt priority                 <span class="number">0</span></span><br><span class="line">-N <span class="number">15</span>:                              unlimited</span><br></pre></td></tr></table></figure>
+<p>线程一旦创建，线程间的关系就是平等的，而且线程也可以创建其他线程，线程之前没有隐含的层次结构或依赖性</p>
+<p><img src="https://computing.llnl.gov/tutorials/pthreads/images/peerThreads.gif" alt></p>
+<h3 id="线程属性"><a href="#线程属性" class="headerlink" title="线程属性"></a>线程属性</h3><p>默认情况下，创建具有某些属性的线程后，可以通过线程属性对象更新其中的一些属性。</p>
+<p><code>pthread_attr_init</code> 和 <code>pthread_attr_destroy</code> 用于初始化或销毁属性对象。</p>
+<p>线程属性中可查询/设置的特定属性包括：</p>
+<ul>
+<li>Detached or joinable state</li>
+<li>Scheduling inheritance</li>
+<li>Scheduling policy</li>
+<li>Scheduling parameters</li>
+<li>Scheduling contention scope</li>
+<li>Stack size</li>
+<li>Stack address</li>
+<li>Stack guard (overflow) size</li>
+</ul>
+<h3 id="线程绑定和调度"><a href="#线程绑定和调度" class="headerlink" title="线程绑定和调度"></a>线程绑定和调度</h3><p>Pthreads API 提供了一些例程，用于指定如何有计划地执行线程，例如，可以将线程设置为 FIFO（先进先出），RR（循环）或 OTHRE（操作系统决定），另外还提供了设置线程的调度优先级的功能。可以参考 <a href="https://computing.llnl.gov/tutorials/pthreads/man/sched_setscheduler.txt" target="_blank" rel="noopener"><code>sched_setscheduler</code></a> 了解有关 Linux 下事物工作方法。</p>
+<p>Pthrads API 不提供绑定线程到指定 cpu 的功能，但是本地实现包含这个功能，例如<a href="https://computing.llnl.gov/tutorials/pthreads/man/pthread_setaffinity_np.txt" target="_blank" rel="noopener"><code>pthread_setaffinity_np</code></a> 例程，这里的 <code>_np</code> 代表 <code>非便携式</code>。</p>
+<p>本地操作系统可以提供一套执行此操作的方法，例如 Linux 提供了<a href="https://computing.llnl.gov/tutorials/pthreads/man/sched_setaffinity.txt" target="_blank" rel="noopener"><code>sched_setaffinity</code></a> 例程</p>
+<h3 id="终止线程-pthread-exit"><a href="#终止线程-pthread-exit" class="headerlink" title="终止线程 pthread_exit()"></a>终止线程 pthread_exit()</h3><p>有几种线程的终止方法：</p>
+<ul>
+<li>线程通常从其启动的程序中返回</li>
+<li>线程调用 <code>pthread_exit</code> 终止，无论线程工作是否完成</li>
+<li>该线程被另一个线程通过 <code>pthread_cancel</code> 取消</li>
+<li>整个程序调用 <code>exec()</code> 或 <code>exit()</code> 终止</li>
+<li>如果 <code>main()</code> 先结束，无需显示调用 <code>pthread_exit</code> 线程也会结束</li>
+</ul>
+<p>pthread_exit() 允许指定一个可选的终止 status 参数，正常执行完成的子线程中，通常可以省略调用 pthread_exit() 方法，除非你想返回一个可选的状态码。</p>
+<p>清理：pthread_exit() 不会关闭文件，线程终止后，在线程内打开的文件保持打开状态。</p>
+<p>main 函数调用 pthread_ext()：</p>
+<ul>
+<li><p>如果 main 在没有调用 pthread_exit() 的情况下在其产生的线程之前完成，那么就会存在问题，它创建的所有线程都会终止，因为 main 已经完成，并且不再支持线程</p>
+</li>
+<li><p>通过让 main 显式调用 pthread_exit()，main 将被阻塞并保持活动状态以支持它创建的线程，直到子线程全部完成。</p>
+</li>
+</ul>
+<p>Pthread 创建和终止线程的示例代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NUM_THREADS     5</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">PrintHello</span><span class="params">(<span class="keyword">void</span> *threadid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">long</span> tid;</span><br><span class="line">   tid = (<span class="keyword">long</span>)threadid;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">"Hello World! It's me, thread #%ld!\n"</span>, tid);</span><br><span class="line">   pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">pthread_t</span> threads[NUM_THREADS];</span><br><span class="line">   <span class="keyword">int</span> rc;</span><br><span class="line">   <span class="keyword">long</span> t;</span><br><span class="line">   <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++)&#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"In main: creating thread %ld\n"</span>, t);</span><br><span class="line">      rc = pthread_create(&amp;threads[t], <span class="literal">NULL</span>, PrintHello, (<span class="keyword">void</span> *)t);</span><br><span class="line">      <span class="keyword">if</span> (rc)&#123;</span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">"ERROR; return code from pthread_create() is %d\n"</span>, rc);</span><br><span class="line">         <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/* Last thing that main() should do */</span></span><br><span class="line">   pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出内容如下：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">In</span> main: creating thread <span class="number">0</span></span><br><span class="line"><span class="keyword">In</span> main: creating thread <span class="number">1</span></span><br><span class="line">Hello World! It<span class="symbol">'s</span> me, thread #<span class="number">0</span>!</span><br><span class="line"><span class="keyword">In</span> main: creating thread <span class="number">2</span></span><br><span class="line">Hello World! It<span class="symbol">'s</span> me, thread #<span class="number">1</span>!</span><br><span class="line">Hello World! It<span class="symbol">'s</span> me, thread #<span class="number">2</span>!</span><br><span class="line"><span class="keyword">In</span> main: creating thread <span class="number">3</span></span><br><span class="line"><span class="keyword">In</span> main: creating thread <span class="number">4</span></span><br><span class="line">Hello World! It<span class="symbol">'s</span> me, thread #<span class="number">3</span>!</span><br><span class="line">Hello World! It<span class="symbol">'s</span> me, thread #<span class="number">4</span>!</span><br></pre></td></tr></table></figure>
+<h3 id="给线程传递参数"><a href="#给线程传递参数" class="headerlink" title="给线程传递参数"></a>给线程传递参数</h3><p>pthread_create() 允许用户传递一个参数给要启动的线程，对于需要传递多个参数的情况，通过创建一个包含所有参数的结构体，然后将该结构体的指针传递过去即可。需要注意的是：<strong>所有参数必须通过引用并转换为(void *)</strong></p>
+<p>线程参数传递示例程序：</p>
+<p>传递一个参数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> taskids[NUM_THREADS];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++)</span><br><span class="line">&#123;</span><br><span class="line">   taskids[t] = t;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">"Creating thread %ld\n"</span>, t);</span><br><span class="line">   rc = pthread_create(&amp;threads[t], <span class="literal">NULL</span>, PrintHello, (<span class="keyword">void</span> *) taskids[t]);</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>传递多个参数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_data</span>&#123;</span></span><br><span class="line">   <span class="keyword">int</span>  thread_id;</span><br><span class="line">   <span class="keyword">int</span>  sum;</span><br><span class="line">   <span class="keyword">char</span> *message;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_data</span> <span class="title">thread_data_array</span>[<span class="title">NUM_THREADS</span>];</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">PrintHello</span><span class="params">(<span class="keyword">void</span> *threadarg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">thread_data</span> *<span class="title">my_data</span>;</span></span><br><span class="line">   ...</span><br><span class="line">   my_data = (struct thread_data *) threadarg;</span><br><span class="line">   taskid = my_data-&gt;thread_id;</span><br><span class="line">   sum = my_data-&gt;sum;</span><br><span class="line">   hello_msg = my_data-&gt;message;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   ...</span><br><span class="line">   thread_data_array[t].thread_id = t;</span><br><span class="line">   thread_data_array[t].sum = sum;</span><br><span class="line">   thread_data_array[t].message = messages[t];</span><br><span class="line">   rc = pthread_create(&amp;threads[t], <span class="literal">NULL</span>, PrintHello, </span><br><span class="line">        (<span class="keyword">void</span> *) &amp;thread_data_array[t]);</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="join-和-detaching-线程"><a href="#join-和-detaching-线程" class="headerlink" title="join 和 detaching 线程"></a>join 和 detaching 线程</h3><p>方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pthread_join (threadid,status)</span><br><span class="line">pthread_detach (threadid)</span><br><span class="line">pthread_attr_setdetachstate (attr,detachstate)</span><br><span class="line">pthread_attr_getdetachstate (attr,detachstate)</span><br></pre></td></tr></table></figure>
+<h4 id="Joining"><a href="#Joining" class="headerlink" title="Joining"></a>Joining</h4><p>“Joining” 是一种完成两个线程同步的方式，比如：</p>
+<p><img src="https://computing.llnl.gov/tutorials/pthreads/images/joining.gif" alt="join"></p>
+<ul>
+<li><p>pthread_join() 会阻塞主线程，直到指定线程终止后才程序才继续往下执行。</p>
+</li>
+<li><p>如果通过 pthread_exit() 指定了子线程的返回状态，那么就可以通过 pthrea_join 获取该状态</p>
+</li>
+<li><p>一个线程匹配一个对应的 pthread_join 调用，在一个线程上进行多个 join 是逻辑上的错误。</p>
+</li>
+<li><p>还有两个同步的方法：mutexes 和 条件变量</p>
+</li>
+</ul>
+<p>怎么判断是否可以 join 呢？</p>
+<p>线程创建后，它的一个属性决定了它能否被 join，如果一个线程被创建为 detached，那么它就不能被 join。</p>
+<p>POSIX 标准指定线程应该被创建为 joinable</p>
+<p>为了创建一个 joinable 或者 detached 的线程，pthread_create() 中 attr 这个参数需要使用到，通常有一下 4 个步骤：</p>
+<ol>
+<li><p>声明一个 pthread_attr_t 类型的数据</p>
+</li>
+<li><p>使用 pthread_attr_init() 初始化这个值</p>
+</li>
+<li><p>使用 pthread_attr_setdetachstate() 设置 detached 状态</p>
+</li>
+<li><p>一切做完后，使用 pthread_attr_destroy() 清理使用到的资源</p>
+</li>
+</ol>
+<h4 id="Detaching"><a href="#Detaching" class="headerlink" title="Detaching"></a>Detaching</h4><p>使用 pthread_detach() 可以 detach 一个指定的线程，即使这个线程被创建为 joinable。</p>
+<p>如果线程需要 join，最好显示创建为 joinable，可以提高可移植性，因为默认情况下并非所有实现都可以将线程创建为 joinable的。</p>
+<p>另外如果实现知道某个线程永远不会 join 到另一个线程，那么最好在创建时就创建为 detached，某些系统资源就可以被及时释放。</p>
+<p>join 的示例程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NUM_THREADS	4</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">BusyWork</span><span class="params">(<span class="keyword">void</span> *t)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"><span class="keyword">long</span> tid;</span><br><span class="line"><span class="keyword">double</span> result=<span class="number">0.0</span>;</span><br><span class="line">tid = (<span class="keyword">long</span>)t;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"Thread %ld starting...\n"</span>,tid);</span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">1000000</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">    result = result + <span class="built_in">sin</span>(i) * <span class="built_in">tan</span>(i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"Thread %ld done. Result = %e\n"</span>,tid, result);</span><br><span class="line">pthread_exit((<span class="keyword">void</span>*) t);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">pthread_t</span> thread[NUM_THREADS];</span><br><span class="line"><span class="keyword">pthread_attr_t</span> attr;</span><br><span class="line"><span class="keyword">int</span> rc;</span><br><span class="line"><span class="keyword">long</span> t;</span><br><span class="line"><span class="keyword">void</span> *status;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Initialize and set thread detached attribute */</span></span><br><span class="line">pthread_attr_init(&amp;attr);</span><br><span class="line">pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_JOINABLE);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Main: creating thread %ld\n"</span>, t);</span><br><span class="line">    rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (<span class="keyword">void</span> *)t);  </span><br><span class="line">    <span class="keyword">if</span> (rc) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"ERROR; return code from pthread_create() is %d\n"</span>, rc);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Free attribute and wait for the other threads */</span></span><br><span class="line">pthread_attr_destroy(&amp;attr);</span><br><span class="line"><span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) &#123;</span><br><span class="line">    rc = pthread_join(thread[t], &amp;status);</span><br><span class="line">    <span class="keyword">if</span> (rc) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"ERROR; return code from pthread_join() is %d\n"</span>, rc);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Main: completed join with thread %ld having a status   </span></span><br><span class="line"><span class="string">            of %ld\n"</span>,t,(<span class="keyword">long</span>)status);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"Main: program completed. Exiting.\n"</span>);</span><br><span class="line">pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序输出：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Main: creating thread 0</span><br><span class="line">Main: creating thread 1</span><br><span class="line">Thread 0 starting...</span><br><span class="line">Main: creating thread 2</span><br><span class="line">Thread 1 starting...</span><br><span class="line">Main: creating thread 3</span><br><span class="line">Thread 2 starting...</span><br><span class="line">Thread 3 starting...</span><br><span class="line">Thread 1 done. Result = -3.153838e+06</span><br><span class="line">Thread 0 done. Result = -3.153838e+06</span><br><span class="line">Main: completed join <span class="keyword">with</span> <span class="keyword">thread</span> <span class="number">0</span> <span class="keyword">having</span> a <span class="keyword">status</span> <span class="keyword">of</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">Main</span>: completed <span class="keyword">join</span> <span class="keyword">with</span> <span class="keyword">thread</span> <span class="number">1</span> <span class="keyword">having</span> a <span class="keyword">status</span> <span class="keyword">of</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">Thread</span> <span class="number">3</span> done. <span class="keyword">Result</span> = <span class="number">-3.153838e+06</span></span><br><span class="line"><span class="keyword">Thread</span> <span class="number">2</span> done. <span class="keyword">Result</span> = <span class="number">-3.153838e+06</span></span><br><span class="line"><span class="keyword">Main</span>: completed <span class="keyword">join</span> <span class="keyword">with</span> <span class="keyword">thread</span> <span class="number">2</span> <span class="keyword">having</span> a <span class="keyword">status</span> <span class="keyword">of</span> <span class="number">2</span></span><br><span class="line"><span class="keyword">Main</span>: completed <span class="keyword">join</span> <span class="keyword">with</span> <span class="keyword">thread</span> <span class="number">3</span> <span class="keyword">having</span> a <span class="keyword">status</span> <span class="keyword">of</span> <span class="number">3</span></span><br><span class="line"><span class="keyword">Main</span>: program completed. Exiting.</span><br></pre></td></tr></table></figure>
+<p>内容太多，下期继续。。。</p>
+<p>参考链接：</p>
+<p><a href="https://computing.llnl.gov/tutorials/pthreads/" target="_blank" rel="noopener">POSIX Threads Programming</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/13/Java对象那些事儿/" rel="next" title="java对象那些事儿">
+                <i class="fa fa-chevron-left"></i> java对象那些事儿
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pthreads-概念"><span class="nav-number">1.</span> <span class="nav-text">Pthreads 概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是线程"><span class="nav-number">1.1.</span> <span class="nav-text">什么是线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是-Pthreads"><span class="nav-number">1.2.</span> <span class="nav-text">什么是 Pthreads</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要使用-Pthreads"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用 Pthreads</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设计线程程序"><span class="nav-number">3.</span> <span class="nav-text">设计线程程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#并行编程"><span class="nav-number">3.0.1.</span> <span class="nav-text">并行编程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#共享内存模型"><span class="nav-number">3.0.2.</span> <span class="nav-text">共享内存模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程安全"><span class="nav-number">3.0.3.</span> <span class="nav-text">线程安全</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程限制"><span class="nav-number">3.0.4.</span> <span class="nav-text">线程限制</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#Pthreads-API"><span class="nav-number">4.</span> <span class="nav-text">Pthreads API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程管理"><span class="nav-number">5.</span> <span class="nav-text">线程管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建线程"><span class="nav-number">5.1.</span> <span class="nav-text">创建线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程属性"><span class="nav-number">5.2.</span> <span class="nav-text">线程属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程绑定和调度"><span class="nav-number">5.3.</span> <span class="nav-text">线程绑定和调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#终止线程-pthread-exit"><span class="nav-number">5.4.</span> <span class="nav-text">终止线程 pthread_exit()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#给线程传递参数"><span class="nav-number">5.5.</span> <span class="nav-text">给线程传递参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#join-和-detaching-线程"><span class="nav-number">5.6.</span> <span class="nav-text">join 和 detaching 线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Joining"><span class="nav-number">5.6.1.</span> <span class="nav-text">Joining</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Detaching"><span class="nav-number">5.6.2.</span> <span class="nav-text">Detaching</span></a></li></ol></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
