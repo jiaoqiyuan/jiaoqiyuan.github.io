@@ -262,6 +262,204 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/26/MapReduceSourcedoce-ReduceTask/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/26/MapReduceSourcedoce-ReduceTask/" itemprop="url">MapReduce源码分析3-ReduceTask</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-26T11:52:15+08:00">
+                2019-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ckm0dldz9004ccnttgr7dyh1i" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        
+          <blockquote>
+<p>之前介绍了 <a href="https://jiaoqiyuan.cn/2018/12/24/MapReduce%E7%9A%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">MapReduce 的原理</a>、 <a href="https://jiaoqiyuan.cn/2019/01/19/MapReduceSourceCode-JobAndSplite/" target="_blank" rel="noopener">MapReduce 任务的提交与切片</a>以及<a href="https://jiaoqiyuan.cn/2019/01/20/MapReduceSourceCode-MapTask/" target="_blank" rel="noopener">Map 任务的执行者MapTask</a>相关的源码，知道了 MapReduce 的原理并了解了部分 Map 任务源码的实现，这里分析一下具体执行 Reduce 任务的 ReduceTask 的源码，看一下 Reduce 任务的具体源码实现。</p>
+</blockquote>
+<blockquote>
+<p>这是 MapReduce 源码分析系列的第三篇文章，有关 MapReduce 相关的所有内容可以到<a href="https://jiaoqiyuan.cn/tags/MapReduce/" target="_blank" rel="noopener">这里</a>查看。</p>
+</blockquote>
+<hr>
+<p>之前看到了 MapTask 任务的具体执行流程，Map 任务执行的输出的一个或多个结果最终会交给 Reduce 端，由 Reduce 汇聚处理之后输出。现在就看一下 ReduceTask 的具体源码，看一下 Reduce 端都做了些什么事。这里有关 Shuffle 的代码先不分析，主要看 Reduce 端的实现。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/01/26/MapReduceSourcedoce-ReduceTask/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/25/Codeabbey网站-涉及算法相关的题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -386,7 +584,7 @@
           
           
             <div class="post-gallery-row">
-              <a class="post-gallery-img fancybox" href="https://www.codeabbey.com/img/facade.gif" rel="gallery_ckknt9r8o0016jjttidssd051" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+              <a class="post-gallery-img fancybox" href="https://www.codeabbey.com/img/facade.gif" rel="gallery_ckm0dldxe002icnttixkz2ftt" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
                 <img src="https://www.codeabbey.com/img/facade.gif" itemprop="contentUrl">
               </a>
             
@@ -586,7 +784,7 @@
           
           
             <div class="post-gallery-row">
-              <a class="post-gallery-img fancybox" href="https://www.codeabbey.com/img/facade.gif" rel="gallery_ckknt9rfc005hjjttw8zmlxz5" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+              <a class="post-gallery-img fancybox" href="https://www.codeabbey.com/img/facade.gif" rel="gallery_ckm0dle0x005scnttrzb8ep58" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
                 <img src="https://www.codeabbey.com/img/facade.gif" itemprop="contentUrl">
               </a>
             
@@ -789,7 +987,7 @@
           
           
             <div class="post-gallery-row">
-              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ckknt9re60054jjttk120ow7h" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ckm0dldzq0057cntta7f9z11e" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
                 <img src="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" itemprop="contentUrl">
               </a>
             
@@ -987,7 +1185,7 @@
           
           
             <div class="post-gallery-row">
-              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ckknt9rd8003hjjttnjtoa9rd" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+              <a class="post-gallery-img fancybox" href="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" rel="gallery_ckm0dldz9004bcnttgpi67151" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
                 <img src="https://blog.eduonix.com/wp-content/uploads/2016/04/Introduction-to-Map-Reduce-Programming-model-reviewed-740X296.jpg" itemprop="contentUrl">
               </a>
             
@@ -1009,207 +1207,6 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/01/19/MapReduceSourceCode-JobAndSplite/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/使用java语言产生素数-译/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jony Chiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar-6.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="My Love">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/18/使用java语言产生素数-译/" itemprop="url">使用java语言产生素数-译</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T14:43:26+08:00">
-                2019-01-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/翻译/" itemprop="url" rel="index">
-                    <span itemprop="name">翻译</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2.4k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  11
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
-          
-          
-            <div class="post-gallery-row">
-              <a class="post-gallery-img fancybox" href="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png" rel="gallery_ckknt9rdm004cjjttummpt9l3" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
-                <img src="https://fossbytes.com/wp-content/uploads/2018/09/java-11.png" itemprop="contentUrl">
-              </a>
-            
-          
-
-          
-          </div>
-        </div>
-      
-
-      
-        
-          <blockquote>
-<p>文章来源： <a href="https://www.baeldung.com/java-generate-prime-numbers" target="_blank" rel="noopener">Generating Prime Numbers in Java</a></p>
-</blockquote>
-<blockquote>
-<p>作者： <a href="https://www.baeldung.com/author/baeldung/" target="_blank" rel="noopener">baeldung</a></p>
-</blockquote>
-<hr>
-<h2 id="Generating-Prime-Numbers-in-Java"><a href="#Generating-Prime-Numbers-in-Java" class="headerlink" title="Generating Prime Numbers in Java"></a>Generating Prime Numbers in Java</h2><h2 id="1-Introduction-简介"><a href="#1-Introduction-简介" class="headerlink" title="1. Introduction 简介"></a>1. Introduction 简介</h2><p>In this tutorial, we’ll show various ways in which we can generate prime numbers using Java.</p>
-<p>在本教程中，我将会使用java给你展示几种不同的素数生成方法。</p>
-<p>If you’re looking to check if a number is prime – here’s a <a href="https://www.baeldung.com/java-prime-numbers" target="_blank" rel="noopener">quick guide</a> on how to do that.</p>
-<p>假如你正需要验证一个数字是否为素数 - 这是一个快<a href="https://www.baeldung.com/java-prime-numbers" target="_blank" rel="noopener">速判定素数</a>的指南。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/18/使用java语言产生素数-译/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1299,7 +1296,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
