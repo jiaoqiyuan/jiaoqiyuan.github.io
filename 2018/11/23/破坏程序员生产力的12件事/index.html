@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, Jony">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：Learning programming is different from learning a programming language  Top 12 Things That Destroy Developer ProductivityA lot of articles address the role of tech leads and engineer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="破坏程序员生产力的12件事(译)">
+<meta property="og:url" content="http://yoursite.com/2018/11/23/破坏程序员生产力的12件事/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：Learning programming is different from learning a programming language  Top 12 Things That Destroy Developer ProductivityA lot of articles address the role of tech leads and engineer">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-03-20T08:38:15.051Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="破坏程序员生产力的12件事(译)">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：Learning programming is different from learning a programming language  Top 12 Things That Destroy Developer ProductivityA lot of articles address the role of tech leads and engineer">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/23/破坏程序员生产力的12件事/">
+
+
+
+
+
+  <title>破坏程序员生产力的12件事(译) | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/破坏程序员生产力的12件事/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">破坏程序员生产力的12件事(译)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T09:34:53+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/23/破坏程序员生产力的12件事/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/11/23/破坏程序员生产力的12件事/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  21
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>信息来源：<a href="https://github.com/ruanyf/weekly/blob/master/docs/issue-32.md" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+<p>文章来源：<a href="https://anaxi.com/blog/2018/10/15/top-12-things-that-destroy-developer-productivity/" target="_blank" rel="noopener">Learning programming is different from learning a programming language</a></p>
+<hr>
+<h1 id="Top-12-Things-That-Destroy-Developer-Productivity"><a href="#Top-12-Things-That-Destroy-Developer-Productivity" class="headerlink" title="Top 12 Things That Destroy Developer Productivity"></a>Top 12 Things That Destroy Developer Productivity</h1><p>A lot of articles address the role of tech leads and engineering managers. One common theme we often come across is how to increase a team’s productivity. But before you focus your energy trying to increase their productivity, you might first want to consider what’s destroying it, to have a sound base on which you can build. Unfortunately, even though <a href="https://book.douban.com/subject/1451438/" target="_blank" rel="noopener">Peopleware</a> was published almost 30 years ago, we see lots of teams suffering from huge productivity loss in some (negatively) remarkable ways!</p>
+<p>有很多涉及到技术主管和工程经理相关的文章,他们都讲到的一点就是怎么提高团队的生产力.但是在你集中精力来提高团队生产力之前,你要明白是什么降低了团队的生产力,以便我们能在以后建立起牢固的根基来保证团队的生产力.不幸的是即使<a href="https://book.douban.com/subject/1451438/" target="_blank" rel="noopener">Peopleware</a>这本书已经发行了将近30年,我们仍然看到许多团队以明显(消极)的方式遭受着巨大的生产力损失的痛苦.</p>
+<p>No one expects a programmer to get work done without access to a computer, but there are many companies that expect programmers to get work done without access to their mind. This is equally unrealistic.</p>
+<p>没有人会期望一个编程人员在无法使用计算机的情况下完成工作,但是有很多公司却希望程序员在不了解公司意图的情况下完成工作,这同样很扯.</p>
+<p>So let’s deep dive into our list of 12 things that prevent your developers from getting “into the zone” and being productive. I will try to prioritize this list from most to least impactful. Feel free to comment!</p>
+<p>那么就让我们深入了解一下能够防止你的开发人员步入误区,并且变得高产的12件事吧,我会按对生产力影响从大到小的顺序罗列这12件事,你们可以随意评论.</p>
+<p>If you’re wondering if all this is worth the investment, just consider the developer’s salaries. Even 10% more productivity is a LOT!</p>
+<p>如果你在犹豫我说的这12件事值不值得投资,想一下你员工的工资,即使是10%的生产力提升也会给公司带来巨大利益.</p>
+<h2 id="1-Interruptions-amp-Meetings"><a href="#1-Interruptions-amp-Meetings" class="headerlink" title="1) Interruptions &amp; Meetings"></a>1) Interruptions &amp; Meetings</h2><h2 id="1-各种打扰和会议"><a href="#1-各种打扰和会议" class="headerlink" title="1) 各种打扰和会议"></a>1) 各种打扰和会议</h2><p>Interruptions are the top productivity killer for developers, in my mind. Developers can’t easily go back to where they were right before an interruption. They need to get into the mindset for development and then slowly trace back to where they left off. This can easily take more than 30 minutes. And the more interruptions, the more frustration, the less quality work, the more bugs – and it goes on.</p>
+<p>在我看来,被打断思路对于开发人员来说是最有损生产力的因素,开发人员没有办法轻易地正确回到他们被打断之前的状态,他们必须再次进入之前的开发状态然后慢慢回到到他们被打断之前的思路中,而这很容易就能耽误他们30分钟的时间.而且被打断的次数越多,越让人感到挫败感,工作质量就会下降,bug也会越多,并且会一直这样下去.</p>
+<p>“<em>The more times you trip me up while I’m trying to get started – the longer between each time I’m going to try. If you fill my morning with interruptions – don’t be surprised when the day is unproductive.</em>” A developer on Reddit</p>
+<p>Reddit上的一个开发人员这样说:<em>“我工作的时候被打断的次数越多,恢复到工作状态需要的时间就越长,如果你一上午都在打扰我,那么就不要怪我今天生产力抵消啦.”</em> </p>
+<p>What about meetings? The only difference between a meeting and an interruption is that a meeting is a planned interruption, which makes it even worse. Developers can’t progress on a task if they know that they will have an interruption while working on it. So if they have a meeting in one or two hours, they will not be able to progress on anything, as most engineering tasks take more time.</p>
+<p>那么会议呢?会议与打断的唯一区别就是会议是有计划地打断,这就让会议给生产力带来更加严重的影响.开发人员在开发过程中如果知道自己将会参加一个会议时他们是没办法专心推进一项任务的,随后也将不会取得任何进展,然而大部分工程项目是需要花费大量时间的.</p>
+<p>As Paul Graham wrote, <em>“A single meeting can blow a whole afternoon by breaking it into two pieces, each too small to do anything hard in.”</em></p>
+<p>就如Paul Graham说的,<em>“一个会议就能让整个下午分割成两个时间段,每个时间段都太段了,以至于你很难做好任何事情.”</em></p>
+<p>How can this be avoided? This part is well documented; you have no excuse. Hold short status meetings at the very start of the day or just before lunch, for example, to avoid unnecessary interruptions.</p>
+<p>怎么才能避免这些打扰呢?那就是好好记录一下,被打断后不要有任何辩解.比如,在每天刚开始的时候或者是在午饭前举办一个简短的<a href="http://www.teamreporterapp.com/status-meetings-with-best-practices-and-alternatives/" target="_blank" rel="noopener">status metting</a>以避免工作中不必要的打扰.</p>
+<h2 id="2-Micro-management"><a href="#2-Micro-management" class="headerlink" title="2) Micro-management"></a>2) Micro-management</h2><h2 id="2-微观管理"><a href="#2-微观管理" class="headerlink" title="2) 微观管理"></a>2) <a href="https://zh.wikipedia.org/wiki/%E5%BE%AE%E8%A7%80%E7%AE%A1%E7%90%86" target="_blank" rel="noopener">微观管理</a></h2><p>Of the different types of managers, micro-managers might be the worst in terms of the developers’ productivity. Sure, micro-managers tend to have more meetings and unplanned interruptions. But it’s not only that. They show a lack of trust, and by doing so, you feel they constantly undermine your skills and your ability to get things done. Any motivation a developer had between interruptions will be just gone at that point. The impact goes beyond productivity. Micro-managers might be the first reason for developers to leave, or at the very least, to change teams.</p>
+<p>在不同类型的管理者中,微观管理或许对团队生产力来说是最糟糕影响因素.可以肯定的是,微观管理趋向于开更多的会以及更多随意的打扰,但还不仅仅是这些.微观管理代表信任的缺失,通常也会表现出来,你会觉得他们经常低估你的技能和你完成工作的能力,开发者在两次被打扰之间的任何想要好好工作的动机都会因为上述原因瞬间消失不见,这带来的影响超过了员工的生产力.微观管理可能是导致开发者离开的首要因素,或者至少是改变团队的首要因素.</p>
+<h2 id="3-Vagueness"><a href="#3-Vagueness" class="headerlink" title="3) Vagueness"></a>3) Vagueness</h2><h2 id="3-需求模糊"><a href="#3-需求模糊" class="headerlink" title="3) 需求模糊"></a>3) 需求模糊</h2><p>There are many ways to illustrate vagueness. Bug reports like “It’s broken, fix it!” don’t have enough information for developers to work off of. By the way, having a bug report template can help in that case.</p>
+<p>模糊有很多种,比如bug报告像这样,”程序崩了,赶紧修复它!”,这对开发人员老说根本没有足够的信息来debug,这种情况下有一个bug报告模板能带来不少帮助.</p>
+<p>Or unclear specification on a feature, in which case developers will start implementing what feels right to them, before they have to start again from scratch once the manager better details the expected behavior.</p>
+<p>或者对某个功能的规范不明确，在这种情况下，一旦管理员更好地详细说明了预期的行为，开发人员就能在他们不得不重新开始之前,开始实现对他们觉得对的事情。</p>
+<p>Unclear prioritization also belongs in this category. The time that a developer spends wondering if they are working on the right task can so easily be avoided. And if ever they get a comment from the manager asking why they worked on this particular task (while priorities were not defined)…well, you get it – a lot of frustration…</p>
+<p>优先级不明确也属于这个范畴.其实可以很容易地就避免开发人员花时间犹豫他们是否干了正确的事,如果开发人员得到经理的评论,问他们为什么他们要从事这项特殊的任务(然而事情的优先级是没有定义好的)…额, 你懂的,一吨挫败感.</p>
+<h2 id="4-Seagull-Management"><a href="#4-Seagull-Management" class="headerlink" title="4) Seagull Management"></a>4) Seagull Management</h2><h2 id="4-海鸥管理"><a href="#4-海鸥管理" class="headerlink" title="4) 海鸥管理"></a>4) <a href="https://en.wikipedia.org/wiki/Seagull_manager" target="_blank" rel="noopener">海鸥管理</a></h2><p>Have you ever heard of it? It happens when managers are totally uninvolved in the work, but… they just swoop down once in a while to shit all over everything. “This is wrong, and this, and this looks bad,” etc., before flying away again. I have to admit I loved the image, but unfortunately, this happens more often than we would like it to. This behavior is deeply frustrating to developers; they won’t be able to get back in the zone in the next few hours, and sometimes not even for days.</p>
+<p>听说过Seagull Management(海鸥管理)吗?它通常发生在管理者完全不参与到实际的工作中，但是…,他们偶尔会突然参与进来把所有人都安排得任务满满，在他们离开前总会撂下这些话：”这个不对，这个也不对，这个看起来好像也有问题……”等等。我得承认我喜欢这种形象，但不幸的是，这种情况发生太多，让我们没法再喜欢它了。这种行为对开发人员造成了严重得困扰，他们再接下来的几个小时里都难以回到之前的思维状态下，有时情况会更糟，甚至是几天时间。</p>
+<h2 id="5-Credit-Greediness"><a href="#5-Credit-Greediness" class="headerlink" title="5) Credit Greediness"></a>5) Credit Greediness</h2><h2 id="5-贪功"><a href="#5-贪功" class="headerlink" title="5) 贪功"></a>5) 贪功</h2><p>Have you ever had a manager or other developer who took all the credit for the work you have done in the past weeks? Developers value competence above all. Taking the credit for someone else is taking the other’s competence for yourself and removing it from him or her. This is pretty high up on my list, as I feel it creates so much tension that it just destroys the whole developers’ productivity for quite a while.</p>
+<p>你是否曾经有过这样的经理或者同事，他们把你几周辛苦工作取得的成果窃取走了？开发人员对能力相当地看重，窃取别人的成果就是把别人的能力和才敢伪装到自己身上。这在我所列的列表中占据很重要的地位，因为我觉得它产生了太多足以摧毁整个开发团队生产力的紧张氛围。</p>
+<h2 id="6-Environment-–-Noises-Motion-Workspace-Design…"><a href="#6-Environment-–-Noises-Motion-Workspace-Design…" class="headerlink" title="6) Environment – Noises, Motion, Workspace Design…"></a>6) Environment – Noises, Motion, Workspace Design…</h2><h2 id="6-环境-噪音、运动、办公产地的设计等等"><a href="#6-环境-噪音、运动、办公产地的设计等等" class="headerlink" title="6) 环境 - 噪音、运动、办公产地的设计等等"></a>6) 环境 - 噪音、运动、办公产地的设计等等</h2><p>This might seem strange to non-programmers, but the environment in which developers work has an important impact on their activities. For instance, having some white noise – loud AC, hearing cars and trucks roll by – helps them focus better. That’s why so many of us put headsets on! I actually just discovered RainyMood – really great 👍!</p>
+<p>这对非编程人员老说可能有点奇怪，但是开发人员所处的环境对于他们的活力有很大影响。例如，一些白噪声 - loud AC，听一些汽车和卡车路过的声音能够帮助他们更集中精神。这就我们带耳机的原因！其实我刚发现了RainMood这个音乐，相当相当不错，👍!</p>
+<p>Similarly, if the workspace is designed to have as much motion as possible, that won’t help them focus! Or having the desktop computer screens oriented in such a way that they are highly visible to the managers…well, that creates some extra stress and even more opportunities to be interrupted.</p>
+<p>同样地，如果工作场所设计得很有运动感是没有办法帮助开发者集中注意力的。或者是让电脑屏幕朝向老板能够很容易看到的方向…额，这会给开发人员增加一些额外的压力和更多被打断的机会。</p>
+<h2 id="7-Scope-Creepiness"><a href="#7-Scope-Creepiness" class="headerlink" title="7) Scope Creepiness"></a>7) Scope Creepiness</h2><h2 id="7-范围蔓延"><a href="#7-范围蔓延" class="headerlink" title="7) 范围蔓延"></a>7) 范围蔓延</h2><p>Scope creep (also called focus creep, requirement creep, feature creep, and sometimes kitchen sink syndrome) in project management refers to uncontrolled changes in a project’s scope. This can occur when the scope of a project is not properly defined, documented, or controlled.</p>
+<p>项目计划中的范围蔓延（也称焦点蔓延、需求蔓延、功能蔓延和厨房水槽综合征）指的是在项目中无法控制的改变。没能正确定义项目边界、编写项目文档或者正确管理项目都会导致项目蔓延的情况发生。</p>
+<p>Scope creep turns relatively simple requests into horribly complex and time-consuming monsters! And most of the time it happens during development! For instance, for a simple feature:<br>Version 1 (before implementation): feature is “Show a map of the location”<br>Version 2 (when version 1 almost finished): feature is changed to “Show a 3D map of the location”<br>Version 3 (when version 2 almost finished): feature again changed to “Show a 3D map of the location that the user can fly through”</p>
+<p>项目蔓延讲非常简单的请求变为异常复杂恐怖的“怪物”，比如，一个很简单的需求：<br>版本1（实时之前）：需求是 “显示位置的地图”<br>版本2（版本1快要完成时）：需求改变为 “显示位置的3D地图”<br>版本3（版本2快要完成时）：需求又改变了，变为“显示用户能够飞跃的区域的3D地图”<br>……</p>
+<h2 id="8-Product-Definition-Process"><a href="#8-Product-Definition-Process" class="headerlink" title="8) Product Definition Process"></a>8) Product Definition Process</h2><h2 id="8-产品决定过程"><a href="#8-产品决定过程" class="headerlink" title="8) 产品决定过程"></a>8) 产品决定过程</h2><p>So this one might seem strange at first glance, but is actually pretty easy to understand. If a product team defines its team’s priorities without ever validating (through customer feedback or any other means) the interest of the corresponding features, and the developers see that most features are eventually just not used, they will feel that what they do is useless and will lose their motivation. We all want to feel impactful, and that may be even more important to developers!</p>
+<p>这条乍一看可能有点奇怪，但其实很好理解。如果一个产品团队在尽管有用户反馈或者其他信息，且没有验证相应功能的兴趣点的情况下就指定好团队开发工作的优先级，团队里的成员心里也明白最终大多数功能时用不到的，这时候，团队成员就会感觉自己做这些都是没用的，就会失去动力。我们都希望自己能够由影响力，这对开发人员来说甚至更重要。</p>
+<h2 id="9-Lack-of-Consideration-to-Technical-Debt"><a href="#9-Lack-of-Consideration-to-Technical-Debt" class="headerlink" title="9) Lack of Consideration to Technical Debt"></a>9) Lack of Consideration to Technical Debt</h2><h2 id="9-对技术债务缺乏考虑"><a href="#9-对技术债务缺乏考虑" class="headerlink" title="9) 对技术债务缺乏考虑"></a>9) 对技术债务缺乏考虑</h2><p>Technical debt is a deliberate decision to implement not-the-best solution or write not-the-best code to release software faster. Taking on some technical debt is inevitable and can increase speed in software development in the short run. However, in the long run, it contributes to system complexity, which slows the developers down. Non-programmers often underestimate the loss of productivity and are tempted to always move forward, and that becomes an issue.</p>
+<p>技术债务是为了快速实现不是最好的方案或者写不是最优的代码来快速发布产品的一种故意的决定。从短期来看，为了提高软件开发的速度承担一些技术债务时必要的，但是长期来说，它会增加系统的复杂度，而复杂性的提升又会降低开发速度。非编程人员经常低估生产力低下给项目造成的损失，而且急功近利，这是个问题。</p>
+<p>But if refactoring is never part of the priorities, it will not only impact productivity but also product quality.</p>
+<p>但如果重构永远不是优先事项的一部分，它不仅会影响生产力，还会影响产品质量。</p>
+<h2 id="10-Tool-Multiplicity-amp-Hardware"><a href="#10-Tool-Multiplicity-amp-Hardware" class="headerlink" title="10) Tool Multiplicity &amp; Hardware"></a>10) Tool Multiplicity &amp; Hardware</h2><h2 id="10-工具的多样性和硬件"><a href="#10-工具的多样性和硬件" class="headerlink" title="10) 工具的多样性和硬件"></a>10) 工具的多样性和硬件</h2><p>Developers use many tools to program, push and merge their code every day. The more automation, the better. It goes without saying that if you use “ancient” tools, this will impact your productivity. Similarly, having a big screen vs only a laptop can have an impact. Given the cost of hardware and the developer’s salary, having just a 5% productivity gain is definitely worth any investment on that point! Just give the tools and hardware that your developer team prefers (individually for hardware, but as a group for the tools).</p>
+<p>开发者使用多种工具编程，每天都会push和merge他们的代码，越自动化越好。不言而喻，如果你还在使用“上古”的工具，肯定会影响你的生产力。类似地，有一个大的电脑屏幕和仅仅只有一个笔记本也会对开发者产生不同的影响。考虑到硬件和人力成本，仅有5%的生产力提升也是非常值得往工具和硬件上投资的。给团队开发人员他们喜欢的工具和硬件设备（硬件分配给单个人，工具大家一起用）。</p>
+<h2 id="11-“How”-Documentation"><a href="#11-“How”-Documentation" class="headerlink" title="11) “How” Documentation"></a>11) “How” Documentation</h2><h2 id="11-“怎样使用”文档"><a href="#11-“怎样使用”文档" class="headerlink" title="11)  “怎样使用”文档"></a>11)  “怎样使用”文档</h2><p>When learning how to code, we were told to comment early and often. The idea is that it’s better to have too many comments than to have too few. Unfortunately, many programmers incorrectly interpret this to mean that they must comment every single line of code, which is why we often see code like this (from Jeff Atwood’s post on “<a href="https://blog.codinghorror.com/coding-without-comments/" target="_blank" rel="noopener">Coding Without Comments</a>”):</p>
+<p>刚学编程时，老师教我们先写注释，而且经常这样说。这是告诉我们注释多多益善，不幸的是，许多程序员不正确地理解了这句话，这导致他们对每行代码都做了注释，这就是我们通常看到代码，比如这样（来自Jeff Atwood发表的文章“<a href="https://blog.codinghorror.com/coding-without-comments/" target="_blank" rel="noopener">Coding Without Comments</a>”）：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">r = n / 2; // <span class="keyword">Set</span> r <span class="keyword">to</span> n divided <span class="keyword">by</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line">// <span class="keyword">Loop</span> <span class="keyword">while</span> r – (n/r) <span class="keyword">is</span> greater <span class="keyword">than</span> t</span><br><span class="line"><span class="keyword">while</span> ( <span class="keyword">abs</span>( r – (n/r) ) &gt; t ) &#123;</span><br><span class="line">r = <span class="number">0.5</span> * ( r + (n/r) ); // <span class="keyword">Set</span> r <span class="keyword">to</span> half <span class="keyword">of</span> r + (n/r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Do you have any idea what this code does? Me neither. The problem is that while there are plenty of comments describing what the code is doing, there are none describing why it’s doing it. If there were a bug in the program and you stumbled across this code, you wouldn’t know where to begin.</p>
+<p>你能明白这段代码要表达的意思吗？我是理解不了。问题是有大量的注释来描述代码正在作什么，但是却没有一行注释说一下为什么要写这些代码。如果在程序中有一个bug，在你突然接触到这段代码的时候你是不知道从哪里开始查找问题的。</p>
+<h2 id="12-Impossibly-Tight-Deadlines"><a href="#12-Impossibly-Tight-Deadlines" class="headerlink" title="12) Impossibly Tight Deadlines"></a>12) Impossibly Tight Deadlines</h2><h2 id="12-没法完成的截止日期"><a href="#12-没法完成的截止日期" class="headerlink" title="12) 没法完成的截止日期"></a>12) 没法完成的截止日期</h2><p>This last one is linked to the tendency of managers to ask developers for estimates, then push them to lower those estimates as much as possible, and then magically consider them as deadlines! Managers will even consider that, as the developers themselves “decided” on the estimate, they committed to the deadlines, and therefore the deadlines should be considered valid enough to be shared to upper management.</p>
+<p>最后一条与管理者向开发者询问预估时间有关，管理者会尽可能地让开发者缩短预估时间，然后想当然地把这作为最后截止日期。管理者会认为这是开发者自己预估的时间，他们认可这个截止日期，因此截止日期应该深思熟虑后再告诉上面的管理层。</p>
+<p>Not surprisingly, developers feel that those deadlines are unreasonable and arbitrarily tight; this creates tension and an inability to focus.</p>
+<p>不出意料，开发者会觉得截止日期订的毫无根据而且异常紧凑，这会让开发者感到紧张，因而难以集中精力。</p>
+<p>How are all those things unique to developers?<br>If you look at all 12 things, they are actually pretty common to most other project-based jobs. It’s just that the impact of each of these is even more important for developers, as they need deep focus to progress on their tasks.</p>
+<p>为什么这些事情对开发者来说是特别的呢？<br>如果你看完了这12件事，这些事也同样适用于其他项目导向的工作。仅仅是这些事情对于开发者开说是影响更大的，因为他们需要高度集中注意力来工作。</p>
+<p>If you recognize some points mentioned above within your company, it might be interesting to address them with your developers. Talk to them; find out if these are an issue and how it can be resolved. Whatever they say, the most important thing is to trust their feedback and insights. And while today’s technology is very different from 30 years ago, the lesson is still the same. You can’t ignore the human factor when you consider team productivity. Iterate on your processes, environment and work habits with your team, and let them guide you on how to have the highest productivity and impact.</p>
+<p>如果你注意到你的公司中存在上面所提到的问题，跟你的开发人员们一起讨论一下这些事情或许会很有趣。跟他们谈一下把，看看上面提到的事情在你公司是不是个问题，如果是，怎么去解决它。无论你的开发者们怎么说，最重要的就是相信他们的反馈和见解。而且即使是当今的科技跟30年前完全不一样了，问题还是这些问题。你在考虑团队生产力的时候是无法忽略人的这些特点的。与你的团队一起思考你们的流程，环境和工作习惯，让他们来告诉你怎么获得最高的生产力和影响力。</p>
+<hr>
+<p>2018.11.23 北京 晴 异常冷</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/16/需要学习的是编程，而不是编程语言(译)/" rel="next" title="需要学习的是编程，而不是编程语言(译)">
+                <i class="fa fa-chevron-left"></i> 需要学习的是编程，而不是编程语言(译)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/25/归并排序与快速排序/" rel="prev" title="归并排序与快速排序">
+                归并排序与快速排序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">84</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Top-12-Things-That-Destroy-Developer-Productivity"><span class="nav-number">1.</span> <span class="nav-text">Top 12 Things That Destroy Developer Productivity</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Interruptions-amp-Meetings"><span class="nav-number">1.1.</span> <span class="nav-text">1) Interruptions &amp; Meetings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-各种打扰和会议"><span class="nav-number">1.2.</span> <span class="nav-text">1) 各种打扰和会议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Micro-management"><span class="nav-number">1.3.</span> <span class="nav-text">2) Micro-management</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-微观管理"><span class="nav-number">1.4.</span> <span class="nav-text">2) 微观管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Vagueness"><span class="nav-number">1.5.</span> <span class="nav-text">3) Vagueness</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-需求模糊"><span class="nav-number">1.6.</span> <span class="nav-text">3) 需求模糊</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Seagull-Management"><span class="nav-number">1.7.</span> <span class="nav-text">4) Seagull Management</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-海鸥管理"><span class="nav-number">1.8.</span> <span class="nav-text">4) 海鸥管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Credit-Greediness"><span class="nav-number">1.9.</span> <span class="nav-text">5) Credit Greediness</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-贪功"><span class="nav-number">1.10.</span> <span class="nav-text">5) 贪功</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Environment-–-Noises-Motion-Workspace-Design…"><span class="nav-number">1.11.</span> <span class="nav-text">6) Environment – Noises, Motion, Workspace Design…</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-环境-噪音、运动、办公产地的设计等等"><span class="nav-number">1.12.</span> <span class="nav-text">6) 环境 - 噪音、运动、办公产地的设计等等</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-Scope-Creepiness"><span class="nav-number">1.13.</span> <span class="nav-text">7) Scope Creepiness</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-范围蔓延"><span class="nav-number">1.14.</span> <span class="nav-text">7) 范围蔓延</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-Product-Definition-Process"><span class="nav-number">1.15.</span> <span class="nav-text">8) Product Definition Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-产品决定过程"><span class="nav-number">1.16.</span> <span class="nav-text">8) 产品决定过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-Lack-of-Consideration-to-Technical-Debt"><span class="nav-number">1.17.</span> <span class="nav-text">9) Lack of Consideration to Technical Debt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-对技术债务缺乏考虑"><span class="nav-number">1.18.</span> <span class="nav-text">9) 对技术债务缺乏考虑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-Tool-Multiplicity-amp-Hardware"><span class="nav-number">1.19.</span> <span class="nav-text">10) Tool Multiplicity &amp; Hardware</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-工具的多样性和硬件"><span class="nav-number">1.20.</span> <span class="nav-text">10) 工具的多样性和硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-“How”-Documentation"><span class="nav-number">1.21.</span> <span class="nav-text">11) “How” Documentation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-“怎样使用”文档"><span class="nav-number">1.22.</span> <span class="nav-text">11)  “怎样使用”文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-Impossibly-Tight-Deadlines"><span class="nav-number">1.23.</span> <span class="nav-text">12) Impossibly Tight Deadlines</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-没法完成的截止日期"><span class="nav-number">1.24.</span> <span class="nav-text">12) 没法完成的截止日期</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
