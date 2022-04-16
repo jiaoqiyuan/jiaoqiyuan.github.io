@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/avatar-6.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="linux,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="信息来源：阮一峰每周分享 文章来源：What Is /Dev/Null – an Introduction to the Bit Bucket  What Is /Dev/Null – an Introduction to the Bit Bucket /Dev/Null 是什么 - Bit Bucket 的简介If you have used Linux for any amount of ti">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dev-null">
+<meta property="og:url" content="http://yoursite.com/2021/03/20/dev-null/index.html">
+<meta property="og:site_name" content="My Love">
+<meta property="og:description" content="信息来源：阮一峰每周分享 文章来源：What Is /Dev/Null – an Introduction to the Bit Bucket  What Is /Dev/Null – an Introduction to the Bit Bucket /Dev/Null 是什么 - Bit Bucket 的简介If you have used Linux for any amount of ti">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/dev-null/dev-null-title.png">
+<meta property="og:updated_time" content="2022-04-16T08:15:53.264Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="dev-null">
+<meta name="twitter:description" content="信息来源：阮一峰每周分享 文章来源：What Is /Dev/Null – an Introduction to the Bit Bucket  What Is /Dev/Null – an Introduction to the Bit Bucket /Dev/Null 是什么 - Bit Bucket 的简介If you have used Linux for any amount of ti">
+<meta name="twitter:image" content="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/dev-null/dev-null-title.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/03/20/dev-null/">
+
+
+
+
+
+  <title>dev-null | My Love</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/jiaoqiyuan" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">My Love</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I will be stronger</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于我">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-标签">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-分类">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-归档">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/03/20/dev-null/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jony Chiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar-6.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Love">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">dev-null</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-20T16:56:13+08:00">
+                2021-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/03/20/dev-null/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2021/03/20/dev-null/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/dev-null/dev-null-title.png" rel="gallery_cl21l4p3c002zo2tttbon23vr" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="https://gitee.com/jiaoqiyuan/pics/raw/master/blog/dev-null/dev-null-title.png" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <p>信息来源：<a href="http://www.ruanyifeng.com/blog/2021/03/weekly-issue-149.html" target="_blank" rel="noopener">阮一峰每周分享</a></p>
+<p>文章来源：<a href="https://www.putorius.net/introduction-to-dev-null.html" target="_blank" rel="noopener">What Is /Dev/Null – an Introduction to the Bit Bucket</a></p>
+<hr>
+<h1 id="What-Is-Dev-Null-–-an-Introduction-to-the-Bit-Bucket-Dev-Null-是什么-Bit-Bucket-的简介"><a href="#What-Is-Dev-Null-–-an-Introduction-to-the-Bit-Bucket-Dev-Null-是什么-Bit-Bucket-的简介" class="headerlink" title="What Is /Dev/Null – an Introduction to the Bit Bucket /Dev/Null 是什么 - Bit Bucket 的简介"></a>What Is /Dev/Null – an Introduction to the Bit Bucket /Dev/Null 是什么 - Bit Bucket 的简介</h1><p>If you have used Linux for any amount of time, you most likely have come across the bit bucket, normally written as /dev/null. Understanding this special file, how it works, and it’s importance will become a invaluable tool. In this article, we will discuss what /dev/null is, how to use it, and why it earned the name bit bucket. We will also explore some examples of how it can be used in common practice.</p>
+<p>如果你使用过 Linux，那么你和可能碰到过位桶，通常写为 dev/null。理解这个特殊的文件如何工作以及它的重要性，将会大有帮助。这篇文章中，我们将会探讨 <code>dev/null</code> 是什么，它是如何工作的，以及为什么它会有 <code>bit buket</code> 这个名字。同时我们也会展开几个例子，看一下它如何应用到平常的实践中。</p>
+<a id="more"></a>
+<h2 id="Why-the-Name-Bit-Bucket-为什么叫-Bit-Bucket"><a href="#Why-the-Name-Bit-Bucket-为什么叫-Bit-Bucket" class="headerlink" title="Why the Name Bit Bucket? 为什么叫 Bit Bucket"></a>Why the Name Bit Bucket? 为什么叫 Bit Bucket</h2><p>Early computers used punch cards to store data and programming code. When the machine punched the holes out, the unused material would drop into a bucket. Over time the bit bucket became a general term for a place where useless bits were discarded.</p>
+<p>早期的计算机使用打孔来存储数据和编程。当机器冲出孔时，那些被冲出的无用材料就被丢弃到桶中。随着时间流逝，bit bucket 成为废弃无用比特的地方的总称。</p>
+<p>Other names for /dev/null are black hole, null route, punch bucket, null device, or just null.</p>
+<p>/dev/null 的其他名字比如黑洞，null route，打孔桶，空设备或者就是 null。</p>
+<h2 id="The-dev-null-File-dev-null-文件"><a href="#The-dev-null-File-dev-null-文件" class="headerlink" title="The /dev/null File /dev/null 文件"></a>The /dev/null File /dev/null 文件</h2><p>The /dev/null file is a pseudo-device file generated at boot. It has no size (0 bytes), takes up 0 blocks on disk, has read/write permissions for all users. The screenshot below shows that the file and last system reboot have the same date and time.</p>
+<p>/dev/null 是一个在启动时产生的伪设备，它没有大小（0 字节），在硬盘上占用 0 个块，所有用户对其都有读写权限。下面的截图显示 /dev/null 文件和上次系统重启具有相同的日期和时间。</p>
+<p><img src="https://www.putorius.net/wp-content/uploads/2019/11/dev-null-diag1-min.png.webp" alt="stat-dev-null"></p>
+<p>This is a special file known as a character device file. This allows the file to act like a device (null device) that is unbuffered and can accept streams of data. When you access a device file, you are communicating with a driver. In the case of /dev/null, it acts as a pseudo device with a driver that has a very specific purpose. It discards anything you write to it, and only returns a EOF character when read. Sending an EOF more or less means making the process aware that no additional input will be sent (End of File).</p>
+<p>这是一个特殊文件叫字符设备文件，它允许文件像未缓冲的设备（null 设备）一样工作，并且可以接收<a href="https://www.putorius.net/linux-io-file-descriptors-and-redirection.html" target="_blank" rel="noopener">流数据</a>。当你访问一个设备文件时，你就是与驱动程序在通信。对于 /dev/null 来说，它充当的是伪设备，这个伪设备具有特殊目的驱动程序。你传给它的所有东西都会被丢弃，并且在读它的时候只返回一个 EOF 字符，发送 EOF 意味着让进程知道发送其他任何输入数据了。</p>
+<h1 id="Using-the-dev-null-File-使用-dev-null-文件"><a href="#Using-the-dev-null-File-使用-dev-null-文件" class="headerlink" title="Using the /dev/null File 使用 /dev/null 文件"></a>Using the /dev/null File 使用 /dev/null 文件</h1><h2 id="Suppressing-Output-with-dev-null-使用-dev-null-抑制输出"><a href="#Suppressing-Output-with-dev-null-使用-dev-null-抑制输出" class="headerlink" title="Suppressing Output with /dev/null 使用 /dev/null 抑制输出"></a>Suppressing Output with /dev/null 使用 /dev/null 抑制输出</h2><p>The /dev/null file is most often used to suppress output. In the following example, we use the “&gt;” redirection operator to send the output of the stat command to the bit bucket.</p>
+<p>/dev/null 文件通常用来抑制输出，在接下来的例子中，我们会使用 “&gt;” 重定向操作符将 stat 命令的输出发送到 bit bucket。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stat <span class="regexp">/etc/</span>passwd &gt; <span class="regexp">/dev/</span><span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+<p>This effectively suppresses the commands output (standard output).</p>
+<p>这有效抑制了命令输出（标准输出）。</p>
+<p>We can use /dev/null to suppress errors by redirecting standard error (STDERR), like so:</p>
+<p>我们可以使用 /dev/null 通过重定向标准错误（STDERR）来抑制错误，如下所示:</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stat <span class="regexp">/etc/</span>passwdss <span class="number">2</span>&gt; <span class="regexp">/dev/</span><span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+<p>We changed the filename to passwdss, which doesn’t exist. This would normally show a “No such file or directory” error. Although, the error was discarded since we redirected STDERR (standard error) output to /dev/null.</p>
+<p>我们将文件名改为 passwdss，该文件名不存在，这通常会报 “文件不存在” 的错误。由于我们将 STDERR（标准错误）重定向到了 /dev/null，因此错误被丢弃。</p>
+<p><img src="https://www.putorius.net/wp-content/uploads/2019/11/ani-diag1-min.gif.webp" alt="suppress-output"></p>
+<p>NOTE: To learn more about redirection and standard data streams (STDIN, STDOUT, STDERR) read “Linux I/O, Standard Streams, and Redirection”.</p>
+<p>注意：要了解更多关于重定向和标准数据流（STDIN，STDOUT，STDERR）的更多信息，请阅读 “<a href="https://www.putorius.net/linux-io-file-descriptors-and-redirection.html" target="_blank" rel="noopener">Linux I/O, Standard Streams, and Redirection</a>“</p>
+<p>NOTE: Data sent to /dev/null is immediately discarded and not recoverable.</p>
+<p>注意：发送到 /dev/null 的数据会立即被丢弃，并且无法恢复。</p>
+<h2 id="Using-dev-null-to-input-EOF-End-of-File-使用-dev-null-输入-EOF-（文件结尾）"><a href="#Using-dev-null-to-input-EOF-End-of-File-使用-dev-null-输入-EOF-（文件结尾）" class="headerlink" title="Using /dev/null to input EOF (End of File) 使用 /dev/null 输入 EOF （文件结尾）"></a>Using /dev/null to input EOF (End of File) 使用 /dev/null 输入 EOF （文件结尾）</h2><p>Another common use for /dev/null is supplying a blank or null input that has nothing but the EOF character. It may not be immediately clear why you would need such a function. However, there are a lot of utilities that need a EOF character in order to proceed. For example, the mailx utility will allow you to type an email from the command line. It will continue to wait for input until it receives an EOF character, which is sent by hitting CTRL + D. This tells the utility that you do not intended to send any more input.</p>
+<p>/dev/null 的另一个常见用法是提供一个空白或 null 输入时，除了 EOF 外什么都没有，可能还不能理解为什么需要这个功能，但是许多程序需要 EOF 字符才能继续。例如，mailx 程序允许你从命令行输入电子邮件，它在接收到 EOF 字符前会一直等待输入，EOF 字符是通过 ctrl + d 发送的。发送 EOF 字符就意味着你不打算再输入更多了。</p>
+<p><img src="https://www.putorius.net/wp-content/uploads/2019/11/ani-diag-mail-fast-min.gif.webp" alt="eof-dev-null"></p>
+<p>NOTE: EOT (End of transmission) and EOF (End of File) have technical differences which comes down to encoding and are outside the scope of this tutorial.’</p>
+<p>注意：EOT（End of transmission） 和 EOF （End of File） 具有技术上的差异，这些差异归咎于编码，这不在本文讨论范围内。</p>
+<p>What if we wanted to send a blank email, we would have to enter interactive mode and hit CTRL + D with no input. This would be unpractical if being used in a script or other unattended fashion. As a workaround we can redirect /dev/null into the mailx command to do this for us.</p>
+<p>如果我们想发送空白邮件怎么办，我们将不得不进入交互模式并在没有任何输入的情况下按 ctrl + d。如果以脚本或其他无人值守的方式使用，这将不切实际。作为一种解决办法，我们可以将 /dev/null 重定向到 mailx 命令，为我们执行此操作。</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mailx -s <span class="string">"Just Another Email"</span> user@putorius.net &lt; /dev/<span class="keyword">null</span></span><br><span class="line"> <span class="keyword">Null</span> message <span class="keyword">body</span>; hope that<span class="symbol">'s</span> ok</span><br></pre></td></tr></table></figure>
+<h1 id="Using-dev-null-to-Empty-a-File-使用-dev-null-清空文件"><a href="#Using-dev-null-to-Empty-a-File-使用-dev-null-清空文件" class="headerlink" title="Using /dev/null to Empty a File 使用 /dev/null 清空文件"></a>Using /dev/null to Empty a File 使用 /dev/null 清空文件</h1><p>Yet another common use for the /dev/null file is to empty contents of a file. If you use the “&gt;” redirection operator to redirect /dev/null into a file, it effectively erases the contents of that file.</p>
+<p>/dev/null 文件的另一个常用用法是清空文件的内容，如果使用 “&gt;” 重定向操作符将 /dev/null 重定向到文件，它将有效删除该文件的内容。</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[savona<span class="symbol">@putor</span> ~]$ cat scp.<span class="built_in">log</span></span><br><span class="line"> Changing <span class="keyword">to</span> backup directory…</span><br><span class="line"> Sending SCP request <span class="keyword">to</span> download fw-backup<span class="number">-2019</span>_11_10…</span><br><span class="line"> fw-backup<span class="number">-2019</span>_11_10<span class="number">-03</span>_03_27<span class="number">-2.0</span><span class="number">.32</span>.zip      <span class="number">100</span>%  <span class="number">536</span>MB   <span class="number">2.8</span>MB/s   <span class="number">03</span>:<span class="number">14</span>    </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ cat /dev/<span class="literal">null</span> &gt; scp.<span class="built_in">log</span></span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ ls -l scp.<span class="built_in">log</span></span><br><span class="line"> -rw-r--r--. <span class="number">1</span> savona savona <span class="number">0</span> Nov <span class="number">11</span> <span class="number">21</span>:<span class="number">32</span> scp.<span class="built_in">log</span></span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ cat scp.<span class="built_in">log</span> </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$</span><br></pre></td></tr></table></figure>
+<p>Another option is to use the cp command to copy /dev/null over the file, like so:</p>
+<p>另一种操作是使用 cp 命令在文件上复制 /dev/null，例如：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[savona<span class="symbol">@putor</span> ~]$ cat scp.<span class="built_in">log</span> </span><br><span class="line"> Changing <span class="keyword">to</span> backup directory…</span><br><span class="line"> Sending SCP request <span class="keyword">to</span> download fw-backup<span class="number">-2019</span>_11_10…</span><br><span class="line"> fw-backup<span class="number">-2019</span>_11_10<span class="number">-03</span>_03_27<span class="number">-2.0</span><span class="number">.32</span>.zip      <span class="number">100</span>%  <span class="number">536</span>MB   <span class="number">2.8</span>MB/s   <span class="number">03</span>:<span class="number">14</span></span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ cp /dev/<span class="literal">null</span> scp.<span class="built_in">log</span> </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ cat scp.<span class="built_in">log</span> </span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$ ls -l scp.<span class="built_in">log</span> </span><br><span class="line"> -rw-r--r--. <span class="number">1</span> savona savona <span class="number">0</span> Nov <span class="number">11</span> <span class="number">21</span>:<span class="number">34</span> scp.<span class="built_in">log</span></span><br><span class="line"> [savona<span class="symbol">@putor</span> ~]$</span><br></pre></td></tr></table></figure>
+<h1 id="Conclusion-总结"><a href="#Conclusion-总结" class="headerlink" title="Conclusion 总结"></a>Conclusion 总结</h1><p>The bit bucket (/dev/null) is an important and useful tool for system administrators, devops engineers and just about anyone using the command line. In this article we discussed some of the most common uses for /dev/null, but once you know what it does, you may find more and more ways to use it.</p>
+<p>Bit bucket (/dev/null) 对于管理员、开发工程师以及任何使用命令行的人来说都是一个重要且有用的工具。这篇文章中我们讨论了 /dev/null 的几种常见用法，不过一旦你知道了它是什么，你可能会发现更多使用 /dev/null 的方法。</p>
+<p>We would love to hear any of your experiences, questions or comments below!</p>
+<p>我们很期待在评论区听到你的使用经验、问题以及评论！</p>
+<h1 id="Resource-and-Links-参考链接"><a href="#Resource-and-Links-参考链接" class="headerlink" title="Resource and Links: 参考链接"></a>Resource and Links: 参考链接</h1><p><a href="https://linux.die.net/man/4/null" target="_blank" rel="noopener">Null Man Page</a></p>
+<p><a href="https://www.putorius.net/linux-io-file-descriptors-and-redirection.html" target="_blank" rel="noopener">Linux I/O, Standard Streams, and redirection</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Bit_bucket" target="_blank" rel="noopener">Bit Bucket – WikiPedia</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Null_device" target="_blank" rel="noopener">Null Device – WikPedia</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/08/pthread-programing-2/" rel="next" title="pthread-programing-2">
+                <i class="fa fa-chevron-left"></i> pthread-programing-2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar-6.png" alt="Jony Chiao">
+            
+              <p class="site-author-name" itemprop="name">Jony Chiao</p>
+              <p class="site-description motion-element" itemprop="description">bulabula</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">84</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/jiaoqiyuan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jijujiu@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-Is-Dev-Null-–-an-Introduction-to-the-Bit-Bucket-Dev-Null-是什么-Bit-Bucket-的简介"><span class="nav-number">1.</span> <span class="nav-text">What Is /Dev/Null – an Introduction to the Bit Bucket /Dev/Null 是什么 - Bit Bucket 的简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-the-Name-Bit-Bucket-为什么叫-Bit-Bucket"><span class="nav-number">1.1.</span> <span class="nav-text">Why the Name Bit Bucket? 为什么叫 Bit Bucket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-dev-null-File-dev-null-文件"><span class="nav-number">1.2.</span> <span class="nav-text">The /dev/null File /dev/null 文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Using-the-dev-null-File-使用-dev-null-文件"><span class="nav-number">2.</span> <span class="nav-text">Using the /dev/null File 使用 /dev/null 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Suppressing-Output-with-dev-null-使用-dev-null-抑制输出"><span class="nav-number">2.1.</span> <span class="nav-text">Suppressing Output with /dev/null 使用 /dev/null 抑制输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-dev-null-to-input-EOF-End-of-File-使用-dev-null-输入-EOF-（文件结尾）"><span class="nav-number">2.2.</span> <span class="nav-text">Using /dev/null to input EOF (End of File) 使用 /dev/null 输入 EOF （文件结尾）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Using-dev-null-to-Empty-a-File-使用-dev-null-清空文件"><span class="nav-number">3.</span> <span class="nav-text">Using /dev/null to Empty a File 使用 /dev/null 清空文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion-总结"><span class="nav-number">4.</span> <span class="nav-text">Conclusion 总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Resource-and-Links-参考链接"><span class="nav-number">5.</span> <span class="nav-text">Resource and Links: 参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jony Chiao</span>
+
+  
+</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
